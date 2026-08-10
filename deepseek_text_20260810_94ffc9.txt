@@ -1,0 +1,28 @@
+# Fichiers sensibles
+.env
+.env.local
+*.key
+*.pem
+
+# Dépendances
+node_modules/
+vendor/
+
+# Build
+dist/
+build/
+*.log
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Stripe
+webhook.log
+stripe_*.log
