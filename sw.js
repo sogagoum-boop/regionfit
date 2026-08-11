@@ -72,3 +72,5 @@ self.addEventListener('fetch', event => {
             })
     );
 });
+service worker pour PWA
+service worker pour PWA
