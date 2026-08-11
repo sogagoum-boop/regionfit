@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RégionFit - IA & Nutrition</title>
+    <title>RégionFit - Nutrition IA</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -49,6 +49,35 @@
             font-size: 11px;
             font-weight: 600;
         }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 4px;
+        }
+        .tabs button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            background: transparent;
+            color: #718096;
+            transition: 0.2s;
+        }
+        .tabs button.active {
+            background: #fff;
+            color: #38a169;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         .scan-box {
             background: linear-gradient(135deg, #38a169, #2f855a);
@@ -269,81 +298,219 @@
             margin-left: 6px;
         }
         .key-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* Country Selector */
+        .country-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .country-selector select {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fff;
+            min-width: 120px;
+        }
+        .country-selector select:focus {
+            border-color: #38a169;
+            outline: none;
+        }
+
+        /* Meal Plan */
+        .meal-day {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        .meal-day .day-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+        .meal-day .day-cal { color: #38a169; }
+        .meal-day .meal-item {
+            font-size: 13px;
+            color: #4a5568;
+            padding: 2px 0;
+        }
+        .meal-day .meal-item span { font-weight: 600; }
+
+        .shopping-list {
+            columns: 2;
+            column-gap: 16px;
+        }
+        .shopping-list li {
+            list-style: none;
+            padding: 4px 0;
+            font-size: 13px;
+            color: #4a5568;
+            break-inside: avoid;
+        }
+        .shopping-list li::before {
+            content: "🛒 ";
+        }
     </style>
 </head>
 <body>
     <div class="app">
+        <!-- HEADER -->
         <div class="header">
             <h1>🥗 Région<span>Fit</span></h1>
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                <span class="badge">📍 Normandie</span>
+                <span class="badge" id="locationBadge">📍 Normandie</span>
                 <span class="badge-ia">🤖 Gemini 1.5</span>
             </div>
         </div>
 
-        <div class="scan-box">
-            <h2>📸 Scannez votre repas</h2>
-            <p>Prenez une photo pour analyser les calories</p>
-            <button class="btn-primary" id="openCameraBtn">📷 Ouvrir la caméra</button>
-            <span class="status" id="cameraStatus">Cliquez pour activer la caméra</span>
-            <div style="margin-top:8px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
-                <span id="keyStatus" class="key-status missing">🔑 Clé manquante</span>
-                <button onclick="resetApiKey()" class="key-btn">Réinitialiser</button>
-            </div>
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="active" data-tab="scan">📸 Scan</button>
+            <button data-tab="plan">📊 Planning</button>
+            <button data-tab="shop">🛒 Courses</button>
+            <button data-tab="profile">👤 Profil</button>
         </div>
 
-        <div id="cameraContainer">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas"></canvas>
-            <div class="cam-controls">
-                <button class="btn-close" id="closeCameraBtn">❌ Fermer</button>
-                <button class="btn-capture" id="captureBtn">📷 Prendre la photo</button>
-            </div>
-        </div>
-
-        <div class="loader" id="loader">
-            <div class="spinner"></div>
-            <p>🤖 Gemini 1.5 Flash analyse votre aliment...</p>
-        </div>
-
-        <div id="result">
-            <div class="row">
-                <div>
-                    <div style="font-size:12px;color:#276749;">Repas analysé</div>
-                    <div class="calories" id="caloriesDisplay">-- kcal</div>
-                </div>
-                <div class="macros" id="macrosDisplay">
-                    <div>Protéines: --g</div>
-                    <div>Glucides: --g</div>
-                    <div>Lipides: --g</div>
+        <!-- TAB 1: SCAN -->
+        <div class="tab-content active" id="tab-scan">
+            <div class="scan-box">
+                <h2>📸 Scannez votre repas</h2>
+                <p>Prenez une photo pour analyser les calories</p>
+                <button class="btn-primary" id="openCameraBtn">📷 Ouvrir la caméra</button>
+                <span class="status" id="cameraStatus">Cliquez pour activer la caméra</span>
+                <div style="margin-top:8px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <span id="keyStatus" class="key-status missing">🔑 Clé manquante</span>
+                    <button onclick="resetApiKey()" class="key-btn">Réinitialiser</button>
                 </div>
             </div>
-            <div id="photoDisplay"></div>
-            <div class="tags" id="tagsDisplay"></div>
-            <button class="btn-close" onclick="closeResult()">Fermer</button>
+
+            <div id="cameraContainer">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+                <div class="cam-controls">
+                    <button class="btn-close" id="closeCameraBtn">❌ Fermer</button>
+                    <button class="btn-capture" id="captureBtn">📷 Prendre la photo</button>
+                </div>
+            </div>
+
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <p>🤖 Gemini analyse votre aliment...</p>
+            </div>
+
+            <div id="result">
+                <div class="row">
+                    <div>
+                        <div style="font-size:12px;color:#276749;">Repas analysé</div>
+                        <div class="calories" id="caloriesDisplay">-- kcal</div>
+                    </div>
+                    <div class="macros" id="macrosDisplay">
+                        <div>Protéines: --g</div>
+                        <div>Glucides: --g</div>
+                        <div>Lipides: --g</div>
+                    </div>
+                </div>
+                <div id="photoDisplay"></div>
+                <div class="tags" id="tagsDisplay"></div>
+                <button class="btn-close" onclick="closeResult()">Fermer</button>
+            </div>
         </div>
 
-        <div class="card">
-            <div style="display:flex;justify-content:space-between;">
-                <span style="font-weight:600;">📊 Progrès</span>
-                <span style="color:#38a169;font-weight:700;">4.2 / 8 kg</span>
+        <!-- TAB 2: PLANNING -->
+        <div class="tab-content" id="tab-plan">
+            <div class="country-selector">
+                <select id="countrySelect" onchange="updateMealPlan()">
+                    <option value="FR">🇫🇷 France</option>
+                    <option value="CM">🇨🇲 Cameroun</option>
+                    <option value="CF">🇨🇫 Centrafrique</option>
+                    <option value="CD">🇨🇩 RDC</option>
+                    <option value="SN">🇸🇳 Sénégal</option>
+                    <option value="CI">🇨🇮 Côte d'Ivoire</option>
+                    <option value="ML">🇲🇱 Mali</option>
+                    <option value="NG">🇳🇬 Nigéria</option>
+                    <option value="ZA">🇿🇦 Afrique du Sud</option>
+                </select>
+                <button onclick="updateMealPlan()" style="padding:10px 16px; background:#38a169; color:#fff; border:none; border-radius:10px; font-weight:600; cursor:pointer;">🔄 Mettre à jour</button>
             </div>
-            <div class="progress-bar"><div class="fill"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;color:#718096;">
-                <span>Objectif: -0.7 kg/semaine</span>
-                <span>Calories: 1,245 / 1,800</span>
+            <div id="mealPlanContainer">
+                <p style="text-align:center;color:#718096;padding:20px;">Chargement du planning...</p>
+            </div>
+        </div>
+
+        <!-- TAB 3: COURSES -->
+        <div class="tab-content" id="tab-shop">
+            <h3 style="font-size:16px;color:#2d3748;margin-bottom:12px;">🛒 Liste de courses</h3>
+            <div id="shoppingListContainer">
+                <p style="text-align:center;color:#718096;padding:20px;">Générez votre planning pour voir la liste de courses.</p>
+            </div>
+            <button onclick="generateShoppingList()" style="width:100%;padding:12px;background:#38a169;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;">📋 Générer la liste</button>
+        </div>
+
+        <!-- TAB 4: PROFIL -->
+        <div class="tab-content" id="tab-profile">
+            <h3 style="font-size:16px;color:#2d3748;margin-bottom:12px;">👤 Mon profil</h3>
+            
+            <div class="card">
+                <h3>📊 Statistiques</h3>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                    <span>Poids actuel</span>
+                    <span class="value" id="currentWeight">72 kg</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                    <span>Objectif</span>
+                    <span class="value" id="goalWeight">65 kg</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                    <span>Progrès</span>
+                    <span class="value" style="color:#38a169;">7 kg</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                    <span>Calories/jour</span>
+                    <span class="value" id="dailyCalories">1,800 kcal</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Objectif personnalisé</h3>
+                <div style="margin-top:8px;">
+                    <label style="font-size:13px;color:#718096;">Poids souhaité (kg)</label>
+                    <input type="number" id="goalInput" value="65" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;margin-top:4px;">
+                </div>
+                <div style="margin-top:8px;">
+                    <label style="font-size:13px;color:#718096;">Calories par jour</label>
+                    <input type="number" id="caloriesInput" value="1800" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;margin-top:4px;">
+                </div>
+                <button onclick="saveProfile()" style="width:100%;padding:12px;background:#38a169;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;margin-top:12px;">💾 Sauvegarder</button>
+            </div>
+
+            <div class="card">
+                <h3>📈 Progrès</h3>
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:#718096;margin-top:4px;">
+                    <span>Semaine 1: 72 kg</span>
+                    <span>Semaine 2: 71 kg</span>
+                    <span>Semaine 3: 70.5 kg</span>
+                    <span>Semaine 4: 70 kg</span>
+                </div>
+                <div class="progress-bar" style="margin-top:8px;"><div class="fill" style="width:45%;"></div></div>
             </div>
         </div>
 
         <div class="footer">
             <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-            <p>RégionFit v2.4 · Gemini 1.5 Flash</p>
+            <p>RégionFit v3.0 · Fonctionnalités avancées</p>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // ÉLÉMENTS DOM
+        // CONFIGURATION
         // ============================================================
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -358,6 +525,72 @@
 
         let stream = null;
         let isCameraOpen = false;
+
+        // ============================================================
+        // DATA
+        // ============================================================
+        const mealPlans = {
+            FR: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Pain complet + beurre', 'Déjeuner: Poulet rôti + légumes', 'Dîner: Poisson + quinoa'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Omelette + salade', 'Déjeuner: Pâtes complètes', 'Dîner: Soupe + pain complet'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Yaourt + fruits', 'Déjeuner: Salade composée', 'Dîner: Légumes vapeur + œuf'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Flocons avoine', 'Déjeuner: Riz + poisson', 'Dîner: Velouté de légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit + thé', 'Déjeuner: Soupe minceur', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de légumes', 'Déjeuner: Salade verte', 'Dîner: Poisson vapeur'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
+                ],
+                shopping: ['Pain complet', 'Poulet', 'Poisson', 'Légumes de saison', 'Quinoa', 'Œufs', 'Yaourt nature']
+            },
+            CM: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de maïs', 'Déjeuner: Kpem avoé', 'Dîner: Sauce feuilles + poisson'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + beurre de cacahuète', 'Déjeuner: Ndolè + plantain', 'Dîner: Poisson braisé + légumes'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits frais', 'Déjeuner: Riz + sauce gombo', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson fumé + manioc', 'Dîner: Légumes feuilles'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon de poisson', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de fruits', 'Déjeuner: Salade', 'Dîner: Poisson vapeur'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
+                ],
+                shopping: ['Maïs', 'Manioc', 'Plantain', 'Poisson fumé', 'Légumes feuilles', 'Gombo', 'Beurre de cacahuète']
+            },
+            CF: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de mil', 'Déjeuner: Kanda ti nyma', 'Dîner: Gombo + poisson'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + confiture', 'Déjeuner: Chichinga (brochettes)', 'Dîner: Foutou + sauce'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Poisson fumé + légumes', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Riz + sauce', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Mil', 'Manioc', 'Gombo', 'Poisson', 'Viande de brousse', 'Légumes', 'Fruits']
+            },
+            CD: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie', 'Déjeuner: Poulet Moambe', 'Dîner: Poisson + légumes'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain', 'Déjeuner: Riz + sauce', 'Dîner: Légumes feuilles'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Poisson fumé', 'Dîner: Soupe'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Manioc + poisson', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Manioc', 'Riz', 'Poisson', 'Poulet', 'Légumes feuilles', 'Huile de palme', 'Fruits']
+            }
+        };
+
+        // ============================================================
+        // TABS
+        // ============================================================
+        document.querySelectorAll('.tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
 
         // ============================================================
         // GESTION DE LA CLÉ API
@@ -378,11 +611,11 @@
         function resetApiKey() {
             localStorage.removeItem('gemini_api_key');
             checkApiKey();
-            alert('✅ Clé API réinitialisée. Vous pourrez en saisir une nouvelle au prochain scan.');
+            alert('✅ Clé API réinitialisée.');
         }
 
         // ============================================================
-        // OUVRIR LA CAMÉRA
+        // CAMÉRA
         // ============================================================
         async function openCamera() {
             try {
@@ -390,11 +623,7 @@
                 openBtn.disabled = true;
 
                 const constraints = {
-                    video: {
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
+                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
                     audio: false
                 };
 
@@ -409,22 +638,15 @@
                 openBtn.disabled = false;
 
             } catch (err) {
-                console.error('Erreur:', err);
                 let msg = '❌ Impossible d\'accéder à la caméra.';
-                if (err.name === 'NotAllowedError') {
-                    msg += ' Autorisez l\'accès dans les paramètres.';
-                } else if (err.name === 'NotFoundError') {
-                    msg += ' Aucune caméra trouvée.';
-                }
+                if (err.name === 'NotAllowedError') msg += ' Autorisez l\'accès.';
+                else if (err.name === 'NotFoundError') msg += ' Aucune caméra trouvée.';
                 alert(msg);
                 statusText.textContent = '❌ ' + msg;
                 openBtn.disabled = false;
             }
         }
 
-        // ============================================================
-        // PRENDRE LA PHOTO
-        // ============================================================
         function capturePhoto() {
             if (!isCameraOpen || !video.srcObject) {
                 alert('❌ La caméra n\'est pas active.');
@@ -441,9 +663,6 @@
             analyzeImage(imageData);
         }
 
-        // ============================================================
-        // FERMER LA CAMÉRA
-        // ============================================================
         function closeCamera() {
             if (stream) {
                 stream.getTracks().forEach(t => t.stop());
@@ -457,26 +676,22 @@
         }
 
         // ============================================================
-        // ANALYSE DE L'IMAGE AVEC GEMINI 1.5 FLASH
+        // ANALYSE
         // ============================================================
         async function analyzeImage(imageData) {
             loader.classList.add('active');
             resultDiv.style.display = 'none';
 
-            // Vérifier si la clé API existe
             let apiKey = localStorage.getItem('gemini_api_key');
 
-            // Si pas de clé, demander à l'utilisateur
             if (!apiKey) {
                 loader.classList.remove('active');
                 apiKey = prompt(
                     "🔑 Entrez votre clé API Gemini :\n\n" +
                     "1. Allez sur https://makersuite.google.com/\n" +
-                    "2. Connectez-vous avec votre compte Google\n" +
-                    "3. Cliquez sur 'Get API Key'\n" +
-                    "4. Créez une nouvelle clé\n" +
-                    "5. Collez-la ici\n\n" +
-                    "⚠️ Cette clé restera sur votre appareil."
+                    "2. Créez une nouvelle clé\n" +
+                    "3. Collez-la ici\n\n" +
+                    "⚠️ La clé reste sur votre appareil."
                 );
 
                 if (!apiKey) {
@@ -487,23 +702,21 @@
                 checkApiKey();
             }
 
-            // === UTILISER GEMINI 1.5 FLASH POUR L'ANALYSE ===
             try {
                 const base64Image = imageData.split(',')[1];
 
                 const prompt = `Analysez cette photo d'aliment. Retournez UNIQUEMENT un JSON valide :
                 {
                     "food_name": "nom de l'aliment principal",
-                    "calories": estimation en kcal (nombre),
-                    "protein": protéines en grammes (nombre),
-                    "carbs": glucides en grammes (nombre),
-                    "fats": lipides en grammes (nombre),
-                    "warnings": ["avertissement 1"],
-                    "improvements": ["amélioration 1"]
+                    "calories": estimation en kcal,
+                    "protein": protéines en grammes,
+                    "carbs": glucides en grammes,
+                    "fats": lipides en grammes,
+                    "warnings": ["avertissement"],
+                    "improvements": ["amélioration"]
                 }
                 Répondez UNIQUEMENT en JSON.`;
 
-                // UTILISER gemini-1.5-flash au lieu de gemini-pro-vision
                 const response = await fetch(
                     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
                     {
@@ -513,12 +726,7 @@
                             contents: [{
                                 parts: [
                                     { text: prompt },
-                                    { 
-                                        inlineData: { 
-                                            mimeType: 'image/jpeg', 
-                                            data: base64Image 
-                                        } 
-                                    }
+                                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } }
                                 ]
                             }]
                         })
@@ -527,20 +735,12 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('Erreur API Gemini:', errorData);
-                    
                     if (response.status === 403 || response.status === 401) {
                         localStorage.removeItem('gemini_api_key');
                         checkApiKey();
-                        throw new Error('Clé API invalide. Veuillez en générer une nouvelle sur Google AI Studio.');
+                        throw new Error('Clé API invalide.');
                     }
-                    
-                    // Essayer avec gemini-1.5-pro si flash échoue
-                    if (response.status === 404) {
-                        throw new Error('Modèle non trouvé. Utilisation du mode démo.');
-                    }
-                    
-                    throw new Error(errorData.error?.message || 'Erreur API inconnue');
+                    throw new Error(errorData.error?.message || 'Erreur API');
                 }
 
                 const data = await response.json();
@@ -557,42 +757,34 @@
                         fats: result.fats || 8,
                         food_name: result.food_name || 'Aliment détecté',
                         warnings: result.warnings || ['Aucun avertissement'],
-                        improvements: result.improvements || ['Aucune amélioration suggérée']
+                        improvements: result.improvements || ['Aucune amélioration']
                     }, imageData);
                 } else {
                     throw new Error('Réponse JSON invalide');
                 }
 
             } catch (error) {
-                console.error('Erreur analyse:', error);
+                console.error('Erreur:', error);
                 loader.classList.remove('active');
                 alert(`❌ Erreur d'analyse : ${error.message}\n\nUtilisation du mode démo.`);
-
-                // Fallback : mode démo
                 analyzeDemo(imageData);
             }
         }
 
-        // ============================================================
-        // MODE DÉMO (Fallback)
-        // ============================================================
         function analyzeDemo(imageData) {
             loader.classList.add('active');
             setTimeout(() => {
                 loader.classList.remove('active');
-                const foods = ['Pâtes', 'Salade', 'Poulet', 'Poisson', 'Burger', 'Soupe', 'Riz', 'Légumes'];
-                const warnings = ['Fromage râpé', 'Pâtes raffinées', 'Sauce grasse', 'Peau riche en matières grasses'];
+                const foods = ['Pâtes', 'Salade', 'Poulet', 'Poisson', 'Burger', 'Riz', 'Légumes'];
+                const warnings = ['Fromage râpé', 'Pâtes raffinées', 'Sauce grasse'];
                 const randomFood = foods[Math.floor(Math.random() * foods.length)];
                 const randomCal = [250, 320, 370, 420, 180, 520, 200, 85][Math.floor(Math.random() * 8)];
-                const randomProtein = Math.floor(Math.random() * 30) + 5;
-                const randomCarbs = Math.floor(Math.random() * 50) + 10;
-                const randomFats = Math.floor(Math.random() * 25) + 2;
 
                 displayResult({
                     calories: randomCal,
-                    protein: randomProtein,
-                    carbs: randomCarbs,
-                    fats: randomFats,
+                    protein: Math.floor(Math.random() * 30) + 5,
+                    carbs: Math.floor(Math.random() * 50) + 10,
+                    fats: Math.floor(Math.random() * 25) + 2,
                     food_name: randomFood,
                     warnings: [warnings[Math.floor(Math.random() * warnings.length)]],
                     improvements: ['Ajoutez des légumes', 'Réduisez les matières grasses']
@@ -601,7 +793,7 @@
         }
 
         // ============================================================
-        // AFFICHER LE RÉSULTAT
+        // AFFICHAGE RÉSULTAT
         // ============================================================
         function displayResult(result, imageData) {
             document.getElementById('caloriesDisplay').textContent = result.calories + ' kcal';
@@ -626,26 +818,99 @@
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // ============================================================
-        // FERMER LE RÉSULTAT
-        // ============================================================
         function closeResult() {
             resultDiv.style.display = 'none';
         }
 
         // ============================================================
-        // ÉVÉNEMENTS
+        // PLANNING
+        // ============================================================
+        function updateMealPlan() {
+            const country = document.getElementById('countrySelect').value;
+            const data = mealPlans[country] || mealPlans.FR;
+            
+            let html = '';
+            data.days.forEach(d => {
+                const color = d.calories >= 1800 ? 'green' : d.calories >= 1200 ? 'yellow' : d.calories >= 800 ? 'orange' : 'red';
+                html += `
+                    <div class="meal-day">
+                        <div class="day-header">
+                            <span>${d.day}</span>
+                            <span class="day-cal" style="color:${color === 'green' ? '#38a169' : color === 'yellow' ? '#d69e2e' : color === 'orange' ? '#dd6b20' : '#e53e3e'};">${d.calories} kcal</span>
+                        </div>
+                        ${d.meals.map(m => `<div class="meal-item">• ${m}</div>`).join('')}
+                    </div>
+                `;
+            });
+            document.getElementById('mealPlanContainer').innerHTML = html;
+            document.getElementById('locationBadge').textContent = `📍 ${document.getElementById('countrySelect').selectedOptions[0].text}`;
+        }
+
+        // ============================================================
+        // LISTE DE COURSES
+        // ============================================================
+        function generateShoppingList() {
+            const country = document.getElementById('countrySelect').value;
+            const data = mealPlans[country] || mealPlans.FR;
+            
+            const container = document.getElementById('shoppingListContainer');
+            if (data.shopping && data.shopping.length > 0) {
+                let html = '<ul class="shopping-list">';
+                data.shopping.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += '</ul>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p style="text-align:center;color:#718096;padding:20px;">Aucun article disponible pour ce pays.</p>';
+            }
+        }
+
+        // ============================================================
+        // PROFIL
+        // ============================================================
+        function saveProfile() {
+            const goal = document.getElementById('goalInput').value;
+            const calories = document.getElementById('caloriesInput').value;
+            
+            localStorage.setItem('regionfit_goal', goal);
+            localStorage.setItem('regionfit_calories', calories);
+            
+            document.getElementById('goalWeight').textContent = goal + ' kg';
+            document.getElementById('dailyCalories').textContent = parseInt(calories).toLocaleString() + ' kcal';
+            
+            alert('✅ Profil sauvegardé !');
+        }
+
+        function loadProfile() {
+            const goal = localStorage.getItem('regionfit_goal');
+            const calories = localStorage.getItem('regionfit_calories');
+            
+            if (goal) {
+                document.getElementById('goalInput').value = goal;
+                document.getElementById('goalWeight').textContent = goal + ' kg';
+            }
+            if (calories) {
+                document.getElementById('caloriesInput').value = calories;
+                document.getElementById('dailyCalories').textContent = parseInt(calories).toLocaleString() + ' kcal';
+            }
+        }
+
+        // ============================================================
+        // INIT
         // ============================================================
         openBtn.addEventListener('click', openCamera);
         closeBtn.addEventListener('click', closeCamera);
         captureBtn.addEventListener('click', capturePhoto);
 
         checkApiKey();
-        console.log('✅ RégionFit v2.4 chargé avec succès !');
-        console.log('🤖 Utilisation de Gemini 1.5 Flash');
-        console.log('📸 Cliquez sur "Ouvrir la caméra" pour tester.');
+        updateMealPlan();
+        loadProfile();
+
+        console.log('✅ RégionFit v3.0 chargé !');
+        console.log('📸 Fonctionnalités avancées activées');
         console.log('© 2026 Constantin Armstrong Sogagoum');
     </script>
 </body>
 </html>
-Version 2.4 - Gemini 1.5 Flash
+version 3.0
