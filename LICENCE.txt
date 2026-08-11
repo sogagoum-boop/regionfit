@@ -1,0 +1,74 @@
+================================================================================
+                      LICENCE D'UTILISATION PROPRIÉTAIRE
+================================================================================
+
+PROJET : RégionFit
+AUTEUR : Constantin Armstrong Sogagoum
+COPYRIGHT : © 2026-2027 Constantin Armstrong Sogagoum. Tous droits réservés.
+DATE DE CRÉATION : 10 août 2026
+
+================================================================================
+                              DÉFINITIONS
+================================================================================
+
+"Logiciel" désigne l'ensemble du code source, des documents, des designs,
+des bases de données, et des actifs numériques du projet RégionFit.
+
+"Auteur" désigne Constantin Armstrong Sogagoum, le créateur original.
+
+"Utilisateur" désigne toute personne, entité, ou organisation accédant au 
+Logiciel.
+
+================================================================================
+                          CONDITIONS D'UTILISATION
+================================================================================
+
+1. GRATUITÉ ET ACCÈS
+   Le Logiciel est mis à disposition gratuitement pour consultation et 
+   évaluation. L'utilisation de ce Logiciel ne confère aucun droit de 
+   propriété intellectuelle à l'Utilisateur.
+
+2. INTERDICTIONS
+   L'Utilisateur n'est pas autorisé à :
+   a) Copier, reproduire, ou dupliquer le Logiciel, en totalité ou en partie.
+   b) Modifier, adapter, ou transformer le Logiciel.
+   c) Distribuer, sous-licencier, ou vendre le Logiciel.
+   d) Utiliser le Logiciel à des fins commerciales sans autorisation écrite.
+   e) Supprimer ou masquer les mentions de copyright de l'Auteur.
+   f) Utiliser les algorithmes, prompts, ou architectures pour créer un 
+      logiciel concurrent.
+
+3. UTILISATION AUTORISÉE
+   L'Utilisateur est autorisé à :
+   a) Consulter et évaluer le Logiciel pour des fins d'apprentissage.
+   b) S'inspirer des concepts pour un usage personnel non commercial.
+   c) Partager des liens vers le Logiciel en mentionnant l'Auteur.
+
+4. ATTRIBUTION
+   Toute mention ou référence au Logiciel doit inclure :
+   "Projet RégionFit par Constantin Armstrong Sogagoum - © 2026"
+
+5. GARANTIE
+   Le Logiciel est fourni "EN L'ÉTAT", sans aucune garantie expresse ou 
+   implicite. L'Auteur n'est pas responsable des dommages résultant de 
+   l'utilisation du Logiciel.
+
+================================================================================
+                         DEMANDE DE LICENCE COMMERCIALE
+================================================================================
+
+Pour toute utilisation commerciale, collaboration, ou licence, contactez :
+
+Constantin Armstrong Sogagoum
+Email : sogagoum@gmail.com
+Objet : Demande de licence - RégionFit
+
+================================================================================
+                             LOI APPLICABLE
+================================================================================
+
+Cette licence est régie par le droit français et les conventions 
+internationales sur la propriété intellectuelle.
+
+Copyright © 2026 Constantin Armstrong Sogagoum. Tous droits réservés.
+================================================================================
