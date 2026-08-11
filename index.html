@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RégionFit</title>
+    <title>RégionFit - IA & Nutrition</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -25,6 +25,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .header h1 {
             font-size: 22px;
@@ -34,6 +36,14 @@
         .header .badge {
             background: #ebf8ff;
             color: #2b6cb0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .header .badge-ia {
+            background: #38a169;
+            color: #fff;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 11px;
@@ -82,7 +92,6 @@
             display: block;
         }
 
-        /* CAMERA */
         #cameraContainer {
             display: none;
             background: #000;
@@ -118,7 +127,6 @@
         .cam-controls .btn-capture { background: #38a169; color: #fff; }
         .cam-controls .btn-close { background: #e53e3e; color: #fff; }
 
-        /* LOADER */
         .loader {
             display: none;
             text-align: center;
@@ -137,7 +145,6 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loader p { color: #718096; font-size: 14px; }
 
-        /* RESULTAT */
         #result {
             display: none;
             background: #f0fff4;
@@ -188,6 +195,7 @@
         }
         #result .tags .warning { background: #fefcbf; color: #975a16; }
         #result .tags .success { background: #c6f6d5; color: #276749; }
+        #result .tags .info { background: #ebf8ff; color: #2b6cb0; }
         #result .btn-close {
             background: #edf2f7;
             border: none;
@@ -230,6 +238,16 @@
             width: 65%;
         }
 
+        .key-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .key-status.set { background: #c6f6d5; color: #276749; }
+        .key-status.missing { background: #fed7d7; color: #9b2c2c; }
+
         .footer {
             text-align: center;
             font-size: 11px;
@@ -239,25 +257,41 @@
             margin-top: 16px;
         }
         .footer p { margin: 2px 0; }
+
+        .key-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            cursor: pointer;
+            margin-left: 6px;
+        }
+        .key-btn:hover { background: rgba(255,255,255,0.3); }
     </style>
 </head>
 <body>
     <div class="app">
-        <!-- HEADER -->
         <div class="header">
             <h1>🥗 Région<span>Fit</span></h1>
-            <span class="badge">📍 Normandie</span>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <span class="badge">📍 Normandie</span>
+                <span class="badge-ia">🤖 Gemini IA</span>
+            </div>
         </div>
 
-        <!-- SCAN -->
         <div class="scan-box">
             <h2>📸 Scannez votre repas</h2>
             <p>Prenez une photo pour analyser les calories</p>
             <button class="btn-primary" id="openCameraBtn">📷 Ouvrir la caméra</button>
             <span class="status" id="cameraStatus">Cliquez pour activer la caméra</span>
+            <div style="margin-top:8px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span id="keyStatus" class="key-status missing">🔑 Clé manquante</span>
+                <button onclick="resetApiKey()" class="key-btn">Réinitialiser</button>
+            </div>
         </div>
 
-        <!-- CAMERA -->
         <div id="cameraContainer">
             <video id="video" autoplay playsinline></video>
             <canvas id="canvas"></canvas>
@@ -267,13 +301,11 @@
             </div>
         </div>
 
-        <!-- LOADER -->
         <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p>🤖 Analyse en cours...</p>
+            <p>🤖 Gemini Vision analyse votre aliment...</p>
         </div>
 
-        <!-- RESULT -->
         <div id="result">
             <div class="row">
                 <div>
@@ -287,14 +319,10 @@
                 </div>
             </div>
             <div id="photoDisplay"></div>
-            <div class="tags" id="tagsDisplay">
-                <span class="success">✅ Pâtes</span>
-                <span class="warning">⚠️ Fromage râpé</span>
-            </div>
+            <div class="tags" id="tagsDisplay"></div>
             <button class="btn-close" onclick="closeResult()">Fermer</button>
         </div>
 
-        <!-- PROGRESS -->
         <div class="card">
             <div style="display:flex;justify-content:space-between;">
                 <span style="font-weight:600;">📊 Progrès</span>
@@ -307,16 +335,15 @@
             </div>
         </div>
 
-        <!-- FOOTER -->
         <div class="footer">
             <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-            <p>RégionFit v2.0 · Caméra fonctionnelle</p>
+            <p>RégionFit v2.3 · IA Gemini Vision</p>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // CONFIGURATION
+        // ÉLÉMENTS DOM
         // ============================================================
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -327,9 +354,32 @@
         const loader = document.getElementById('loader');
         const resultDiv = document.getElementById('result');
         const statusText = document.getElementById('cameraStatus');
+        const keyStatus = document.getElementById('keyStatus');
 
         let stream = null;
         let isCameraOpen = false;
+
+        // ============================================================
+        // GESTION DE LA CLÉ API
+        // ============================================================
+        function checkApiKey() {
+            const key = localStorage.getItem('gemini_api_key');
+            if (key) {
+                keyStatus.textContent = '🔑 Clé présente';
+                keyStatus.className = 'key-status set';
+                return true;
+            } else {
+                keyStatus.textContent = '🔑 Clé manquante';
+                keyStatus.className = 'key-status missing';
+                return false;
+            }
+        }
+
+        function resetApiKey() {
+            localStorage.removeItem('gemini_api_key');
+            checkApiKey();
+            alert('✅ Clé API réinitialisée. Vous pourrez en saisir une nouvelle au prochain scan.');
+        }
 
         // ============================================================
         // OUVRIR LA CAMÉRA
@@ -381,18 +431,13 @@
                 return;
             }
 
-            // Capturer l'image
             const ctx = canvas.getContext('2d');
             canvas.width = video.videoWidth || 1280;
             canvas.height = video.videoHeight || 720;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             const imageData = canvas.toDataURL('image/jpeg');
-
-            // Fermer la caméra
             closeCamera();
-
-            // Analyser
             analyzeImage(imageData);
         }
 
@@ -412,38 +457,144 @@
         }
 
         // ============================================================
-        // ANALYSE DE L'IMAGE (Simulée)
+        // ANALYSE DE L'IMAGE AVEC GEMINI (OU SIMULATION)
         // ============================================================
-        function analyzeImage(imageData) {
+        async function analyzeImage(imageData) {
             loader.classList.add('active');
             resultDiv.style.display = 'none';
 
-            // Simuler 2 secondes d'analyse
+            // Vérifier si la clé API existe
+            let apiKey = localStorage.getItem('gemini_api_key');
+
+            // Si pas de clé, demander à l'utilisateur
+            if (!apiKey) {
+                loader.classList.remove('active');
+                apiKey = prompt(
+                    "🔑 Entrez votre clé API Gemini :\n\n" +
+                    "1. Allez sur https://makersuite.google.com/\n" +
+                    "2. Connectez-vous avec votre compte Google\n" +
+                    "3. Cliquez sur 'Get API Key'\n" +
+                    "4. Créez une nouvelle clé\n" +
+                    "5. Collez-la ici\n\n" +
+                    "⚠️ Cette clé restera sur votre appareil."
+                );
+
+                if (!apiKey) {
+                    alert('❌ Une clé API est nécessaire.');
+                    return;
+                }
+                localStorage.setItem('gemini_api_key', apiKey);
+                checkApiKey();
+            }
+
+            // === UTILISER GEMINI POUR L'ANALYSE ===
+            try {
+                const base64Image = imageData.split(',')[1];
+
+                const prompt = `Analysez cette photo d'aliment. Retournez UNIQUEMENT un JSON valide :
+                {
+                    "food_name": "nom de l'aliment principal",
+                    "calories": estimation en kcal (nombre),
+                    "protein": protéines en grammes (nombre),
+                    "carbs": glucides en grammes (nombre),
+                    "fats": lipides en grammes (nombre),
+                    "warnings": ["avertissement 1"],
+                    "improvements": ["amélioration 1"]
+                }
+                Répondez UNIQUEMENT en JSON.`;
+
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } }
+                                ]
+                            }]
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    if (response.status === 403 || response.status === 401) {
+                        localStorage.removeItem('gemini_api_key');
+                        checkApiKey();
+                        throw new Error('Clé API invalide. Veuillez en générer une nouvelle.');
+                    }
+                    throw new Error(errorData.error?.message || 'Erreur API');
+                }
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+                if (jsonMatch) {
+                    const result = JSON.parse(jsonMatch[0]);
+                    loader.classList.remove('active');
+                    displayResult({
+                        calories: result.calories || 200,
+                        protein: result.protein || 10,
+                        carbs: result.carbs || 20,
+                        fats: result.fats || 8,
+                        food_name: result.food_name || 'Aliment détecté',
+                        warnings: result.warnings || ['Aucun avertissement'],
+                        improvements: result.improvements || ['Aucune amélioration suggérée']
+                    }, imageData);
+                } else {
+                    throw new Error('Réponse JSON invalide');
+                }
+
+            } catch (error) {
+                console.error('Erreur analyse:', error);
+                loader.classList.remove('active');
+                alert(`❌ Erreur d'analyse : ${error.message}\n\nUtilisation du mode démo.`);
+
+                // Fallback : mode démo
+                analyzeDemo(imageData);
+            }
+        }
+
+        // ============================================================
+        // MODE DÉMO (Fallback)
+        // ============================================================
+        function analyzeDemo(imageData) {
+            loader.classList.add('active');
             setTimeout(() => {
                 loader.classList.remove('active');
-                showResult(imageData);
-            }, 2000);
+                const foods = ['Pâtes', 'Salade', 'Poulet', 'Poisson', 'Burger', 'Soupe', 'Riz', 'Légumes'];
+                const warnings = ['Fromage râpé', 'Pâtes raffinées', 'Sauce grasse', 'Peau riche en matières grasses'];
+                const randomFood = foods[Math.floor(Math.random() * foods.length)];
+                const randomCal = [250, 320, 370, 420, 180, 520, 200, 85][Math.floor(Math.random() * 8)];
+                const randomProtein = Math.floor(Math.random() * 30) + 5;
+                const randomCarbs = Math.floor(Math.random() * 50) + 10;
+                const randomFats = Math.floor(Math.random() * 25) + 2;
+
+                displayResult({
+                    calories: randomCal,
+                    protein: randomProtein,
+                    carbs: randomCarbs,
+                    fats: randomFats,
+                    food_name: randomFood,
+                    warnings: [warnings[Math.floor(Math.random() * warnings.length)]],
+                    improvements: ['Ajoutez des légumes', 'Réduisez les matières grasses']
+                }, imageData);
+            }, 1500);
         }
 
         // ============================================================
         // AFFICHER LE RÉSULTAT
         // ============================================================
-        function showResult(imageData) {
-            // Résultats aléatoires pour la démo
-            const foods = ['Pâtes', 'Salade', 'Poulet', 'Poisson', 'Burger', 'Soupe'];
-            const warnings = ['Fromage râpé (gras saturé)', 'Pâtes raffinées', 'Sauce trop grasse', 'Peau riche en matières grasses'];
-            
-            const randomFood = foods[Math.floor(Math.random() * foods.length)];
-            const randomCal = [250, 320, 370, 420, 180, 520][Math.floor(Math.random() * 6)];
-            const randomProtein = Math.floor(Math.random() * 30) + 5;
-            const randomCarbs = Math.floor(Math.random() * 50) + 10;
-            const randomFats = Math.floor(Math.random() * 25) + 2;
-
-            document.getElementById('caloriesDisplay').textContent = randomCal + ' kcal';
+        function displayResult(result, imageData) {
+            document.getElementById('caloriesDisplay').textContent = result.calories + ' kcal';
             document.getElementById('macrosDisplay').innerHTML = `
-                <div>Protéines: ${randomProtein}g</div>
-                <div>Glucides: ${randomCarbs}g</div>
-                <div>Lipides: ${randomFats}g</div>
+                <div>Protéines: ${result.protein}g</div>
+                <div>Glucides: ${result.carbs}g</div>
+                <div>Lipides: ${result.fats}g</div>
             `;
 
             document.getElementById('photoDisplay').innerHTML = `
@@ -452,8 +603,9 @@
 
             const tagsContainer = document.getElementById('tagsDisplay');
             tagsContainer.innerHTML = `
-                <span class="success">✅ ${randomFood}</span>
-                <span class="warning">⚠️ ${warnings[Math.floor(Math.random() * warnings.length)]}</span>
+                <span class="success">✅ ${result.food_name}</span>
+                ${result.warnings.map(w => `<span class="warning">⚠️ ${w}</span>`).join('')}
+                ${result.improvements.map(i => `<span class="info">💡 ${i}</span>`).join('')}
             `;
 
             resultDiv.style.display = 'block';
@@ -474,10 +626,11 @@
         closeBtn.addEventListener('click', closeCamera);
         captureBtn.addEventListener('click', capturePhoto);
 
-        console.log('✅ RégionFit chargé avec succès !');
-        console.log('📸 Cliquez sur "Ouvrir la caméra" pour commencer.');
+        checkApiKey();
+        console.log('✅ RégionFit v2.3 chargé avec succès !');
+        console.log('📸 Cliquez sur "Ouvrir la caméra" pour tester.');
         console.log('© 2026 Constantin Armstrong Sogagoum');
     </script>
 </body>
 </html>
-version camera ok
+Version finale - IA Gemini intégrée
