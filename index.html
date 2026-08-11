@@ -2,225 +2,346 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RégionFit</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f0f0;
-            padding: 20px;
+            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #f7f7f7;
+            padding: 16px;
             max-width: 500px;
             margin: 0 auto;
         }
         .app {
-            background: white;
+            background: #fff;
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            min-height: 90vh;
         }
-        h1 { color: #2d3748; font-size: 24px; margin-bottom: 20px; }
-        h1 span { color: #48bb78; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 22px;
+            color: #1a202c;
+        }
+        .header h1 span { color: #38a169; }
+        .header .badge {
+            background: #ebf8ff;
+            color: #2b6cb0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
 
-        .scan-area {
-            background: #48bb78;
+        .scan-box {
+            background: linear-gradient(135deg, #38a169, #2f855a);
             border-radius: 16px;
-            padding: 20px;
-            color: white;
+            padding: 24px;
+            color: #fff;
             text-align: center;
             margin-bottom: 20px;
         }
-        .scan-area button {
-            background: white;
-            color: #48bb78;
+        .scan-box h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .scan-box p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        .scan-box .btn-primary {
+            background: #fff;
+            color: #38a169;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: bold;
-            margin-top: 10px;
+            font-weight: 700;
             width: 100%;
             cursor: pointer;
+            transition: 0.2s;
         }
-        .scan-area button:hover { background: #f0f0f0; }
+        .scan-box .btn-primary:active { transform: scale(0.97); }
+        .scan-box .btn-primary:disabled {
+            opacity: 0.5;
+            transform: none;
+        }
+        .scan-box .status {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+            display: block;
+        }
 
+        /* CAMERA */
         #cameraContainer {
             display: none;
-            background: black;
-            border-radius: 12px;
+            background: #000;
+            border-radius: 16px;
             overflow: hidden;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
         #cameraContainer.active { display: block; }
-        #video { width: 100%; display: block; }
+        #video {
+            width: 100%;
+            display: block;
+            background: #000;
+            min-height: 300px;
+        }
         #canvas { display: none; }
 
         .cam-controls {
             display: flex;
             gap: 10px;
-            padding: 10px;
-            background: rgba(0,0,0,0.8);
+            padding: 12px;
+            background: rgba(0,0,0,0.85);
             justify-content: center;
         }
         .cam-controls button {
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
+            flex: 1;
         }
-        .btn-capture { background: #48bb78; color: white; }
-        .btn-close-cam { background: #fc8181; color: white; }
+        .cam-controls .btn-capture { background: #38a169; color: #fff; }
+        .cam-controls .btn-close { background: #e53e3e; color: #fff; }
+
+        /* LOADER */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .loader.active { display: block; }
+        .loader .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #38a169;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader p { color: #718096; font-size: 14px; }
+
+        /* RESULTAT */
+        #result {
+            display: none;
+            background: #f0fff4;
+            border: 2px solid #38a169;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #result .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #result .calories {
+            font-size: 28px;
+            font-weight: 800;
+            color: #276749;
+        }
+        #result .macros {
+            text-align: right;
+            font-size: 13px;
+            color: #276749;
+            line-height: 1.6;
+        }
+        #result .photo-preview {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 10px;
+            max-height: 250px;
+            object-fit: cover;
+        }
+        #result .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        #result .tags span {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        #result .tags .warning { background: #fefcbf; color: #975a16; }
+        #result .tags .success { background: #c6f6d5; color: #276749; }
+        #result .btn-close {
+            background: #edf2f7;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 12px;
+            cursor: pointer;
+            color: #2d3748;
+        }
 
         .card {
             background: #f7fafc;
             border-radius: 12px;
-            padding: 15px;
+            padding: 16px;
             margin-bottom: 12px;
         }
-
-        #result {
-            display: none;
-            background: #f0fff4;
-            border: 2px solid #48bb78;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+        .card h3 {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 6px;
         }
-        #result .calories { font-size: 28px; font-weight: bold; color: #276749; }
+        .card .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 8px;
+            height: 8px;
+            margin: 6px 0;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            background: linear-gradient(90deg, #38a169, #2f855a);
+            height: 100%;
+            border-radius: 8px;
+            width: 65%;
+        }
 
         .footer {
             text-align: center;
             font-size: 11px;
             color: #a0aec0;
-            margin-top: 20px;
-            padding-top: 15px;
+            padding-top: 16px;
             border-top: 1px solid #e2e8f0;
+            margin-top: 16px;
         }
-
-        .loader {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        .loader.active { display: block; }
-        .spinner {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #48bb78;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .photo-preview { max-width: 100%; border-radius: 8px; margin-top: 8px; }
-
-        .badge {
-            display: inline-block;
-            background: #4299e1;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 10px;
-        }
+        .footer p { margin: 2px 0; }
     </style>
 </head>
 <body>
     <div class="app">
-        <h1>🥗 Région<span>Fit</span></h1>
-
-        <div class="scan-area">
-            <h2 style="font-size:18px;">📸 Scan</h2>
-            <p style="font-size:14px; opacity:0.9;">Prenez une photo de votre repas</p>
-            <button id="openCameraBtn">📷 OUVRIR LA CAMÉRA</button>
-            <div style="margin-top:8px; font-size:11px; opacity:0.8;">
-                <span class="badge">Mode démo</span>
-            </div>
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🥗 Région<span>Fit</span></h1>
+            <span class="badge">📍 Normandie</span>
         </div>
 
+        <!-- SCAN -->
+        <div class="scan-box">
+            <h2>📸 Scannez votre repas</h2>
+            <p>Prenez une photo pour analyser les calories</p>
+            <button class="btn-primary" id="openCameraBtn">📷 Ouvrir la caméra</button>
+            <span class="status" id="cameraStatus">Cliquez pour activer la caméra</span>
+        </div>
+
+        <!-- CAMERA -->
         <div id="cameraContainer">
             <video id="video" autoplay playsinline></video>
             <canvas id="canvas"></canvas>
             <div class="cam-controls">
-                <button class="btn-close-cam" id="closeCameraBtn">❌ Fermer</button>
+                <button class="btn-close" id="closeCameraBtn">❌ Fermer</button>
                 <button class="btn-capture" id="captureBtn">📷 Prendre la photo</button>
             </div>
         </div>
 
+        <!-- LOADER -->
         <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p style="color:#718096;">Analyse en cours...</p>
+            <p>🤖 Analyse en cours...</p>
         </div>
 
+        <!-- RESULT -->
         <div id="result">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="row">
                 <div>
-                    <div style="font-size:12px; color:#276749;">Repas analysé</div>
-                    <div class="calories" id="resultCalories">370 kcal</div>
+                    <div style="font-size:12px;color:#276749;">Repas analysé</div>
+                    <div class="calories" id="caloriesDisplay">-- kcal</div>
                 </div>
-                <div style="text-align:right; font-size:12px; color:#276749;" id="resultMacros">
-                    <div>Protéines: 12g</div>
-                    <div>Glucides: 45g</div>
-                    <div>Lipides: 14g</div>
+                <div class="macros" id="macrosDisplay">
+                    <div>Protéines: --g</div>
+                    <div>Glucides: --g</div>
+                    <div>Lipides: --g</div>
                 </div>
             </div>
-            <div id="resultPhoto"></div>
-            <div style="margin-top:8px; font-size:12px; color:#718096;">
-                <span class="badge" style="background:#fefcbf; color:#975a16;">⚠️ Fromage râpé (gras saturé)</span>
-                <span class="badge" style="background:#fefcbf; color:#975a16;">⚠️ Pâtes raffinées</span>
+            <div id="photoDisplay"></div>
+            <div class="tags" id="tagsDisplay">
+                <span class="success">✅ Pâtes</span>
+                <span class="warning">⚠️ Fromage râpé</span>
             </div>
-            <button onclick="closeResult()" style="margin-top:10px; background:#edf2f7; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:600;">Fermer</button>
+            <button class="btn-close" onclick="closeResult()">Fermer</button>
         </div>
 
+        <!-- PROGRESS -->
         <div class="card">
-            <h3 style="font-size:14px; color:#718096;">📊 Progrès</h3>
-            <div style="display:flex; justify-content:space-between; margin:8px 0;">
-                <span style="font-weight:600;">4.2 / 8 kg</span>
-                <span style="color:#48bb78; font-weight:600;">-0.7 kg/semaine</span>
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:600;">📊 Progrès</span>
+                <span style="color:#38a169;font-weight:700;">4.2 / 8 kg</span>
             </div>
-            <div style="background:#e2e8f0; border-radius:10px; height:8px;">
-                <div style="background:#48bb78; border-radius:10px; height:100%; width:65%;"></div>
+            <div class="progress-bar"><div class="fill"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#718096;">
+                <span>Objectif: -0.7 kg/semaine</span>
+                <span>Calories: 1,245 / 1,800</span>
             </div>
         </div>
 
+        <!-- FOOTER -->
         <div class="footer">
             <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-            <p style="margin-top:4px;">RégionFit v2.0 · Caméra fonctionnelle</p>
+            <p>RégionFit v2.0 · Caméra fonctionnelle</p>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // GESTION DE LA CAMÉRA
+        // CONFIGURATION
         // ============================================================
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const cameraContainer = document.getElementById('cameraContainer');
-        const openCameraBtn = document.getElementById('openCameraBtn');
-        const closeCameraBtn = document.getElementById('closeCameraBtn');
+        const openBtn = document.getElementById('openCameraBtn');
+        const closeBtn = document.getElementById('closeCameraBtn');
         const captureBtn = document.getElementById('captureBtn');
         const loader = document.getElementById('loader');
         const resultDiv = document.getElementById('result');
+        const statusText = document.getElementById('cameraStatus');
 
         let stream = null;
+        let isCameraOpen = false;
 
-        // OUVERTURE CAMÉRA
+        // ============================================================
+        // OUVRIR LA CAMÉRA
+        // ============================================================
         async function openCamera() {
             try {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    alert('❌ Votre navigateur ne supporte pas la caméra.');
-                    return;
-                }
+                statusText.textContent = '⏳ Demande d\'accès...';
+                openBtn.disabled = true;
 
                 const constraints = {
                     video: {
-                        facingMode: { ideal: 'environment' },
+                        facingMode: 'environment',
                         width: { ideal: 1280 },
                         height: { ideal: 720 }
                     },
@@ -232,75 +353,131 @@
                 await video.play();
 
                 cameraContainer.classList.add('active');
-                openCameraBtn.textContent = '📷 Caméra active';
+                isCameraOpen = true;
+                openBtn.textContent = '📷 Caméra active';
+                statusText.textContent = '✅ Caméra prête - Appuyez sur "Prendre la photo"';
+                openBtn.disabled = false;
 
-            } catch (error) {
-                console.error('Erreur caméra:', error);
-                let errorMsg = '❌ Impossible d\'accéder à la caméra.';
-                if (error.name === 'NotAllowedError') {
-                    errorMsg += ' Veuillez autoriser l\'accès à la caméra.';
-                } else if (error.name === 'NotFoundError') {
-                    errorMsg += ' Aucune caméra trouvée.';
+            } catch (err) {
+                console.error('Erreur:', err);
+                let msg = '❌ Impossible d\'accéder à la caméra.';
+                if (err.name === 'NotAllowedError') {
+                    msg += ' Autorisez l\'accès dans les paramètres.';
+                } else if (err.name === 'NotFoundError') {
+                    msg += ' Aucune caméra trouvée.';
                 }
-                alert(errorMsg);
+                alert(msg);
+                statusText.textContent = '❌ ' + msg;
+                openBtn.disabled = false;
             }
         }
 
-        // CAPTURE PHOTO
+        // ============================================================
+        // PRENDRE LA PHOTO
+        // ============================================================
         function capturePhoto() {
-            if (!video.srcObject) {
+            if (!isCameraOpen || !video.srcObject) {
                 alert('❌ La caméra n\'est pas active.');
                 return;
             }
 
-            const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Capturer l'image
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth || 1280;
+            canvas.height = video.videoHeight || 720;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            const photoData = canvas.toDataURL('image/jpeg');
+            const imageData = canvas.toDataURL('image/jpeg');
+
+            // Fermer la caméra
             closeCamera();
 
-            // Simuler une analyse
-            loader.classList.add('active');
-            setTimeout(() => {
-                loader.classList.remove('active');
-                showResult(photoData);
-            }, 1500);
+            // Analyser
+            analyzeImage(imageData);
         }
 
-        // FERMETURE CAMÉRA
+        // ============================================================
+        // FERMER LA CAMÉRA
+        // ============================================================
         function closeCamera() {
             if (stream) {
-                stream.getTracks().forEach(track => track.stop());
+                stream.getTracks().forEach(t => t.stop());
                 stream = null;
             }
             video.srcObject = null;
             cameraContainer.classList.remove('active');
-            openCameraBtn.textContent = '📷 OUVRIR LA CAMÉRA';
+            isCameraOpen = false;
+            openBtn.textContent = '📷 Ouvrir la caméra';
+            statusText.textContent = 'Cliquez pour activer la caméra';
         }
 
-        // AFFICHAGE RÉSULTAT
-        function showResult(photoData) {
-            document.getElementById('resultPhoto').innerHTML = `
-                <img src="${photoData}" class="photo-preview">
+        // ============================================================
+        // ANALYSE DE L'IMAGE (Simulée)
+        // ============================================================
+        function analyzeImage(imageData) {
+            loader.classList.add('active');
+            resultDiv.style.display = 'none';
+
+            // Simuler 2 secondes d'analyse
+            setTimeout(() => {
+                loader.classList.remove('active');
+                showResult(imageData);
+            }, 2000);
+        }
+
+        // ============================================================
+        // AFFICHER LE RÉSULTAT
+        // ============================================================
+        function showResult(imageData) {
+            // Résultats aléatoires pour la démo
+            const foods = ['Pâtes', 'Salade', 'Poulet', 'Poisson', 'Burger', 'Soupe'];
+            const warnings = ['Fromage râpé (gras saturé)', 'Pâtes raffinées', 'Sauce trop grasse', 'Peau riche en matières grasses'];
+            
+            const randomFood = foods[Math.floor(Math.random() * foods.length)];
+            const randomCal = [250, 320, 370, 420, 180, 520][Math.floor(Math.random() * 6)];
+            const randomProtein = Math.floor(Math.random() * 30) + 5;
+            const randomCarbs = Math.floor(Math.random() * 50) + 10;
+            const randomFats = Math.floor(Math.random() * 25) + 2;
+
+            document.getElementById('caloriesDisplay').textContent = randomCal + ' kcal';
+            document.getElementById('macrosDisplay').innerHTML = `
+                <div>Protéines: ${randomProtein}g</div>
+                <div>Glucides: ${randomCarbs}g</div>
+                <div>Lipides: ${randomFats}g</div>
             `;
+
+            document.getElementById('photoDisplay').innerHTML = `
+                <img src="${imageData}" class="photo-preview" alt="Repas scanné">
+            `;
+
+            const tagsContainer = document.getElementById('tagsDisplay');
+            tagsContainer.innerHTML = `
+                <span class="success">✅ ${randomFood}</span>
+                <span class="warning">⚠️ ${warnings[Math.floor(Math.random() * warnings.length)]}</span>
+            `;
+
             resultDiv.style.display = 'block';
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
+        // ============================================================
+        // FERMER LE RÉSULTAT
+        // ============================================================
         function closeResult() {
             resultDiv.style.display = 'none';
         }
 
+        // ============================================================
         // ÉVÉNEMENTS
-        openCameraBtn.addEventListener('click', openCamera);
-        closeCameraBtn.addEventListener('click', closeCamera);
+        // ============================================================
+        openBtn.addEventListener('click', openCamera);
+        closeBtn.addEventListener('click', closeCamera);
         captureBtn.addEventListener('click', capturePhoto);
 
-        console.log('✅ RégionFit chargé !');
-        console.log('📸 Cliquez sur "OUVRIR LA CAMÉRA" pour tester.');
+        console.log('✅ RégionFit chargé avec succès !');
+        console.log('📸 Cliquez sur "Ouvrir la caméra" pour commencer.');
         console.log('© 2026 Constantin Armstrong Sogagoum');
     </script>
 </body>
 </html>
+version camera ok
