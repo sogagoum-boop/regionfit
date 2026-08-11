@@ -1,571 +1,129 @@
 <!--
 =====================================================================
- RÉGIONFIT - Application de Perte de Poids avec IA
- VERSION 2.0 - CAMÉRA RÉELLE
+ RÉGIONFIT v2.3 - Version Sécurisée
+ La clé API est demandée à l'utilisateur
 =====================================================================
-
  Copyright (c) 2026 Constantin Armstrong Sogagoum
- Tous droits réservés - All rights reserved
-
- Auteur : Constantin Armstrong Sogagoum
- Date de création : 10 août 2026
- Version : 2.0 (Caméra + IA)
 =====================================================================
 -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>RégionFit - IA & Nutrition</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f7f7f7;
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .app {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            font-size: 24px;
-            color: #2d3748;
-        }
-        .header h1 span { color: #48bb78; }
-        .location-badge {
-            background: #ebf8ff;
-            color: #2b6cb0;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .scan-section {
-            background: linear-gradient(135deg, #48bb78, #38a169);
-            border-radius: 16px;
-            padding: 20px;
-            color: white;
-            margin-bottom: 20px;
-        }
-        .scan-section h2 { font-size: 18px; margin-bottom: 4px; }
-        .scan-section p { font-size: 14px; opacity: 0.9; }
 
-        #cameraContainer {
-            display: none;
-            background: #000;
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 16px;
-            position: relative;
-        }
-        #cameraContainer.active {
-            display: block;
-        }
-        #video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        #canvas {
-            display: none;
-        }
-        .camera-controls {
-            display: flex;
-            gap: 12px;
-            padding: 16px;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-        }
-        .camera-controls button {
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .btn-capture {
-            background: #48bb78;
-            color: white;
-        }
-        .btn-capture:hover { background: #38a169; }
-        .btn-close-camera {
-            background: #fc8181;
-            color: white;
-        }
-        .btn-close-camera:hover { background: #f56565; }
+<script>
+    // ================================================================
+    // CONFIGURATION - Aucune clé stockée dans le code
+    // ================================================================
+    // La clé est demandée à l'utilisateur lors de l'analyse
 
-        .scan-btn {
-            background: white;
-            color: #38a169;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            margin-top: 12px;
-            width: 100%;
-            cursor: pointer;
-        }
-        .scan-btn:hover { background: #f0fff4; }
-        .scan-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+    // ================================================================
+    // ANALYSE DE LA PHOTO AVEC GEMINI VISION (Version Sécurisée)
+    // ================================================================
+    async function analyzePhoto(imageData) {
+        loader.classList.add('active');
+        resultDiv.style.display = 'none';
 
-        .card {
-            background: #f7fafc;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .card h3 { font-size: 14px; color: #718096; margin-bottom: 8px; }
-
-        #result {
-            display: none;
-            margin-bottom: 16px;
-        }
-        .result-card {
-            background: #f0fff4;
-            border: 2px solid #48bb78;
-            border-radius: 12px;
-            padding: 16px;
-            animation: fadeIn 0.5s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .result-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .result-calories {
-            font-size: 24px;
-            font-weight: 700;
-            color: #276749;
-        }
-        .result-macros {
-            text-align: right;
-            font-size: 12px;
-            color: #276749;
-        }
-        .result-tags {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
-        .tag {
-            display: inline-block;
-            background: #ebf8ff;
-            color: #2b6cb0;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-        }
-        .tag-warning { background: #fefcbf; color: #975a16; }
-        .tag-success { background: #c6f6d5; color: #276749; }
-
-        .loader {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        .loader.active { display: block; }
-        .spinner {
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #48bb78;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .day-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin: 12px 0;
-        }
-        .day {
-            text-align: center;
-            padding: 8px 0;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .day.green { background: #c6f6d5; color: #276749; }
-        .day.yellow { background: #fefcbf; color: #975a16; }
-        .day.orange { background: #feebc8; color: #9c4221; }
-        .day.red { background: #fed7d7; color: #9b2c2c; }
-        .day-label { font-size: 9px; font-weight: 400; opacity: 0.7; }
-
-        .btn-secondary {
-            background: #edf2f7;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-weight: 600;
-            color: #2d3748;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-        .btn-secondary:hover { background: #e2e8f0; }
-
-        .progress-bar {
-            background: #e2e8f0;
-            border-radius: 10px;
-            height: 8px;
-            margin: 8px 0;
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, #48bb78, #38a169);
-            height: 100%;
-            border-radius: 10px;
-            width: 65%;
-        }
-
-        .alternative {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .alternative:last-child { border-bottom: none; }
-        .alt-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        .alt-info { flex: 1; }
-        .alt-name { font-weight: 600; font-size: 14px; }
-        .alt-desc { font-size: 12px; color: #718096; }
-        .alt-cal { font-size: 12px; font-weight: 700; color: #48bb78; }
-
-        .photo-preview {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-top: 8px;
-        }
-
-        @media (max-width: 480px) {
-            body { padding: 10px; }
-            .app { padding: 16px; }
-            .day-grid { gap: 2px; }
-            .day { font-size: 10px; padding: 6px 0; }
-        }
-    </style>
-</head>
-<body>
-    <div class="app">
-        <div class="header">
-            <h1>🥗 Région<span>Fit</span></h1>
-            <div class="location-badge" id="locationBadge">📍 Normandie</div>
-        </div>
-
-        <div class="scan-section">
-            <h2>📸 Scannez votre repas</h2>
-            <p>Prenez une photo pour analyser les calories instantanément</p>
-            <button class="scan-btn" id="openCameraBtn">📷 OUVRIR LA CAMÉRA</button>
-        </div>
-
-        <div id="cameraContainer">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas"></canvas>
-            <div class="camera-controls">
-                <button class="btn-close-camera" id="closeCameraBtn">❌ Fermer</button>
-                <button class="btn-capture" id="captureBtn">📷 Prendre la photo</button>
-            </div>
-        </div>
-
-        <div class="loader" id="loader">
-            <div class="spinner"></div>
-            <p style="color:#718096; font-size:14px;">Analyse en cours... Veuillez patienter</p>
-        </div>
-
-        <div id="result">
-            <div class="card result-card">
-                <div class="result-flex">
-                    <div>
-                        <div style="font-size:12px; color:#276749;">Repas analysé</div>
-                        <div class="result-calories" id="resultCalories">370 kcal</div>
-                    </div>
-                    <div class="result-macros" id="resultMacros">
-                        <div>Protéines: 12g</div>
-                        <div>Glucides: 45g</div>
-                        <div>Lipides: 14g</div>
-                    </div>
-                </div>
-                <div id="resultPhoto"></div>
-                <div class="result-tags" id="resultTags">
-                    <span class="tag tag-warning">⚠️ Fromage râpé (gras saturé)</span>
-                    <span class="tag tag-warning">⚠️ Pâtes raffinées</span>
-                </div>
-                <button class="btn-secondary" onclick="closeResult()" style="margin-top:8px;">Fermer</button>
-            </div>
-        </div>
-
-        <div style="margin-bottom:16px;">
-            <h3 style="font-size:14px; color:#718096; margin-bottom:8px;">📊 Planning de la semaine</h3>
-            <div class="day-grid">
-                <div><div class="day green">2000</div><div class="day-label">Lun</div></div>
-                <div><div class="day green">2000</div><div class="day-label">Mar</div></div>
-                <div><div class="day yellow">1500</div><div class="day-label">Mer</div></div>
-                <div><div class="day yellow">1500</div><div class="day-label">Jeu</div></div>
-                <div><div class="day orange">1000</div><div class="day-label">Ven</div></div>
-                <div><div class="day orange">1000</div><div class="day-label">Sam</div></div>
-                <div><div class="day red">500</div><div class="day-label">Dim</div></div>
-            </div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-                <button class="btn-secondary" onclick="showMealPlan()">🍽️ Voir le menu</button>
-                <button class="btn-secondary" onclick="showShoppingList()">🛒 Liste de courses</button>
-            </div>
-        </div>
-
-        <div class="card" style="margin-bottom:16px;">
-            <div style="display:flex; justify-content:space-between;">
-                <span style="font-weight:600;">Progrès</span>
-                <span style="font-weight:600; color:#48bb78;">4.2 / 8 kg</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
-            <div style="display:flex; justify-content:space-between; font-size:12px; color:#718096;">
-                <span>Objectif: -0.7 kg/semaine</span>
-                <span>Calories: 1,245 / 1,800</span>
-            </div>
-        </div>
-
-        <div>
-            <h3 style="font-size:14px; color:#718096; margin-bottom:8px;">🛒 Alternatives santé</h3>
-            <div class="card">
-                <div class="alternative">
-                    <div class="alt-icon">🍫</div>
-                    <div class="alt-info">
-                        <div class="alt-name">Pâte à tartiner noisettes bio</div>
-                        <div class="alt-desc">480 kcal/100g · -64 kcal vs Nutella</div>
-                    </div>
-                    <div class="alt-cal">-64 kcal</div>
-                </div>
-                <div class="alternative">
-                    <div class="alt-icon">🥜</div>
-                    <div class="alt-info">
-                        <div class="alt-name">Purée d'amandes</div>
-                        <div class="alt-desc">520 kcal/100g · -24 kcal vs Nutella</div>
-                    </div>
-                    <div class="alt-cal">-24 kcal</div>
-                </div>
-                <div class="alternative">
-                    <div class="alt-icon">🍓</div>
-                    <div class="alt-info">
-                        <div class="alt-name">Confiture allégée</div>
-                        <div class="alt-desc">180 kcal/100g · -364 kcal vs Nutella</div>
-                    </div>
-                    <div class="alt-cal">-364 kcal</div>
-                </div>
-            </div>
-        </div>
-
-        <div style="margin-top:20px; padding-top:16px; border-top:1px solid #e2e8f0; text-align:center; font-size:11px; color:#a0aec0;">
-            <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-            <p style="margin-top:4px;">RégionFit v2.0 · Caméra + IA</p>
-            <p style="margin-top:4px;">Date de création : 10 août 2026</p>
-        </div>
-    </div>
-
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const cameraContainer = document.getElementById('cameraContainer');
-        const openCameraBtn = document.getElementById('openCameraBtn');
-        const closeCameraBtn = document.getElementById('closeCameraBtn');
-        const captureBtn = document.getElementById('captureBtn');
-        const loader = document.getElementById('loader');
-        const resultDiv = document.getElementById('result');
-
-        let stream = null;
-        let photoData = null;
-
-        async function openCamera() {
-            try {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    alert('❌ Votre navigateur ne supporte pas la caméra.');
+        try {
+            // === DEMANDER LA CLÉ À L'UTILISATEUR ===
+            let apiKey = localStorage.getItem('gemini_api_key');
+            
+            if (!apiKey) {
+                apiKey = prompt(
+                    "🔑 Entrez votre clé API Gemini :\n\n" +
+                    "1. Allez sur https://makersuite.google.com/\n" +
+                    "2. Connectez-vous avec votre compte Google\n" +
+                    "3. Cliquez sur 'Get API Key'\n" +
+                    "4. Créez une nouvelle clé\n" +
+                    "5. Collez-la ici\n\n" +
+                    "⚠️ Cette clé restera sur votre appareil et ne sera jamais sauvegardée sur GitHub."
+                );
+                
+                if (!apiKey) {
+                    loader.classList.remove('active');
+                    alert('❌ Une clé API est nécessaire pour l\'analyse.');
                     return;
                 }
+                
+                // Sauvegarder pour la session (sur votre appareil uniquement)
+                localStorage.setItem('gemini_api_key', apiKey);
+            }
 
-                const constraints = {
-                    video: {
-                        facingMode: { ideal: 'environment' },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                };
+            // Préparer l'image
+            const base64Image = imageData.split(',')[1];
 
-                stream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = stream;
-                await video.play();
+            const prompt = `Vous êtes un expert en nutrition. Analysez cette photo d'aliment ou de repas.
 
-                cameraContainer.classList.add('active');
-                openCameraBtn.disabled = true;
-                openCameraBtn.textContent = '📷 Caméra ouverte';
+            Retournez UNIQUEMENT un JSON valide avec ces champs :
+            {
+                "food_name": "Nom de l'aliment principal détecté",
+                "calories": estimation des calories pour ce repas (nombre),
+                "protein": protéines en grammes (nombre),
+                "carbs": glucides en grammes (nombre),
+                "fats": lipides en grammes (nombre),
+                "warnings": ["avertissement 1", "avertissement 2"],
+                "improvements": ["amélioration 1", "amélioration 2"]
+            }
 
-            } catch (error) {
-                console.error('Erreur caméra:', error);
-                let errorMsg = '❌ Impossible d\'accéder à la caméra.';
-                if (error.name === 'NotAllowedError') {
-                    errorMsg += ' Veuillez autoriser l\'accès à la caméra.';
-                } else if (error.name === 'NotFoundError') {
-                    errorMsg += ' Aucune caméra trouvée.';
+            Répondez UNIQUEMENT en JSON, sans aucun autre texte.`;
+
+            // Appel à l'API Gemini
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { text: prompt },
+                                { inlineData: { mimeType: 'image/jpeg', data: base64Image } }
+                            ]
+                        }]
+                    })
                 }
-                alert(errorMsg);
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Erreur API Gemini:', errorData);
+                
+                // Si erreur 403 ou 401, la clé est invalide
+                if (response.status === 403 || response.status === 401) {
+                    localStorage.removeItem('gemini_api_key');
+                    alert('❌ Clé API invalide. Veuillez en générer une nouvelle sur Google AI Studio.');
+                }
+                throw new Error(`Erreur API: ${errorData.error?.message || 'Inconnue'}`);
             }
-        }
 
-        function capturePhoto() {
-            if (!video.srcObject) {
-                alert('❌ La caméra n\'est pas active.');
-                return;
-            }
-
-            const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            photoData = canvas.toDataURL('image/jpeg');
-            closeCamera();
-            analyzePhoto(photoData);
-        }
-
-        async function analyzePhoto(imageData) {
-            loader.classList.add('active');
-            resultDiv.style.display = 'none';
-
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            const analysisResult = {
-                calories: 370,
-                protein: 12,
-                carbs: 45,
-                fats: 14,
-                foods: ['Pâtes', 'Sauce tomate', 'Fromage râpé'],
-                warnings: ['Fromage râpé (gras saturé)', 'Pâtes raffinées']
-            };
-
-            displayResult(analysisResult, imageData);
-        }
-
-        function displayResult(result, imageData) {
-            loader.classList.remove('active');
-
-            document.getElementById('resultCalories').textContent = result.calories + ' kcal';
-            document.getElementById('resultMacros').innerHTML = `
-                <div>Protéines: ${result.protein}g</div>
-                <div>Glucides: ${result.carbs}g</div>
-                <div>Lipides: ${result.fats}g</div>
-            `;
-
-            document.getElementById('resultPhoto').innerHTML = `
-                <img src="${imageData}" alt="Repas scanné" class="photo-preview">
-            `;
-
-            const tagsContainer = document.getElementById('resultTags');
-            tagsContainer.innerHTML = '';
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
             
-            result.foods.forEach(food => {
-                const tag = document.createElement('span');
-                tag.className = 'tag tag-success';
-                tag.textContent = `✅ ${food}`;
-                tagsContainer.appendChild(tag);
-            });
-
-            result.warnings.forEach(warning => {
-                const tag = document.createElement('span');
-                tag.className = 'tag tag-warning';
-                tag.textContent = `⚠️ ${warning}`;
-                tagsContainer.appendChild(tag);
-            });
-
-            resultDiv.style.display = 'block';
-            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function closeCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
+            if (jsonMatch) {
+                const result = JSON.parse(jsonMatch[0]);
+                displayResult({
+                    calories: result.calories || 200,
+                    protein: result.protein || 10,
+                    carbs: result.carbs || 20,
+                    fats: result.fats || 8,
+                    foods: [result.food_name || 'Aliment détecté'],
+                    warnings: result.warnings || ['Aucun avertissement'],
+                    improvements: result.improvements || ['Aucune amélioration suggérée']
+                }, imageData);
+            } else {
+                throw new Error('Réponse JSON invalide');
             }
-            video.srcObject = null;
-            cameraContainer.classList.remove('active');
-            openCameraBtn.disabled = false;
-            openCameraBtn.textContent = '📷 OUVRIR LA CAMÉRA';
+
+        } catch (error) {
+            console.error('Erreur analyse Gemini:', error);
+            loader.classList.remove('active');
+            alert(`❌ Erreur d'analyse :\n${error.message}`);
         }
+    }
 
-        function closeResult() {
-            resultDiv.style.display = 'none';
-        }
-
-        function showMealPlan() {
-            alert(
-                "📋 Menu du jour (1500 kcal)\n\n" +
-                "🥣 Petit-déjeuner (350 kcal)\n" +
-                "• 1 bol de flocons d'avoine\n" +
-                "• 1 pomme de Normandie\n" +
-                "• 1 yaourt nature\n\n" +
-                "🥗 Déjeuner (550 kcal)\n" +
-                "• Salade de thon\n" +
-                "• 1 portion de quinoa\n" +
-                "• Légumes de saison grillés\n\n" +
-                "🍽️ Dîner (600 kcal)\n" +
-                "• Cabillaud rôti\n" +
-                "• Purée de pommes de terre\n" +
-                "• Épinards frais\n\n" +
-                "© 2026 Constantin Armstrong Sogagoum"
-            );
-        }
-
-        function showShoppingList() {
-            alert(
-                "🛒 Liste de courses de la semaine\n\n" +
-                "🥬 Légumes\n• Courgettes (3)\n• Poivrons (2)\n• Épinards (300g)\n• Carottes (5)\n\n" +
-                "🍎 Fruits\n• Pommes (6)\n• Poires (4)\n\n" +
-                "🐟 Poissons\n• Cabillaud (400g)\n• Thon frais (200g)\n\n" +
-                "© 2026 Constantin Armstrong Sogagoum"
-            );
-        }
-
-        openCameraBtn.addEventListener('click', openCamera);
-        closeCameraBtn.addEventListener('click', closeCamera);
-        captureBtn.addEventListener('click', capturePhoto);
-
-        console.log('✅ RégionFit v2.0 chargé avec succès !');
-        console.log('📸 Cliquez sur "OUVRIR LA CAMÉRA" pour tester.');
-        console.log('© 2026 Constantin Armstrong Sogagoum');
-    </script>
-</body>
-</html>
+    // ================================================================
+    // RÉINITIALISER LA CLÉ (si besoin)
+    // ================================================================
+    function resetApiKey() {
+        localStorage.removeItem('gemini_api_key');
+        alert('✅ Clé API réinitialisée. Vous pourrez en saisir une nouvelle au prochain scan.');
+     Version 2.3 - Sécurisée
+    }
+</script>
