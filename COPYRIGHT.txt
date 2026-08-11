@@ -1,0 +1,100 @@
+
+---
+
+## 📄 3. COPYRIGHT.txt
+
+```text
+================================================================================
+                          AVIS DE DROIT D'AUTEUR
+================================================================================
+
+Titre du Projet : RégionFit - Application de Perte de Poids avec IA
+Auteur : Constantin Armstrong Sogagoum
+Date de création : 10 août 2026
+Droits réservés : © 2026-2027 Constantin Armstrong Sogagoum. Tous droits réservés.
+
+================================================================================
+                            DÉCLARATION DE PROPRIÉTÉ
+================================================================================
+
+Je, Constantin Armstrong Sogagoum, déclare être l'auteur original et unique 
+de l'intégralité du code source, des designs, de l'architecture, des bases 
+de données, des prompts d'IA, et des concepts présentés dans ce projet 
+intitulé "RégionFit".
+
+Ce projet inclut, sans s'y limiter :
+- L'architecture logicielle complète
+- L'intégration de l'API Google Gemini
+- Les prompts d'ingénierie pour l'IA
+- La conception de la base de données régionale
+- L'interface utilisateur et l'expérience utilisateur
+- Le concept de planning nutritionnel alterné (2000/1500/1000/500 kcal)
+- Le système de géolocalisation pour produits locaux
+- Le système de scan de repas par photo
+- Le système d'alternatives santé
+
+================================================================================
+                              CONDITIONS D'UTILISATION
+================================================================================
+
+1. REPRODUCTION : Toute reproduction, copie, ou duplication de ce code, 
+   en totalité ou en partie, est strictement interdite sans l'autorisation 
+   écrite préalable de Constantin Armstrong Sogagoum.
+
+2. DISTRIBUTION : La distribution de ce projet, sous quelque forme que 
+   ce soit (binaire, source, ou autre), est interdite sans autorisation.
+
+3. MODIFICATION : Toute modification, adaptation, traduction, ou transformation 
+   de ce code est interdite sans l'autorisation écrite de l'auteur.
+
+4. UTILISATION COMMERCIALE : Toute utilisation commerciale de ce projet, que 
+   ce soit à titre gratuit ou onéreux, est strictement interdite sans un 
+   accord de licence écrit.
+
+5. ATTRIBUTION : En cas d'autorisation écrite, toute utilisation doit 
+   clairement créditer "Constantin Armstrong Sogagoum" comme l'auteur 
+   original du projet.
+
+================================================================================
+                               CONTACT DE L'AUTEUR
+================================================================================
+
+Pour toute demande de licence, collaboration, ou utilisation autorisée :
+- Auteur : Constantin Armstrong Sogagoum
+- Email : sogagoum@gmail.com
+- Date de la déclaration : 10 août 2026
+
+================================================================================
+                        SIGNATURE ÉLECTRONIQUE DE L'AUTEUR
+================================================================================
+
+Je, soussigné Constantin Armstrong Sogagoum, confirme être l'auteur original 
+de ce projet et atteste de l'exactitude des informations ci-dessus.
+
+Fait à [Ville], le 10 août 2026
+
+Signature électronique :
+_______________________________________
+Constantin Armstrong Sogagoum
+
+================================================================================
+                        ENCADREMENT JURIDIQUE APPLICABLE
+================================================================================
+
+Ce projet est protégé par :
+- La Convention de Berne pour la protection des œuvres littéraires et artistiques
+- Le Code de la propriété intellectuelle (France)
+- Les lois internationales sur le droit d'auteur
+- La Directive européenne 2001/29/CE sur le droit d'auteur
+
+© 2026 Constantin Armstrong Sogagoum. Tous droits réservés.
+
+================================================================================
+                   PREUVE DE POSSESSION - DATE CERTIFIÉE
+================================================================================
+
+Le présent document certifie que Constantin Armstrong Sogagoum était en 
+possession du code source et des concepts décrits ci-dessus à la date du 
+10 août 2026.
+
+================================================================================
