@@ -1,5 +1,5 @@
 {
-  "name": "RégionFit - Nutrition IA",
+  "name": "RégionFit",
   "short_name": "RégionFit",
   "description": "Application de nutrition avec IA pour perdre du poids",
   "start_url": "/regionfit/",
@@ -9,43 +9,43 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-192.png",
+      "src": "https://via.placeholder.com/192/38a169/ffffff?text=R",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-384.png",
-      "sizes": "384x384",
+      "src": "https://via.placeholder.com/512/38a169/ffffff?text=R",
+      "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
-      "sizes": "512x512",
+      "src": "https://via.placeholder.com/72/38a169/ffffff?text=R",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/96/38a169/ffffff?text=R",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/128/38a169/ffffff?text=R",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/144/38a169/ffffff?text=R",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/152/38a169/ffffff?text=R",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/384/38a169/ffffff?text=R",
+      "sizes": "384x384",
       "type": "image/png"
     }
   ]
