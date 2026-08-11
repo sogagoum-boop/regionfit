@@ -1,19 +1,22 @@
 /*
 =====================================================================
-REGIONFIT - Service Worker (Mode Hors Ligne)
-=====================================================================
+REGIONFIT - Service Worker
 Copyright (c) 2026 Constantin Armstrong Sogagoum
 =====================================================================
 */
 
-const CACHE_NAME = 'regionfit-v3.1';
+const CACHE_NAME = 'regionfit-v1.0';
+
+// Fichiers à mettre en cache
 const urlsToCache = [
     '/regionfit/',
     '/regionfit/index.html',
-    '/regionfit/manifest.json'
+    '/regionfit/manifest.json',
+    '/regionfit/icon-192.png',
+    '/regionfit/icon-512.png'
 ];
 
-// Installation du Service Worker
+// Installation
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -21,6 +24,7 @@ self.addEventListener('install', event => {
                 console.log('✅ Cache ouvert');
                 return cache.addAll(urlsToCache);
             })
+            .catch(err => console.log('⚠️ Erreur cache:', err))
     );
 });
 
@@ -40,19 +44,16 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Interception des requêtes (mode hors ligne)
+// Interception des requêtes
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                // Si trouvé dans le cache, retourner
                 if (response) {
                     return response;
                 }
-                // Sinon, faire la requête réseau
                 return fetch(event.request)
                     .then(response => {
-                        // Mettre en cache les nouvelles ressources
                         if (response && response.status === 200) {
                             const responseToCache = response.clone();
                             caches.open(CACHE_NAME)
@@ -63,8 +64,7 @@ self.addEventListener('fetch', event => {
                         return response;
                     })
                     .catch(() => {
-                        // Si hors ligne, retourner une page d'erreur
-                        return new Response('🔄 Mode hors ligne - Connectez-vous pour continuer.', {
+                        return new Response('🔄 Mode hors ligne', {
                             status: 503,
                             statusText: 'Service Unavailable'
                         });
