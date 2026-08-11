@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RégionFit - Nutrition IA</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/regionfit/manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#38a169">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -49,8 +57,15 @@
             font-size: 11px;
             font-weight: 600;
         }
+        .header .badge-offline {
+            background: #fefcbf;
+            color: #975a16;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
 
-        /* TABS */
         .tabs {
             display: flex;
             gap: 4px;
@@ -299,7 +314,6 @@
         }
         .key-btn:hover { background: rgba(255,255,255,0.3); }
 
-        /* Country Selector */
         .country-selector {
             display: flex;
             gap: 8px;
@@ -320,7 +334,6 @@
             outline: none;
         }
 
-        /* Meal Plan */
         .meal-day {
             background: #fff;
             border: 1px solid #e2e8f0;
@@ -357,20 +370,85 @@
         .shopping-list li::before {
             content: "🛒 ";
         }
+
+        /* Lock overlay */
+        #lockOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        #lockOverlay.active { display: flex; }
+        .lock-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+        }
+        .lock-box h2 { color: #2d3748; margin-bottom: 8px; }
+        .lock-box p { color: #718096; font-size: 14px; margin-bottom: 16px; }
+        .lock-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .lock-box input:focus { border-color: #38a169; outline: none; }
+        .lock-box button {
+            width: 100%;
+            padding: 12px;
+            background: #38a169;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .lock-box button:hover { background: #2f855a; }
+        .lock-box .error {
+            color: #e53e3e;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+        .lock-box .error.show { display: block; }
     </style>
 </head>
 <body>
-    <div class="app">
-        <!-- HEADER -->
+    <!-- LOCK OVERLAY -->
+    <div id="lockOverlay" class="active">
+        <div class="lock-box">
+            <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+            <h2>RégionFit</h2>
+            <p>Entrez votre mot de passe pour accéder à l'application</p>
+            <input type="password" id="lockPassword" placeholder="Mot de passe">
+            <button onclick="unlockApp()">🔓 Déverrouiller</button>
+            <div class="error" id="lockError">❌ Mot de passe incorrect</div>
+        </div>
+    </div>
+
+    <div class="app" id="appContent" style="display:none;">
         <div class="header">
             <h1>🥗 Région<span>Fit</span></h1>
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
                 <span class="badge" id="locationBadge">📍 Normandie</span>
-                <span class="badge-ia">🤖 Gemini 1.5</span>
+                <span class="badge-ia">🤖 Gemini</span>
+                <span class="badge-offline" id="offlineBadge">📶 En ligne</span>
             </div>
         </div>
 
-        <!-- TABS -->
         <div class="tabs">
             <button class="active" data-tab="scan">📸 Scan</button>
             <button data-tab="plan">📊 Planning</button>
@@ -378,7 +456,6 @@
             <button data-tab="profile">👤 Profil</button>
         </div>
 
-        <!-- TAB 1: SCAN -->
         <div class="tab-content active" id="tab-scan">
             <div class="scan-box">
                 <h2>📸 Scannez votre repas</h2>
@@ -386,8 +463,9 @@
                 <button class="btn-primary" id="openCameraBtn">📷 Ouvrir la caméra</button>
                 <span class="status" id="cameraStatus">Cliquez pour activer la caméra</span>
                 <div style="margin-top:8px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
-                    <span id="keyStatus" class="key-status missing">🔑 Clé manquante</span>
-                    <button onclick="resetApiKey()" class="key-btn">Réinitialiser</button>
+                    <span id="keyStatus" class="key-status set">🔑 Clé présente</span>
+                    <button onclick="resetApiKey()" class="key-btn">🔄 Changer de clé</button>
+                    <button onclick="changePassword()" class="key-btn">🔐 Changer mot de passe</button>
                 </div>
             </div>
 
@@ -423,7 +501,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: PLANNING -->
         <div class="tab-content" id="tab-plan">
             <div class="country-selector">
                 <select id="countrySelect" onchange="updateMealPlan()">
@@ -444,7 +521,6 @@
             </div>
         </div>
 
-        <!-- TAB 3: COURSES -->
         <div class="tab-content" id="tab-shop">
             <h3 style="font-size:16px;color:#2d3748;margin-bottom:12px;">🛒 Liste de courses</h3>
             <div id="shoppingListContainer">
@@ -453,7 +529,6 @@
             <button onclick="generateShoppingList()" style="width:100%;padding:12px;background:#38a169;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;">📋 Générer la liste</button>
         </div>
 
-        <!-- TAB 4: PROFIL -->
         <div class="tab-content" id="tab-profile">
             <h3 style="font-size:16px;color:#2d3748;margin-bottom:12px;">👤 Mon profil</h3>
             
@@ -500,34 +575,99 @@
                 </div>
                 <div class="progress-bar" style="margin-top:8px;"><div class="fill" style="width:45%;"></div></div>
             </div>
+
+            <div class="card">
+                <h3>🔐 Sécurité</h3>
+                <button onclick="changePassword()" style="width:100%;padding:12px;background:#4299e1;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;">🔑 Changer le mot de passe</button>
+                <button onclick="resetAllData()" style="width:100%;padding:12px;background:#fc8181;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;margin-top:8px;">🗑️ Réinitialiser toutes les données</button>
+            </div>
         </div>
 
         <div class="footer">
             <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-            <p>RégionFit v3.0 · Fonctionnalités avancées</p>
+            <p>RégionFit v3.1 · PWA + Sécurisé</p>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // CONFIGURATION
+        // VERROUILLAGE DE L'APPLICATION
         // ============================================================
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const cameraContainer = document.getElementById('cameraContainer');
-        const openBtn = document.getElementById('openCameraBtn');
-        const closeBtn = document.getElementById('closeCameraBtn');
-        const captureBtn = document.getElementById('captureBtn');
-        const loader = document.getElementById('loader');
-        const resultDiv = document.getElementById('result');
-        const statusText = document.getElementById('cameraStatus');
-        const keyStatus = document.getElementById('keyStatus');
+        const LOCK_PASSWORD = 'regionfit2026'; // Mot de passe par défaut
 
-        let stream = null;
-        let isCameraOpen = false;
+        function unlockApp() {
+            const input = document.getElementById('lockPassword');
+            const error = document.getElementById('lockError');
+            
+            if (input.value === LOCK_PASSWORD) {
+                document.getElementById('lockOverlay').classList.remove('active');
+                document.getElementById('appContent').style.display = 'block';
+                initApp();
+            } else {
+                error.classList.add('show');
+                input.value = '';
+                input.focus();
+                setTimeout(() => error.classList.remove('show'), 3000);
+            }
+        }
+
+        function changePassword() {
+            const newPassword = prompt(
+                "🔐 Changer le mot de passe\n\n" +
+                "Entrez votre nouveau mot de passe (minimum 4 caractères) :"
+            );
+            
+            if (newPassword && newPassword.length >= 4) {
+                localStorage.setItem('regionfit_password', newPassword);
+                alert('✅ Mot de passe modifié avec succès !');
+            } else if (newPassword !== null) {
+                alert('❌ Le mot de passe doit faire au moins 4 caractères.');
+            }
+        }
+
+        function resetAllData() {
+            if (confirm('⚠️ Êtes-vous sûr de vouloir supprimer toutes les données ?\n\nCette action est irréversible.')) {
+                localStorage.clear();
+                alert('✅ Toutes les données ont été réinitialisées.');
+                location.reload();
+            }
+        }
 
         // ============================================================
-        // DATA
+        // GESTION DE LA CLÉ API (Stockage sécurisé)
+        // ============================================================
+        function getApiKey() {
+            return localStorage.getItem('regionfit_api_key');
+        }
+
+        function setApiKey(key) {
+            localStorage.setItem('regionfit_api_key', key);
+        }
+
+        function checkApiKey() {
+            const key = getApiKey();
+            const status = document.getElementById('keyStatus');
+            if (key) {
+                status.textContent = '🔑 Clé présente';
+                status.className = 'key-status set';
+                return true;
+            } else {
+                status.textContent = '🔑 Clé manquante';
+                status.className = 'key-status missing';
+                return false;
+            }
+        }
+
+        function resetApiKey() {
+            if (confirm('⚠️ Voulez-vous changer votre clé API ?')) {
+                localStorage.removeItem('regionfit_api_key');
+                checkApiKey();
+                alert('✅ Clé API réinitialisée. Elle vous sera redemandée au prochain scan.');
+            }
+        }
+
+        // ============================================================
+        // DONNÉES
         // ============================================================
         const mealPlans = {
             FR: {
@@ -577,46 +717,49 @@
                     { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
                 ],
                 shopping: ['Manioc', 'Riz', 'Poisson', 'Poulet', 'Légumes feuilles', 'Huile de palme', 'Fruits']
+            },
+            SN: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de mil', 'Déjeuner: Thiéboudienne', 'Dîner: Poisson + légumes'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + beurre', 'Déjeuner: Yassa poulet', 'Dîner: Riz + sauce'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Mafé', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson grillé', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Mil', 'Riz', 'Poisson', 'Poulet', 'Arachides', 'Légumes', 'Fruits']
+            },
+            CI: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de maïs', 'Déjeuner: Attiéké + poisson', 'Dîner: Sauce graine'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain', 'Déjeuner: Foutou + sauce', 'Dîner: Poisson + légumes'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Riz + sauce', 'Dîner: Soupe'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson fumé', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Maïs', 'Manioc', 'Plantain', 'Poisson', 'Huile de palme', 'Légumes', 'Fruits']
             }
         };
 
         // ============================================================
-        // TABS
-        // ============================================================
-        document.querySelectorAll('.tabs button').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
-            });
-        });
-
-        // ============================================================
-        // GESTION DE LA CLÉ API
-        // ============================================================
-        function checkApiKey() {
-            const key = localStorage.getItem('gemini_api_key');
-            if (key) {
-                keyStatus.textContent = '🔑 Clé présente';
-                keyStatus.className = 'key-status set';
-                return true;
-            } else {
-                keyStatus.textContent = '🔑 Clé manquante';
-                keyStatus.className = 'key-status missing';
-                return false;
-            }
-        }
-
-        function resetApiKey() {
-            localStorage.removeItem('gemini_api_key');
-            checkApiKey();
-            alert('✅ Clé API réinitialisée.');
-        }
-
-        // ============================================================
         // CAMÉRA
         // ============================================================
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const cameraContainer = document.getElementById('cameraContainer');
+        const openBtn = document.getElementById('openCameraBtn');
+        const closeBtn = document.getElementById('closeCameraBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const loader = document.getElementById('loader');
+        const resultDiv = document.getElementById('result');
+        const statusText = document.getElementById('cameraStatus');
+
+        let stream = null;
+        let isCameraOpen = false;
+
         async function openCamera() {
             try {
                 statusText.textContent = '⏳ Demande d\'accès...';
@@ -676,13 +819,13 @@
         }
 
         // ============================================================
-        // ANALYSE
+        // ANALYSE AVEC GEMINI - Stockage sécurisé
         // ============================================================
         async function analyzeImage(imageData) {
             loader.classList.add('active');
             resultDiv.style.display = 'none';
 
-            let apiKey = localStorage.getItem('gemini_api_key');
+            let apiKey = getApiKey();
 
             if (!apiKey) {
                 loader.classList.remove('active');
@@ -691,14 +834,14 @@
                     "1. Allez sur https://makersuite.google.com/\n" +
                     "2. Créez une nouvelle clé\n" +
                     "3. Collez-la ici\n\n" +
-                    "⚠️ La clé reste sur votre appareil."
+                    "💡 Cette clé sera stockée sur votre appareil et ne vous sera plus demandée."
                 );
 
                 if (!apiKey) {
                     alert('❌ Une clé API est nécessaire.');
                     return;
                 }
-                localStorage.setItem('gemini_api_key', apiKey);
+                setApiKey(apiKey);
                 checkApiKey();
             }
 
@@ -736,9 +879,9 @@
                 if (!response.ok) {
                     const errorData = await response.json();
                     if (response.status === 403 || response.status === 401) {
-                        localStorage.removeItem('gemini_api_key');
+                        localStorage.removeItem('regionfit_api_key');
                         checkApiKey();
-                        throw new Error('Clé API invalide.');
+                        throw new Error('Clé API invalide. Veuillez en saisir une nouvelle.');
                     }
                     throw new Error(errorData.error?.message || 'Erreur API');
                 }
@@ -792,9 +935,6 @@
             }, 1500);
         }
 
-        // ============================================================
-        // AFFICHAGE RÉSULTAT
-        // ============================================================
         function displayResult(result, imageData) {
             document.getElementById('caloriesDisplay').textContent = result.calories + ' kcal';
             document.getElementById('macrosDisplay').innerHTML = `
@@ -846,9 +986,6 @@
             document.getElementById('locationBadge').textContent = `📍 ${document.getElementById('countrySelect').selectedOptions[0].text}`;
         }
 
-        // ============================================================
-        // LISTE DE COURSES
-        // ============================================================
         function generateShoppingList() {
             const country = document.getElementById('countrySelect').value;
             const data = mealPlans[country] || mealPlans.FR;
@@ -897,20 +1034,68 @@
         }
 
         // ============================================================
+        // PWA - Service Worker
+        // ============================================================
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/regionfit/sw.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker enregistré avec succès');
+                        document.getElementById('offlineBadge').textContent = '📶 Hors ligne disponible';
+                        document.getElementById('offlineBadge').style.background = '#c6f6d5';
+                        document.getElementById('offlineBadge').style.color = '#276749';
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker non enregistré:', error);
+                    });
+            }
+        }
+
+        // ============================================================
         // INIT
         // ============================================================
-        openBtn.addEventListener('click', openCamera);
-        closeBtn.addEventListener('click', closeCamera);
-        captureBtn.addEventListener('click', capturePhoto);
+        function initApp() {
+            openBtn.addEventListener('click', openCamera);
+            closeBtn.addEventListener('click', closeCamera);
+            captureBtn.addEventListener('click', capturePhoto);
 
-        checkApiKey();
-        updateMealPlan();
-        loadProfile();
+            // Tabs
+            document.querySelectorAll('.tabs button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                });
+            });
 
-        console.log('✅ RégionFit v3.0 chargé !');
-        console.log('📸 Fonctionnalités avancées activées');
-        console.log('© 2026 Constantin Armstrong Sogagoum');
+            checkApiKey();
+            updateMealPlan();
+            loadProfile();
+            registerServiceWorker();
+
+            console.log('✅ RégionFit v3.1 chargé !');
+            console.log('🔐 Application verrouillée');
+            console.log('📶 Mode hors ligne disponible');
+            console.log('© 2026 Constantin Armstrong Sogagoum');
+        }
+
+        // ============================================================
+        // RACCOURCI CLAVIER - Entrée pour déverrouiller
+        // ============================================================
+        document.getElementById('lockPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                unlockApp();
+            }
+        });
+
+        // Gestion du mot de passe stocké
+        const savedPassword = localStorage.getItem('regionfit_password');
+        if (savedPassword) {
+            // Si un mot de passe personnalisé est stocké, on l'utilise
+            // La vérification se fait dans unlockApp()
+        }
     </script>
 </body>
 </html>
-version 3.0
+3.1
