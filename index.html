@@ -13,9 +13,6 @@
     <meta name="theme-color" content="#38a169">
     
     <style>
-        /* ============================================================
-           STYLES COMPLETS
-           ============================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -596,86 +593,11 @@
             margin-top: 12px;
         }
         .logout-btn:hover { background: #f56565; }
-
-        /* ============================================================
-           LOCK OVERLAY
-           ============================================================ */
-        #lockOverlay {
-            display: flex;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        #lockOverlay.hidden {
-            display: none;
-        }
-        .lock-box {
-            background: #fff;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 360px;
-            width: 90%;
-            text-align: center;
-        }
-        .lock-box h2 { color: #2d3748; margin-bottom: 8px; }
-        .lock-box p { color: #718096; font-size: 14px; margin-bottom: 16px; }
-        .lock-box input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .lock-box input:focus { border-color: #38a169; outline: none; }
-        .lock-box button {
-            width: 100%;
-            padding: 12px;
-            background: #38a169;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .lock-box button:hover { background: #2f855a; }
-        .lock-box .error {
-            color: #e53e3e;
-            font-size: 13px;
-            margin-top: 8px;
-            display: none;
-        }
-        .lock-box .error.show { display: block; }
     </style>
 </head>
 <body>
     <div class="app" id="appWrapper">
         
-        <!-- ============================================================
-           LOCK OVERLAY - Mot de passe réinitialisé à "1234"
-           ============================================================ -->
-        <div id="lockOverlay">
-            <div class="lock-box">
-                <div style="font-size:48px;margin-bottom:12px;">🔐</div>
-                <h2>RégionFit</h2>
-                <p>Entrez le mot de passe pour accéder à l'application</p>
-                <input type="password" id="lockPassword" placeholder="Mot de passe">
-                <button onclick="unlockApp()">🔓 Déverrouiller</button>
-                <div class="error" id="lockError">❌ Mot de passe incorrect</div>
-                <div style="margin-top:12px; font-size:12px; color:#a0aec0;">
-                    🔑 Mot de passe : <strong>1234</strong>
-                </div>
-            </div>
-        </div>
-
         <!-- ============================================================
            AUTHENTIFICATION
            ============================================================ -->
@@ -958,30 +880,19 @@
 
     <script>
         // ============================================================
-        // VERROUILLAGE - MOT DE PASSE RÉINITIALISÉ À "1234"
+        // PAS DE VERROUILLAGE - L'APP S'OUVRE DIRECTEMENT
         // ============================================================
         
-        // ⚠️ NOUVEAU MOT DE PASSE : 1234
-        const LOCK_PASSWORD = '1234';
-
-        function unlockApp() {
-            const input = document.getElementById('lockPassword');
-            const error = document.getElementById('lockError');
-            
-            if (input.value === LOCK_PASSWORD) {
-                document.getElementById('lockOverlay').classList.add('hidden');
-                document.getElementById('authContainer').style.display = 'block';
-                checkApiKey();
-                updateMealPlan();
-                loadProfile();
-                console.log('✅ Application déverrouillée avec succès !');
-            } else {
-                error.classList.add('show');
-                input.value = '';
-                input.focus();
-                setTimeout(() => error.classList.remove('show'), 3000);
-            }
-        }
+        // On masque l'overlay de verrouillage immédiatement
+        document.addEventListener('DOMContentLoaded', function() {
+            // L'application s'ouvre directement, plus de mot de passe !
+            document.getElementById('authContainer').style.display = 'block';
+            checkApiKey();
+            updateMealPlan();
+            loadProfile();
+            console.log('✅ RégionFit chargé - Pas de mot de passe requis');
+            console.log('© 2026 Constantin Armstrong Sogagoum');
+        });
 
         // ============================================================
         // GESTION DE L'AUTHENTIFICATION
@@ -1241,9 +1152,6 @@
                 document.getElementById('appContent').classList.remove('active');
                 document.getElementById('authContainer').style.display = 'block';
                 showStep('step-login');
-                document.getElementById('lockOverlay').classList.remove('hidden');
-                document.getElementById('lockPassword').value = '';
-                document.getElementById('lockError').classList.remove('show');
             }
         }
 
@@ -1618,17 +1526,8 @@
         closeBtn.addEventListener('click', closeCamera);
         captureBtn.addEventListener('click', capturePhoto);
 
-        // ============================================================
-        // ENTRÉE POUR DÉVERROUILLER
-        // ============================================================
-        document.getElementById('lockPassword').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                unlockApp();
-            }
-        });
-
-        console.log('✅ RégionFit v3.2 - Mot de passe réinitialisé à 1234');
-        console.log('🔐 Mot de passe : 1234');
+        console.log('✅ RégionFit v3.3 - Sans mot de passe');
+        console.log('🔓 L\'application s\'ouvre directement');
         console.log('© 2026 Constantin Armstrong Sogagoum');
     </script>
 </body>
