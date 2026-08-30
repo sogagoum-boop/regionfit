@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RégionFit - Authentification</title>
+    <title>RégionFit - Nutrition IA</title>
     
     <!-- PWA -->
     <link rel="manifest" href="/regionfit/manifest.json">
@@ -13,6 +13,9 @@
     <meta name="theme-color" content="#38a169">
     
     <style>
+        /* ============================================================
+           STYLES COMPLETS
+           ============================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -227,7 +230,7 @@
         }
 
         /* ============================================================
-           APP CONTENT (caché tant que non authentifié)
+           APP CONTENT
            ============================================================ */
         #appContent {
             display: none;
@@ -236,9 +239,6 @@
             display: block;
         }
 
-        /* ============================================================
-           STYLES DE L'APPLICATION
-           ============================================================ */
         .header-app {
             display: flex;
             justify-content: space-between;
@@ -596,14 +596,89 @@
             margin-top: 12px;
         }
         .logout-btn:hover { background: #f56565; }
+
+        /* ============================================================
+           LOCK OVERLAY
+           ============================================================ */
+        #lockOverlay {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        #lockOverlay.hidden {
+            display: none;
+        }
+        .lock-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+        }
+        .lock-box h2 { color: #2d3748; margin-bottom: 8px; }
+        .lock-box p { color: #718096; font-size: 14px; margin-bottom: 16px; }
+        .lock-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .lock-box input:focus { border-color: #38a169; outline: none; }
+        .lock-box button {
+            width: 100%;
+            padding: 12px;
+            background: #38a169;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .lock-box button:hover { background: #2f855a; }
+        .lock-box .error {
+            color: #e53e3e;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+        .lock-box .error.show { display: block; }
     </style>
 </head>
 <body>
     <div class="app" id="appWrapper">
         
         <!-- ============================================================
-             AUTHENTIFICATION
-             ============================================================ -->
+           LOCK OVERLAY - Mot de passe réinitialisé à "1234"
+           ============================================================ -->
+        <div id="lockOverlay">
+            <div class="lock-box">
+                <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+                <h2>RégionFit</h2>
+                <p>Entrez le mot de passe pour accéder à l'application</p>
+                <input type="password" id="lockPassword" placeholder="Mot de passe">
+                <button onclick="unlockApp()">🔓 Déverrouiller</button>
+                <div class="error" id="lockError">❌ Mot de passe incorrect</div>
+                <div style="margin-top:12px; font-size:12px; color:#a0aec0;">
+                    🔑 Mot de passe : <strong>1234</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+           AUTHENTIFICATION
+           ============================================================ -->
         <div id="authContainer">
             <div class="header">
                 <h1>🥗 Région<span>Fit</span></h1>
@@ -717,8 +792,8 @@
         </div>
 
         <!-- ============================================================
-             CONTENU DE L'APPLICATION (après authentification)
-             ============================================================ -->
+           CONTENU DE L'APPLICATION
+           ============================================================ -->
         <div id="appContent">
             <div class="header-app">
                 <h1>🥗 Région<span>Fit</span></h1>
@@ -883,19 +958,41 @@
 
     <script>
         // ============================================================
+        // VERROUILLAGE - MOT DE PASSE RÉINITIALISÉ À "1234"
+        // ============================================================
+        
+        // ⚠️ NOUVEAU MOT DE PASSE : 1234
+        const LOCK_PASSWORD = '1234';
+
+        function unlockApp() {
+            const input = document.getElementById('lockPassword');
+            const error = document.getElementById('lockError');
+            
+            if (input.value === LOCK_PASSWORD) {
+                document.getElementById('lockOverlay').classList.add('hidden');
+                document.getElementById('authContainer').style.display = 'block';
+                checkApiKey();
+                updateMealPlan();
+                loadProfile();
+                console.log('✅ Application déverrouillée avec succès !');
+            } else {
+                error.classList.add('show');
+                input.value = '';
+                input.focus();
+                setTimeout(() => error.classList.remove('show'), 3000);
+            }
+        }
+
+        // ============================================================
         // GESTION DE L'AUTHENTIFICATION
         // ============================================================
         
-        // État de l'utilisateur
         let currentUser = null;
         let selectedChoice = 'sms';
         let validationCode = '';
         let resendTimer = 60;
         let timerInterval = null;
 
-        // ============================================================
-        // NAVIGATION ENTRE LES ÉTAPES
-        // ============================================================
         function showStep(stepId) {
             document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
@@ -903,4 +1000,637 @@
 
         function switchToLogin() {
             showStep('step-login');
-            clearStatus('loginStatus
+            clearStatus('loginStatus');
+        }
+
+        function switchToRegister() {
+            showStep('step-register');
+            clearStatus('registerStatus');
+        }
+
+        function goBackToRegister() {
+            showStep('step-register');
+        }
+
+        function goBackToChoice() {
+            showStep('step-choice');
+        }
+
+        function clearStatus(id) {
+            const el = document.getElementById(id);
+            el.className = 'auth-status';
+            el.textContent = '';
+        }
+
+        function showStatus(id, message, type) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.className = 'auth-status show ' + type;
+        }
+
+        // ============================================================
+        // INSCRIPTION
+        // ============================================================
+        function registerUser() {
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            // Validation simple
+            if (!email || !email.includes('@')) {
+                showStatus('registerStatus', '❌ Email invalide', 'error');
+                return;
+            }
+            if (!phone || phone.length < 8) {
+                showStatus('registerStatus', '❌ Numéro de téléphone invalide', 'error');
+                return;
+            }
+            if (!username || username.length < 3) {
+                showStatus('registerStatus', '❌ Nom d\'utilisateur trop court', 'error');
+                return;
+            }
+            if (!password || password.length < 6) {
+                showStatus('registerStatus', '❌ Mot de passe trop court (minimum 6 caractères)', 'error');
+                return;
+            }
+            
+            // Stocker l'utilisateur
+            const user = {
+                email,
+                phone,
+                username,
+                password,
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('regionfit_user', JSON.stringify(user));
+            currentUser = user;
+            
+            showStatus('registerStatus', '✅ Inscription réussie ! Choississez votre moyen de réception.', 'success');
+            showStep('step-choice');
+            
+            // Mettre à jour les infos de contact dans le choix
+            document.querySelector('#choiceSms div').textContent = phone;
+            document.querySelector('#choiceEmail div').textContent = email;
+        }
+
+        // ============================================================
+        // CONNEXION
+        // ============================================================
+        function loginUser() {
+            const identifier = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const storedUser = localStorage.getItem('regionfit_user');
+            if (!storedUser) {
+                showStatus('loginStatus', '❌ Aucun compte trouvé. Veuillez vous inscrire.', 'error');
+                return;
+            }
+            
+            const user = JSON.parse(storedUser);
+            
+            if ((identifier === user.email || identifier === user.username) && password === user.password) {
+                currentUser = user;
+                showStatus('loginStatus', '✅ Connexion réussie !', 'success');
+                setTimeout(enterApp, 1000);
+            } else {
+                showStatus('loginStatus', '❌ Email ou mot de passe incorrect', 'error');
+            }
+        }
+
+        function enterApp() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('appContent').classList.add('active');
+            document.getElementById('userDisplay').textContent = currentUser.username || 'User';
+            document.getElementById('profileUsername').textContent = currentUser.username;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profilePhone').textContent = currentUser.phone;
+        }
+
+        // ============================================================
+        // CHOIX DU MOYEN
+        // ============================================================
+        function selectChoice(choice) {
+            selectedChoice = choice;
+            document.querySelectorAll('.choice-group button').forEach(b => b.classList.remove('active'));
+            if (choice === 'sms') {
+                document.getElementById('choiceSms').classList.add('active');
+            } else {
+                document.getElementById('choiceEmail').classList.add('active');
+            }
+        }
+
+        // ============================================================
+        // ENVOI DU CODE
+        // ============================================================
+        function sendValidationCode() {
+            // Générer un code à 6 chiffres
+            validationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            showStatus('codeStatus', `📨 Code envoyé par ${selectedChoice === 'sms' ? 'SMS' : 'Email'} : ${validationCode}`, 'info');
+            
+            // Simuler l'envoi
+            setTimeout(() => {
+                showStatus('codeStatus', `✅ Code envoyé ! Vérifiez votre ${selectedChoice === 'sms' ? 'téléphone' : 'email'}`, 'success');
+            }, 500);
+            
+            showStep('step-code');
+            document.getElementById('codeMethodLabel').textContent = selectedChoice === 'sms' ? 'SMS' : 'Email';
+            
+            // Démarrer le timer
+            startResendTimer();
+            
+            // Afficher le code dans la console pour faciliter les tests
+            console.log(`📱 Code de validation : ${validationCode}`);
+        }
+
+        // ============================================================
+        // VALIDATION DU CODE
+        // ============================================================
+        function validateCode() {
+            const inputs = document.querySelectorAll('.code-input');
+            let code = '';
+            inputs.forEach(input => code += input.value);
+            
+            if (code.length !== 6) {
+                showStatus('codeStatus', '❌ Entrez les 6 chiffres du code', 'error');
+                return;
+            }
+            
+            if (code === validationCode) {
+                showStatus('codeStatus', '✅ Code validé ! Accès autorisé.', 'success');
+                setTimeout(enterApp, 1000);
+            } else {
+                showStatus('codeStatus', '❌ Code incorrect. Veuillez réessayer.', 'error');
+                inputs.forEach(input => {
+                    input.classList.add('error');
+                    input.value = '';
+                });
+                setTimeout(() => {
+                    inputs.forEach(input => input.classList.remove('error'));
+                }, 2000);
+            }
+        }
+
+        // ============================================================
+        // CODE INPUT (navigation automatique)
+        // ============================================================
+        document.querySelectorAll('.code-input').forEach((input, index, inputs) => {
+            input.addEventListener('input', function() {
+                if (this.value.length === 1) {
+                    this.classList.add('filled');
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].classList.remove('filled');
+                }
+            });
+            
+            input.addEventListener('focus', function() {
+                this.select();
+            });
+        });
+
+        // ============================================================
+        // RENVOYER LE CODE
+        // ============================================================
+        function resendCode() {
+            const link = document.getElementById('resendLink');
+            if (link.classList.contains('disabled')) return;
+            
+            validationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            showStatus('codeStatus', `📨 Nouveau code envoyé : ${validationCode}`, 'info');
+            console.log(`📱 Nouveau code : ${validationCode}`);
+            startResendTimer();
+        }
+
+        function startResendTimer() {
+            const link = document.getElementById('resendLink');
+            const timerDisplay = document.getElementById('resendTimer');
+            
+            link.classList.add('disabled');
+            resendTimer = 60;
+            timerDisplay.textContent = resendTimer;
+            
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                resendTimer--;
+                timerDisplay.textContent = resendTimer;
+                if (resendTimer <= 0) {
+                    clearInterval(timerInterval);
+                    link.classList.remove('disabled');
+                    timerDisplay.textContent = '0';
+                }
+            }, 1000);
+        }
+
+        // ============================================================
+        // DÉCONNEXION
+        // ============================================================
+        function logoutUser() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                currentUser = null;
+                document.getElementById('appContent').classList.remove('active');
+                document.getElementById('authContainer').style.display = 'block';
+                showStep('step-login');
+                document.getElementById('lockOverlay').classList.remove('hidden');
+                document.getElementById('lockPassword').value = '';
+                document.getElementById('lockError').classList.remove('show');
+            }
+        }
+
+        // ============================================================
+        // GESTION DE LA CLÉ API
+        // ============================================================
+        function checkApiKey() {
+            const key = localStorage.getItem('regionfit_api_key');
+            const status = document.getElementById('keyStatus');
+            if (key) {
+                status.textContent = '🔑 Clé présente';
+                status.className = 'key-status set';
+                return true;
+            } else {
+                status.textContent = '🔑 Clé manquante';
+                status.className = 'key-status missing';
+                return false;
+            }
+        }
+
+        function resetApiKey() {
+            if (confirm('⚠️ Voulez-vous changer votre clé API ?')) {
+                localStorage.removeItem('regionfit_api_key');
+                checkApiKey();
+                alert('✅ Clé API réinitialisée.');
+            }
+        }
+
+        // ============================================================
+        // CAMÉRA
+        // ============================================================
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const cameraContainer = document.getElementById('cameraContainer');
+        const openBtn = document.getElementById('openCameraBtn');
+        const closeBtn = document.getElementById('closeCameraBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const loader = document.getElementById('loader');
+        const resultDiv = document.getElementById('result');
+        const statusText = document.getElementById('cameraStatus');
+
+        let stream = null;
+        let isCameraOpen = false;
+
+        async function openCamera() {
+            try {
+                statusText.textContent = '⏳ Demande d\'accès...';
+                openBtn.disabled = true;
+
+                const constraints = {
+                    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+                    audio: false
+                };
+
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = stream;
+                await video.play();
+
+                cameraContainer.classList.add('active');
+                isCameraOpen = true;
+                openBtn.textContent = '📷 Caméra active';
+                statusText.textContent = '✅ Caméra prête - Appuyez sur "Prendre la photo"';
+                openBtn.disabled = false;
+
+            } catch (err) {
+                let msg = '❌ Impossible d\'accéder à la caméra.';
+                if (err.name === 'NotAllowedError') msg += ' Autorisez l\'accès.';
+                else if (err.name === 'NotFoundError') msg += ' Aucune caméra trouvée.';
+                alert(msg);
+                statusText.textContent = '❌ ' + msg;
+                openBtn.disabled = false;
+            }
+        }
+
+        function capturePhoto() {
+            if (!isCameraOpen || !video.srcObject) {
+                alert('❌ La caméra n\'est pas active.');
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth || 1280;
+            canvas.height = video.videoHeight || 720;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const imageData = canvas.toDataURL('image/jpeg');
+            closeCamera();
+            analyzeImage(imageData);
+        }
+
+        function closeCamera() {
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+                stream = null;
+            }
+            video.srcObject = null;
+            cameraContainer.classList.remove('active');
+            isCameraOpen = false;
+            openBtn.textContent = '📷 Ouvrir la caméra';
+            statusText.textContent = 'Cliquez pour activer la caméra';
+        }
+
+        // ============================================================
+        // ANALYSE AVEC GEMINI
+        // ============================================================
+        async function analyzeImage(imageData) {
+            loader.classList.add('active');
+            resultDiv.style.display = 'none';
+
+            let apiKey = localStorage.getItem('regionfit_api_key');
+
+            if (!apiKey) {
+                loader.classList.remove('active');
+                apiKey = prompt(
+                    "🔑 Entrez votre clé API Gemini :\n\n" +
+                    "1. Allez sur https://makersuite.google.com/\n" +
+                    "2. Créez une nouvelle clé\n" +
+                    "3. Collez-la ici"
+                );
+
+                if (!apiKey) {
+                    alert('❌ Une clé API est nécessaire.');
+                    return;
+                }
+                localStorage.setItem('regionfit_api_key', apiKey);
+                checkApiKey();
+            }
+
+            try {
+                const base64Image = imageData.split(',')[1];
+
+                const prompt = `Analysez cette photo d'aliment. Retournez UNIQUEMENT un JSON valide :
+                {
+                    "food_name": "nom de l'aliment principal",
+                    "calories": estimation en kcal,
+                    "protein": protéines en grammes,
+                    "carbs": glucides en grammes,
+                    "fats": lipides en grammes,
+                    "warnings": ["avertissement"],
+                    "improvements": ["amélioration"]
+                }
+                Répondez UNIQUEMENT en JSON.`;
+
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } }
+                                ]
+                            }]
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    if (response.status === 403 || response.status === 401) {
+                        localStorage.removeItem('regionfit_api_key');
+                        checkApiKey();
+                        throw new Error('Clé API invalide. Veuillez en saisir une nouvelle.');
+                    }
+                    throw new Error(errorData.error?.message || 'Erreur API');
+                }
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+                if (jsonMatch) {
+                    const result = JSON.parse(jsonMatch[0]);
+                    loader.classList.remove('active');
+                    displayResult({
+                        calories: result.calories || 200,
+                        protein: result.protein || 10,
+                        carbs: result.carbs || 20,
+                        fats: result.fats || 8,
+                        food_name: result.food_name || 'Aliment détecté',
+                        warnings: result.warnings || ['Aucun avertissement'],
+                        improvements: result.improvements || ['Aucune amélioration']
+                    }, imageData);
+                } else {
+                    throw new Error('Réponse JSON invalide');
+                }
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                loader.classList.remove('active');
+                alert(`❌ Erreur d'analyse : ${error.message}\n\nUtilisation du mode démo.`);
+                analyzeDemo(imageData);
+            }
+        }
+
+        function analyzeDemo(imageData) {
+            loader.classList.add('active');
+            setTimeout(() => {
+                loader.classList.remove('active');
+                const foods = ['Pâtes', 'Salade', 'Poulet', 'Poisson', 'Burger', 'Riz', 'Légumes'];
+                const warnings = ['Fromage râpé', 'Pâtes raffinées', 'Sauce grasse'];
+                const randomFood = foods[Math.floor(Math.random() * foods.length)];
+                const randomCal = [250, 320, 370, 420, 180, 520, 200, 85][Math.floor(Math.random() * 8)];
+
+                displayResult({
+                    calories: randomCal,
+                    protein: Math.floor(Math.random() * 30) + 5,
+                    carbs: Math.floor(Math.random() * 50) + 10,
+                    fats: Math.floor(Math.random() * 25) + 2,
+                    food_name: randomFood,
+                    warnings: [warnings[Math.floor(Math.random() * warnings.length)]],
+                    improvements: ['Ajoutez des légumes', 'Réduisez les matières grasses']
+                }, imageData);
+            }, 1500);
+        }
+
+        function displayResult(result, imageData) {
+            document.getElementById('caloriesDisplay').textContent = result.calories + ' kcal';
+            document.getElementById('macrosDisplay').innerHTML = `
+                <div>Protéines: ${result.protein}g</div>
+                <div>Glucides: ${result.carbs}g</div>
+                <div>Lipides: ${result.fats}g</div>
+            `;
+
+            document.getElementById('photoDisplay').innerHTML = `
+                <img src="${imageData}" class="photo-preview" alt="Repas scanné">
+            `;
+
+            const tagsContainer = document.getElementById('tagsDisplay');
+            tagsContainer.innerHTML = `
+                <span class="success">✅ ${result.food_name}</span>
+                ${result.warnings.map(w => `<span class="warning">⚠️ ${w}</span>`).join('')}
+                ${result.improvements.map(i => `<span class="info">💡 ${i}</span>`).join('')}
+            `;
+
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function closeResult() {
+            resultDiv.style.display = 'none';
+        }
+
+        // ============================================================
+        // PLANNING
+        // ============================================================
+        const mealPlans = {
+            FR: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Pain complet + beurre', 'Déjeuner: Poulet rôti + légumes', 'Dîner: Poisson + quinoa'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Omelette + salade', 'Déjeuner: Pâtes complètes', 'Dîner: Soupe + pain complet'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Yaourt + fruits', 'Déjeuner: Salade composée', 'Dîner: Légumes vapeur + œuf'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Flocons avoine', 'Déjeuner: Riz + poisson', 'Dîner: Velouté de légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit + thé', 'Déjeuner: Soupe minceur', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de légumes', 'Déjeuner: Salade verte', 'Dîner: Poisson vapeur'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
+                ],
+                shopping: ['Pain complet', 'Poulet', 'Poisson', 'Légumes de saison', 'Quinoa', 'Œufs', 'Yaourt nature']
+            },
+            CM: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de maïs', 'Déjeuner: Kpem avoé', 'Dîner: Sauce feuilles + poisson'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + beurre de cacahuète', 'Déjeuner: Ndolè + plantain', 'Dîner: Poisson braisé + légumes'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits frais', 'Déjeuner: Riz + sauce gombo', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson fumé + manioc', 'Dîner: Légumes feuilles'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon de poisson', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de fruits', 'Déjeuner: Salade', 'Dîner: Poisson vapeur'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
+                ],
+                shopping: ['Maïs', 'Manioc', 'Plantain', 'Poisson fumé', 'Légumes feuilles', 'Gombo', 'Beurre de cacahuète']
+            },
+            CF: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de mil', 'Déjeuner: Kanda ti nyma', 'Dîner: Gombo + poisson'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + confiture', 'Déjeuner: Chichinga (brochettes)', 'Dîner: Foutou + sauce'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Poisson fumé + légumes', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Riz + sauce', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Mil', 'Manioc', 'Gombo', 'Poisson', 'Viande de brousse', 'Légumes', 'Fruits']
+            }
+        };
+
+        function updateMealPlan() {
+            const country = document.getElementById('countrySelect').value;
+            const data = mealPlans[country] || mealPlans.FR;
+            
+            let html = '';
+            data.days.forEach(d => {
+                const color = d.calories >= 1800 ? '#38a169' : d.calories >= 1200 ? '#d69e2e' : d.calories >= 800 ? '#dd6b20' : '#e53e3e';
+                html += `
+                    <div class="meal-day">
+                        <div class="day-header">
+                            <span>${d.day}</span>
+                            <span class="day-cal" style="color:${color};">${d.calories} kcal</span>
+                        </div>
+                        ${d.meals.map(m => `<div class="meal-item">• ${m}</div>`).join('')}
+                    </div>
+                `;
+            });
+            document.getElementById('mealPlanContainer').innerHTML = html;
+            document.getElementById('locationBadge').textContent = `📍 ${document.getElementById('countrySelect').selectedOptions[0].text}`;
+        }
+
+        function generateShoppingList() {
+            const country = document.getElementById('countrySelect').value;
+            const data = mealPlans[country] || mealPlans.FR;
+            
+            const container = document.getElementById('shoppingListContainer');
+            if (data.shopping && data.shopping.length > 0) {
+                let html = '<ul class="shopping-list">';
+                data.shopping.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += '</ul>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p style="text-align:center;color:#718096;padding:20px;">Aucun article disponible pour ce pays.</p>';
+            }
+        }
+
+        // ============================================================
+        // PROFIL
+        // ============================================================
+        function saveProfile() {
+            const goal = document.getElementById('goalInput').value;
+            const calories = document.getElementById('caloriesInput').value;
+            
+            localStorage.setItem('regionfit_goal', goal);
+            localStorage.setItem('regionfit_calories', calories);
+            
+            document.getElementById('goalWeight').textContent = goal + ' kg';
+            document.getElementById('dailyCalories').textContent = parseInt(calories).toLocaleString() + ' kcal';
+            
+            alert('✅ Profil sauvegardé !');
+        }
+
+        function loadProfile() {
+            const goal = localStorage.getItem('regionfit_goal');
+            const calories = localStorage.getItem('regionfit_calories');
+            
+            if (goal) {
+                document.getElementById('goalInput').value = goal;
+                document.getElementById('goalWeight').textContent = goal + ' kg';
+            }
+            if (calories) {
+                document.getElementById('caloriesInput').value = calories;
+                document.getElementById('dailyCalories').textContent = parseInt(calories).toLocaleString() + ' kcal';
+            }
+        }
+
+        // ============================================================
+        // TABS
+        // ============================================================
+        document.querySelectorAll('.tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ============================================================
+        // ÉVÉNEMENTS CAMÉRA
+        // ============================================================
+        openBtn.addEventListener('click', openCamera);
+        closeBtn.addEventListener('click', closeCamera);
+        captureBtn.addEventListener('click', capturePhoto);
+
+        // ============================================================
+        // ENTRÉE POUR DÉVERROUILLER
+        // ============================================================
+        document.getElementById('lockPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                unlockApp();
+            }
+        });
+
+        console.log('✅ RégionFit v3.2 - Mot de passe réinitialisé à 1234');
+        console.log('🔐 Mot de passe : 1234');
+        console.log('© 2026 Constantin Armstrong Sogagoum');
+    </script>
+    Réinitialisation mot de passe à 1234
+</body>
+</html>
