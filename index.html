@@ -599,8 +599,8 @@
     <div class="app" id="appWrapper">
         
         <!-- ============================================================
-           AUTHENTIFICATION
-           ============================================================ -->
+             AUTHENTIFICATION
+             ============================================================ -->
         <div id="authContainer">
             <div class="header">
                 <h1>🥗 Région<span>Fit</span></h1>
@@ -714,8 +714,8 @@
         </div>
 
         <!-- ============================================================
-           CONTENU DE L'APPLICATION
-           ============================================================ -->
+             CONTENU DE L'APPLICATION
+             ============================================================ -->
         <div id="appContent">
             <div class="header-app">
                 <h1>🥗 Région<span>Fit</span></h1>
@@ -880,21 +880,6 @@
 
     <script>
         // ============================================================
-        // PAS DE VERROUILLAGE - L'APP S'OUVRE DIRECTEMENT
-        // ============================================================
-        
-        // On masque l'overlay de verrouillage immédiatement
-        document.addEventListener('DOMContentLoaded', function() {
-            // L'application s'ouvre directement, plus de mot de passe !
-            document.getElementById('authContainer').style.display = 'block';
-            checkApiKey();
-            updateMealPlan();
-            loadProfile();
-            console.log('✅ RégionFit chargé - Pas de mot de passe requis');
-            console.log('© 2026 Constantin Armstrong Sogagoum');
-        });
-
-        // ============================================================
         // GESTION DE L'AUTHENTIFICATION
         // ============================================================
         
@@ -904,6 +889,9 @@
         let resendTimer = 60;
         let timerInterval = null;
 
+        // ============================================================
+        // NAVIGATION ENTRE LES ÉTAPES
+        // ============================================================
         function showStep(stepId) {
             document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
@@ -921,107 +909,14 @@
 
         function goBackToRegister() {
             showStep('step-register');
+            clearStatus('registerStatus');
         }
 
         function goBackToChoice() {
             showStep('step-choice');
+            clearStatus('codeStatus');
         }
 
-        function clearStatus(id) {
-            const el = document.getElementById(id);
-            el.className = 'auth-status';
-            el.textContent = '';
-        }
-
-        function showStatus(id, message, type) {
-            const el = document.getElementById(id);
-            el.textContent = message;
-            el.className = 'auth-status show ' + type;
-        }
-
-        // ============================================================
-        // INSCRIPTION
-        // ============================================================
-        function registerUser() {
-            const email = document.getElementById('registerEmail').value;
-            const phone = document.getElementById('registerPhone').value;
-            const username = document.getElementById('registerUsername').value;
-            const password = document.getElementById('registerPassword').value;
-            
-            // Validation simple
-            if (!email || !email.includes('@')) {
-                showStatus('registerStatus', '❌ Email invalide', 'error');
-                return;
-            }
-            if (!phone || phone.length < 8) {
-                showStatus('registerStatus', '❌ Numéro de téléphone invalide', 'error');
-                return;
-            }
-            if (!username || username.length < 3) {
-                showStatus('registerStatus', '❌ Nom d\'utilisateur trop court', 'error');
-                return;
-            }
-            if (!password || password.length < 6) {
-                showStatus('registerStatus', '❌ Mot de passe trop court (minimum 6 caractères)', 'error');
-                return;
-            }
-            
-            // Stocker l'utilisateur
-            const user = {
-                email,
-                phone,
-                username,
-                password,
-                createdAt: new Date().toISOString()
-            };
-            
-            localStorage.setItem('regionfit_user', JSON.stringify(user));
-            currentUser = user;
-            
-            showStatus('registerStatus', '✅ Inscription réussie ! Choississez votre moyen de réception.', 'success');
-            showStep('step-choice');
-            
-            // Mettre à jour les infos de contact dans le choix
-            document.querySelector('#choiceSms div').textContent = phone;
-            document.querySelector('#choiceEmail div').textContent = email;
-        }
-
-        // ============================================================
-        // CONNEXION
-        // ============================================================
-        function loginUser() {
-            const identifier = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            const storedUser = localStorage.getItem('regionfit_user');
-            if (!storedUser) {
-                showStatus('loginStatus', '❌ Aucun compte trouvé. Veuillez vous inscrire.', 'error');
-                return;
-            }
-            
-            const user = JSON.parse(storedUser);
-            
-            if ((identifier === user.email || identifier === user.username) && password === user.password) {
-                currentUser = user;
-                showStatus('loginStatus', '✅ Connexion réussie !', 'success');
-                setTimeout(enterApp, 1000);
-            } else {
-                showStatus('loginStatus', '❌ Email ou mot de passe incorrect', 'error');
-            }
-        }
-
-        function enterApp() {
-            document.getElementById('authContainer').style.display = 'none';
-            document.getElementById('appContent').classList.add('active');
-            document.getElementById('userDisplay').textContent = currentUser.username || 'User';
-            document.getElementById('profileUsername').textContent = currentUser.username;
-            document.getElementById('profileEmail').textContent = currentUser.email;
-            document.getElementById('profilePhone').textContent = currentUser.phone;
-        }
-
-        // ============================================================
-        // CHOIX DU MOYEN
-        // ============================================================
         function selectChoice(choice) {
             selectedChoice = choice;
             document.querySelectorAll('.choice-group button').forEach(b => b.classList.remove('active'));
@@ -1032,113 +927,210 @@
             }
         }
 
-        // ============================================================
-        // ENVOI DU CODE
-        // ============================================================
-        function sendValidationCode() {
-            // Générer un code à 6 chiffres
-            validationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            showStatus('codeStatus', `📨 Code envoyé par ${selectedChoice === 'sms' ? 'SMS' : 'Email'} : ${validationCode}`, 'info');
-            
-            // Simuler l'envoi
-            setTimeout(() => {
-                showStatus('codeStatus', `✅ Code envoyé ! Vérifiez votre ${selectedChoice === 'sms' ? 'téléphone' : 'email'}`, 'success');
-            }, 500);
-            
-            showStep('step-code');
-            document.getElementById('codeMethodLabel').textContent = selectedChoice === 'sms' ? 'SMS' : 'Email';
-            
-            // Démarrer le timer
-            startResendTimer();
-            
-            // Afficher le code dans la console pour faciliter les tests
-            console.log(`📱 Code de validation : ${validationCode}`);
+        function clearStatus(elementId) {
+            const el = document.getElementById(elementId);
+            el.className = 'auth-status';
+            el.textContent = '';
+        }
+
+        function showStatus(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = 'auth-status show ' + type;
         }
 
         // ============================================================
-        // VALIDATION DU CODE
+        // INSCRIPTION
         // ============================================================
-        function validateCode() {
-            const inputs = document.querySelectorAll('.code-input');
-            let code = '';
-            inputs.forEach(input => code += input.value);
+        function registerUser() {
+            const email = document.getElementById('registerEmail').value.trim();
+            const phone = document.getElementById('registerPhone').value.trim();
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value;
+
+            // Validation
+            let isValid = true;
             
-            if (code.length !== 6) {
-                showStatus('codeStatus', '❌ Entrez les 6 chiffres du code', 'error');
+            if (!email || !email.includes('@')) {
+                document.getElementById('emailError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('emailError').classList.remove('show');
+            }
+
+            if (!phone || phone.length < 8) {
+                document.getElementById('phoneError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('phoneError').classList.remove('show');
+            }
+
+            if (!username || username.length < 2) {
+                document.getElementById('usernameError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('usernameError').classList.remove('show');
+            }
+
+            if (!password || password.length < 6) {
+                document.getElementById('passwordError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('passwordError').classList.remove('show');
+            }
+
+            if (!isValid) return;
+
+            // Vérifier si l'utilisateur existe déjà
+            const users = JSON.parse(localStorage.getItem('regionfit_users') || '[]');
+            if (users.find(u => u.email === email || u.username === username)) {
+                showStatus('registerStatus', '❌ Cet email ou nom d\'utilisateur existe déjà.', 'error');
                 return;
             }
+
+            // Sauvegarder
+            const newUser = {
+                email,
+                phone,
+                username,
+                password,
+                registeredAt: new Date().toISOString()
+            };
+            users.push(newUser);
+            localStorage.setItem('regionfit_users', JSON.stringify(users));
+            localStorage.setItem('regionfit_current_user', JSON.stringify(newUser));
+
+            showStatus('registerStatus', '✅ Inscription réussie ! Vérifiez votre téléphone ou email.', 'success');
             
-            if (code === validationCode) {
-                showStatus('codeStatus', '✅ Code validé ! Accès autorisé.', 'success');
-                setTimeout(enterApp, 1000);
-            } else {
-                showStatus('codeStatus', '❌ Code incorrect. Veuillez réessayer.', 'error');
-                inputs.forEach(input => {
-                    input.classList.add('error');
-                    input.value = '';
-                });
+            setTimeout(() => {
+                showStep('step-choice');
+            }, 1500);
+        }
+
+        // ============================================================
+        // CONNEXION
+        // ============================================================
+        function loginUser() {
+            const identifier = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!identifier || !password) {
+                showStatus('loginStatus', '❌ Veuillez remplir tous les champs.', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('regionfit_users') || '[]');
+            const user = users.find(u => 
+                (u.email === identifier || u.username === identifier) && u.password === password
+            );
+
+            if (!user) {
+                showStatus('loginStatus', '❌ Identifiants incorrects.', 'error');
+                return;
+            }
+
+            localStorage.setItem('regionfit_current_user', JSON.stringify(user));
+            showStatus('loginStatus', '✅ Connexion réussie !', 'success');
+            
+            setTimeout(() => {
+                showStep('step-choice');
+            }, 1500);
+        }
+
+        // ============================================================
+        // CODE DE VALIDATION
+        // ============================================================
+        function sendValidationCode() {
+            // Générer un code aléatoire à 6 chiffres
+            validationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log('📨 Code de validation:', validationCode);
+
+            document.getElementById('codeMethodLabel').textContent = selectedChoice === 'sms' ? 'SMS' : 'Email';
+
+            showStatus('codeStatus', `📨 Code envoyé par ${selectedChoice === 'sms' ? 'SMS' : 'Email'}. Vérifiez votre ${selectedChoice === 'sms' ? 'téléphone' : 'boîte mail'}.`, 'info');
+            
+            // Simuler l'envoi
+            setTimeout(() => {
+                showStatus('codeStatus', '📨 Code envoyé avec succès !', 'success');
+            }, 2000);
+
+            showStep('step-code');
+            startResendTimer();
+        }
+
+        function validateCode() {
+            const inputs = document.querySelectorAll('.code-input');
+            let enteredCode = '';
+            inputs.forEach(input => {
+                enteredCode += input.value;
+            });
+
+            if (enteredCode.length < 6) {
+                showStatus('codeStatus', '❌ Veuillez entrer un code complet.', 'error');
+                return;
+            }
+
+            if (enteredCode === validationCode) {
+                showStatus('codeStatus', '✅ Code validé ! Bienvenue sur RégionFit.', 'success');
                 setTimeout(() => {
-                    inputs.forEach(input => input.classList.remove('error'));
+                    document.getElementById('authContainer').style.display = 'none';
+                    document.getElementById('appContent').classList.add('active');
+                    initApp();
+                }, 1500);
+            } else {
+                showStatus('codeStatus', '❌ Code invalide. Veuillez réessayer.', 'error');
+                document.querySelectorAll('.code-input').forEach(input => input.classList.add('error'));
+                setTimeout(() => {
+                    document.querySelectorAll('.code-input').forEach(input => input.classList.remove('error'));
                 }, 2000);
             }
         }
 
         // ============================================================
-        // CODE INPUT (navigation automatique)
+        // CODE INPUT - Navigation automatique
         // ============================================================
-        document.querySelectorAll('.code-input').forEach((input, index, inputs) => {
-            input.addEventListener('input', function() {
-                if (this.value.length === 1) {
+        document.querySelectorAll('.code-input').forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                const val = this.value;
+                if (val.length === 1) {
                     this.classList.add('filled');
-                    if (index < inputs.length - 1) {
-                        inputs[index + 1].focus();
+                    if (index < 5) {
+                        document.querySelectorAll('.code-input')[index + 1].focus();
                     }
                 }
             });
-            
+
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
-                    inputs[index - 1].focus();
-                    inputs[index - 1].classList.remove('filled');
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    document.querySelectorAll('.code-input')[index - 1].focus();
                 }
-            });
-            
-            input.addEventListener('focus', function() {
-                this.select();
             });
         });
 
         // ============================================================
-        // RENVOYER LE CODE
+        // RENVOI DU CODE
         // ============================================================
         function resendCode() {
-            const link = document.getElementById('resendLink');
-            if (link.classList.contains('disabled')) return;
-            
-            validationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            showStatus('codeStatus', `📨 Nouveau code envoyé : ${validationCode}`, 'info');
-            console.log(`📱 Nouveau code : ${validationCode}`);
-            startResendTimer();
+            if (document.getElementById('resendLink').classList.contains('disabled')) {
+                return;
+            }
+            sendValidationCode();
         }
 
         function startResendTimer() {
-            const link = document.getElementById('resendLink');
-            const timerDisplay = document.getElementById('resendTimer');
-            
-            link.classList.add('disabled');
             resendTimer = 60;
-            timerDisplay.textContent = resendTimer;
+            document.getElementById('resendLink').classList.add('disabled');
+            const timerEl = document.getElementById('resendTimer');
             
             if (timerInterval) clearInterval(timerInterval);
             
             timerInterval = setInterval(() => {
                 resendTimer--;
-                timerDisplay.textContent = resendTimer;
+                timerEl.textContent = resendTimer;
                 if (resendTimer <= 0) {
                     clearInterval(timerInterval);
-                    link.classList.remove('disabled');
-                    timerDisplay.textContent = '0';
+                    document.getElementById('resendLink').classList.remove('disabled');
+                    timerEl.textContent = '0';
                 }
             }, 1000);
         }
@@ -1147,19 +1139,28 @@
         // DÉCONNEXION
         // ============================================================
         function logoutUser() {
-            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-                currentUser = null;
+            if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+                localStorage.removeItem('regionfit_current_user');
                 document.getElementById('appContent').classList.remove('active');
                 document.getElementById('authContainer').style.display = 'block';
                 showStep('step-login');
+                clearStatus('loginStatus');
             }
         }
 
         // ============================================================
         // GESTION DE LA CLÉ API
         // ============================================================
+        function getApiKey() {
+            return localStorage.getItem('regionfit_api_key');
+        }
+
+        function setApiKey(key) {
+            localStorage.setItem('regionfit_api_key', key);
+        }
+
         function checkApiKey() {
-            const key = localStorage.getItem('regionfit_api_key');
+            const key = getApiKey();
             const status = document.getElementById('keyStatus');
             if (key) {
                 status.textContent = '🔑 Clé présente';
@@ -1176,9 +1177,87 @@
             if (confirm('⚠️ Voulez-vous changer votre clé API ?')) {
                 localStorage.removeItem('regionfit_api_key');
                 checkApiKey();
-                alert('✅ Clé API réinitialisée.');
+                alert('✅ Clé API réinitialisée. Elle vous sera redemandée au prochain scan.');
             }
         }
+
+        // ============================================================
+        // DONNÉES DES PLANS DE REPAS
+        // ============================================================
+        const mealPlans = {
+            FR: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Pain complet + beurre', 'Déjeuner: Poulet rôti + légumes', 'Dîner: Poisson + quinoa'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Omelette + salade', 'Déjeuner: Pâtes complètes', 'Dîner: Soupe + pain complet'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Yaourt + fruits', 'Déjeuner: Salade composée', 'Dîner: Légumes vapeur + œuf'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Flocons avoine', 'Déjeuner: Riz + poisson', 'Dîner: Velouté de légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit + thé', 'Déjeuner: Soupe minceur', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de légumes', 'Déjeuner: Salade verte', 'Dîner: Poisson vapeur'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
+                ],
+                shopping: ['Pain complet', 'Poulet', 'Poisson', 'Légumes de saison', 'Quinoa', 'Œufs', 'Yaourt nature']
+            },
+            CM: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de maïs', 'Déjeuner: Kpem avoé', 'Dîner: Sauce feuilles + poisson'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + beurre de cacahuète', 'Déjeuner: Ndolè + plantain', 'Dîner: Poisson braisé + légumes'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits frais', 'Déjeuner: Riz + sauce gombo', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson fumé + manioc', 'Dîner: Légumes feuilles'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon de poisson', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de fruits', 'Déjeuner: Salade', 'Dîner: Poisson vapeur'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
+                ],
+                shopping: ['Maïs', 'Manioc', 'Plantain', 'Poisson fumé', 'Légumes feuilles', 'Gombo', 'Beurre de cacahuète']
+            },
+            CF: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de mil', 'Déjeuner: Kanda ti nyma', 'Dîner: Gombo + poisson'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + confiture', 'Déjeuner: Chichinga (brochettes)', 'Dîner: Foutou + sauce'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Poisson fumé + légumes', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Riz + sauce', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes grillés'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Mil', 'Manioc', 'Gombo', 'Poisson', 'Viande de brousse', 'Légumes', 'Fruits']
+            },
+            CD: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie', 'Déjeuner: Poulet Moambe', 'Dîner: Poisson + légumes'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain', 'Déjeuner: Riz + sauce', 'Dîner: Légumes feuilles'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Poisson fumé', 'Dîner: Soupe'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Manioc + poisson', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Manioc', 'Riz', 'Poisson', 'Poulet', 'Légumes feuilles', 'Huile de palme', 'Fruits']
+            },
+            SN: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de mil', 'Déjeuner: Thiéboudienne', 'Dîner: Poisson + légumes'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + beurre', 'Déjeuner: Yassa poulet', 'Dîner: Riz + sauce'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Mafé', 'Dîner: Soupe de légumes'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson grillé', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Mil', 'Riz', 'Poisson', 'Poulet', 'Arachides', 'Légumes', 'Fruits']
+            },
+            CI: {
+                days: [
+                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de maïs', 'Déjeuner: Attiéké + poisson', 'Dîner: Sauce graine'] },
+                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain', 'Déjeuner: Foutou + sauce', 'Dîner: Poisson + légumes'] },
+                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Riz + sauce', 'Dîner: Soupe'] },
+                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson fumé', 'Dîner: Légumes'] },
+                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes'] },
+                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
+                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
+                ],
+                shopping: ['Maïs', 'Manioc', 'Plantain', 'Poisson', 'Huile de palme', 'Légumes', 'Fruits']
+            }
+        };
 
         // ============================================================
         // CAMÉRA
@@ -1261,7 +1340,7 @@
             loader.classList.add('active');
             resultDiv.style.display = 'none';
 
-            let apiKey = localStorage.getItem('regionfit_api_key');
+            let apiKey = getApiKey();
 
             if (!apiKey) {
                 loader.classList.remove('active');
@@ -1269,14 +1348,15 @@
                     "🔑 Entrez votre clé API Gemini :\n\n" +
                     "1. Allez sur https://makersuite.google.com/\n" +
                     "2. Créez une nouvelle clé\n" +
-                    "3. Collez-la ici"
+                    "3. Collez-la ici\n\n" +
+                    "💡 Cette clé sera stockée sur votre appareil."
                 );
 
                 if (!apiKey) {
                     alert('❌ Une clé API est nécessaire.');
                     return;
                 }
-                localStorage.setItem('regionfit_api_key', apiKey);
+                setApiKey(apiKey);
                 checkApiKey();
             }
 
@@ -1316,7 +1396,7 @@
                     if (response.status === 403 || response.status === 401) {
                         localStorage.removeItem('regionfit_api_key');
                         checkApiKey();
-                        throw new Error('Clé API invalide. Veuillez en saisir une nouvelle.');
+                        throw new Error('Clé API invalide.');
                     }
                     throw new Error(errorData.error?.message || 'Erreur API');
                 }
@@ -1400,57 +1480,18 @@
         // ============================================================
         // PLANNING
         // ============================================================
-        const mealPlans = {
-            FR: {
-                days: [
-                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Pain complet + beurre', 'Déjeuner: Poulet rôti + légumes', 'Dîner: Poisson + quinoa'] },
-                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Omelette + salade', 'Déjeuner: Pâtes complètes', 'Dîner: Soupe + pain complet'] },
-                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Yaourt + fruits', 'Déjeuner: Salade composée', 'Dîner: Légumes vapeur + œuf'] },
-                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Flocons avoine', 'Déjeuner: Riz + poisson', 'Dîner: Velouté de légumes'] },
-                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit + thé', 'Déjeuner: Soupe minceur', 'Dîner: Légumes grillés'] },
-                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de légumes', 'Déjeuner: Salade verte', 'Dîner: Poisson vapeur'] },
-                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
-                ],
-                shopping: ['Pain complet', 'Poulet', 'Poisson', 'Légumes de saison', 'Quinoa', 'Œufs', 'Yaourt nature']
-            },
-            CM: {
-                days: [
-                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de maïs', 'Déjeuner: Kpem avoé', 'Dîner: Sauce feuilles + poisson'] },
-                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + beurre de cacahuète', 'Déjeuner: Ndolè + plantain', 'Dîner: Poisson braisé + légumes'] },
-                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits frais', 'Déjeuner: Riz + sauce gombo', 'Dîner: Soupe de légumes'] },
-                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Poisson fumé + manioc', 'Dîner: Légumes feuilles'] },
-                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon de poisson', 'Dîner: Légumes grillés'] },
-                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus de fruits', 'Déjeuner: Salade', 'Dîner: Poisson vapeur'] },
-                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé + bouillon'] }
-                ],
-                shopping: ['Maïs', 'Manioc', 'Plantain', 'Poisson fumé', 'Légumes feuilles', 'Gombo', 'Beurre de cacahuète']
-            },
-            CF: {
-                days: [
-                    { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Bouillie de mil', 'Déjeuner: Kanda ti nyma', 'Dîner: Gombo + poisson'] },
-                    { day: 'Mardi', calories: 2000, meals: ['Petit-déj: Pain + confiture', 'Déjeuner: Chichinga (brochettes)', 'Dîner: Foutou + sauce'] },
-                    { day: 'Mercredi', calories: 1500, meals: ['Petit-déj: Fruits', 'Déjeuner: Poisson fumé + légumes', 'Dîner: Soupe de légumes'] },
-                    { day: 'Jeudi', calories: 1500, meals: ['Petit-déj: Omelette', 'Déjeuner: Riz + sauce', 'Dîner: Légumes'] },
-                    { day: 'Vendredi', calories: 1000, meals: ['Petit-déj: Fruit', 'Déjeuner: Bouillon', 'Dîner: Légumes grillés'] },
-                    { day: 'Samedi', calories: 1000, meals: ['Petit-déj: Jus', 'Déjeuner: Salade', 'Dîner: Poisson'] },
-                    { day: 'Dimanche', calories: 500, meals: ['Journée: Eau + thé'] }
-                ],
-                shopping: ['Mil', 'Manioc', 'Gombo', 'Poisson', 'Viande de brousse', 'Légumes', 'Fruits']
-            }
-        };
-
         function updateMealPlan() {
             const country = document.getElementById('countrySelect').value;
             const data = mealPlans[country] || mealPlans.FR;
             
             let html = '';
             data.days.forEach(d => {
-                const color = d.calories >= 1800 ? '#38a169' : d.calories >= 1200 ? '#d69e2e' : d.calories >= 800 ? '#dd6b20' : '#e53e3e';
+                const color = d.calories >= 1800 ? 'green' : d.calories >= 1200 ? 'yellow' : d.calories >= 800 ? 'orange' : 'red';
                 html += `
                     <div class="meal-day">
                         <div class="day-header">
                             <span>${d.day}</span>
-                            <span class="day-cal" style="color:${color};">${d.calories} kcal</span>
+                            <span class="day-cal" style="color:${color === 'green' ? '#38a169' : color === 'yellow' ? '#d69e2e' : color === 'orange' ? '#dd6b20' : '#e53e3e'};">${d.calories} kcal</span>
                         </div>
                         ${d.meals.map(m => `<div class="meal-item">• ${m}</div>`).join('')}
                     </div>
@@ -1508,27 +1549,57 @@
         }
 
         // ============================================================
-        // TABS
+        // INITIALISATION
         // ============================================================
-        document.querySelectorAll('.tabs button').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+        function initApp() {
+            // Récupérer l'utilisateur courant
+            const user = JSON.parse(localStorage.getItem('regionfit_current_user') || 'null');
+            if (user) {
+                document.getElementById('userDisplay').textContent = user.username || 'User';
+                document.getElementById('profileUsername').textContent = user.username || '-';
+                document.getElementById('profileEmail').textContent = user.email || '-';
+                document.getElementById('profilePhone').textContent = user.phone || '-';
+                currentUser = user;
+            }
+
+            // Gestionnaire de tabs
+            document.querySelectorAll('.tabs button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                });
             });
-        });
+
+            // Ouvrir la caméra
+            openBtn.addEventListener('click', openCamera);
+            closeBtn.addEventListener('click', closeCamera);
+            captureBtn.addEventListener('click', capturePhoto);
+
+            checkApiKey();
+            updateMealPlan();
+            loadProfile();
+
+            console.log('✅ RégionFit v3.2 chargé avec succès !');
+            console.log('👤 Utilisateur:', currentUser?.username || 'Invité');
+            console.log('© 2026 Constantin Armstrong Sogagoum');
+        }
 
         // ============================================================
-        // ÉVÉNEMENTS CAMÉRA
+        // VÉRIFICATION DE L'UTILISATEUR AU CHARGEMENT
         // ============================================================
-        openBtn.addEventListener('click', openCamera);
-        closeBtn.addEventListener('click', closeCamera);
-        captureBtn.addEventListener('click', capturePhoto);
-
-        console.log('✅ RégionFit v3.3 - Sans mot de passe');
-        console.log('🔓 L\'application s\'ouvre directement');
-        console.log('© 2026 Constantin Armstrong Sogagoum');
+        (function() {
+            const user = JSON.parse(localStorage.getItem('regionfit_current_user') || 'null');
+            if (user) {
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('appContent').classList.add('active');
+                initApp();
+            } else {
+                document.getElementById('authContainer').style.display = 'block';
+                showStep('step-login');
+            }
+        })();
     </script>
 </body>
 </html>
