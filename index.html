@@ -13,9 +13,6 @@
     <meta name="theme-color" content="#38a169">
     
     <style>
-        /* ============================================================
-           STYLES COMPLETS (version simplifiée pour lisibilité)
-           ============================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -63,7 +60,7 @@
             color: #2d3748;
             margin-bottom: 4px;
         }
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e2e8f0;
@@ -72,7 +69,7 @@
             background: #fff;
             transition: 0.2s;
         }
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             border-color: #38a169;
             outline: none;
             box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
@@ -467,6 +464,10 @@
             margin-top: 12px;
         }
         .logout-btn:hover { background: #f56565; }
+
+        /* Pays flags */
+        .flag { margin-right: 6px; }
+        .country-option { display: flex; align-items: center; }
     </style>
 </head>
 <body>
@@ -507,6 +508,37 @@
                     <label>🔑 Mot de passe</label>
                     <input type="password" id="registerPassword" placeholder="Minimum 6 caractères">
                     <div class="error-msg" id="passwordError">Mot de passe trop court</div>
+                </div>
+
+                <!-- 🌍 NOUVEAU : CHOIX DU PAYS -->
+                <div class="form-group">
+                    <label>🌍 Pays / Région</label>
+                    <select id="registerCountry">
+                        <option value="FR">🇫🇷 France</option>
+                        <option value="CM">🇨🇲 Cameroun</option>
+                        <option value="CF">🇨🇫 Centrafrique</option>
+                        <option value="CD">🇨🇩 RDC</option>
+                        <option value="SN">🇸🇳 Sénégal</option>
+                        <option value="CI">🇨🇮 Côte d'Ivoire</option>
+                        <option value="ML">🇲🇱 Mali</option>
+                        <option value="NG">🇳🇬 Nigéria</option>
+                        <option value="GH">🇬🇭 Ghana</option>
+                        <option value="BJ">🇧🇯 Bénin</option>
+                        <option value="BF">🇧🇫 Burkina Faso</option>
+                        <option value="GM">🇬🇲 Gambie</option>
+                        <option value="GN">🇬🇳 Guinée</option>
+                        <option value="NE">🇳🇪 Niger</option>
+                        <option value="ZA">🇿🇦 Afrique du Sud</option>
+                        <option value="KE">🇰🇪 Kenya</option>
+                        <option value="TZ">🇹🇿 Tanzanie</option>
+                        <option value="UG">🇺🇬 Ouganda</option>
+                        <option value="RW">🇷🇼 Rwanda</option>
+                        <option value="MA">🇲🇦 Maroc</option>
+                        <option value="TN">🇹🇳 Tunisie</option>
+                        <option value="EG">🇪🇬 Égypte</option>
+                        <option value="DZ">🇩🇿 Algérie</option>
+                        <option value="CI">🇨🇮 Côte d'Ivoire</option>
+                    </select>
                 </div>
 
                 <button class="btn-primary" onclick="registerUser()">📝 S'inscrire</button>
@@ -700,6 +732,11 @@
                         <span class="label">Téléphone</span>
                         <span class="value" id="profilePhone">-</span>
                     </div>
+                    <!-- 🌍 PAYS AFFICHÉ DANS LE PROFIL -->
+                    <div class="user-info" style="border-bottom: none;">
+                        <span class="label">🌍 Pays / Région</span>
+                        <span class="value" id="profileCountry">-</span>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -751,12 +788,41 @@
 
             <div class="footer">
                 <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-                <p>RégionFit v3.2 · Authentification</p>
+                <p>RégionFit v3.3 · Authentification + Pays</p>
             </div>
         </div>
     </div>
 
     <script>
+        // ============================================================
+        // MAP PAYS VERS NOMS
+        // ============================================================
+        const countryNames = {
+            'FR': '🇫🇷 France',
+            'CM': '🇨🇲 Cameroun',
+            'CF': '🇨🇫 Centrafrique',
+            'CD': '🇨🇩 RDC',
+            'SN': '🇸🇳 Sénégal',
+            'CI': '🇨🇮 Côte d\'Ivoire',
+            'ML': '🇲🇱 Mali',
+            'NG': '🇳🇬 Nigéria',
+            'GH': '🇬🇭 Ghana',
+            'BJ': '🇧🇯 Bénin',
+            'BF': '🇧🇫 Burkina Faso',
+            'GM': '🇬🇲 Gambie',
+            'GN': '🇬🇳 Guinée',
+            'NE': '🇳🇪 Niger',
+            'ZA': '🇿🇦 Afrique du Sud',
+            'KE': '🇰🇪 Kenya',
+            'TZ': '🇹🇿 Tanzanie',
+            'UG': '🇺🇬 Ouganda',
+            'RW': '🇷🇼 Rwanda',
+            'MA': '🇲🇦 Maroc',
+            'TN': '🇹🇳 Tunisie',
+            'EG': '🇪🇬 Égypte',
+            'DZ': '🇩🇿 Algérie'
+        };
+
         // ============================================================
         // GESTION DE L'AUTHENTIFICATION
         // ============================================================
@@ -825,6 +891,7 @@
             const phone = document.getElementById('registerPhone').value.trim();
             const username = document.getElementById('registerUsername').value.trim();
             const password = document.getElementById('registerPassword').value;
+            const country = document.getElementById('registerCountry').value;
 
             // Validation
             let isValid = true;
@@ -872,6 +939,7 @@
                 phone,
                 username,
                 password,
+                country,
                 registeredAt: new Date().toISOString()
             };
             users.push(newUser);
@@ -928,16 +996,13 @@
         // CODE DE VALIDATION
         // ============================================================
         function sendValidationCode() {
-            // Générer un code aléatoire à 6 chiffres
             validationCode = Math.floor(100000 + Math.random() * 900000).toString();
             
-            // AFFICHER LE CODE DANS LA CONSOLE (SIMULATION D'ENVOI)
             console.log('📨 =========================================');
             console.log(`📨 CODE DE VALIDATION : ${validationCode}`);
             console.log(`📨 Envoyé par ${selectedChoice === 'sms' ? 'SMS' : 'Email'}`);
             console.log('📨 =========================================');
             
-            // ALERTE POUR L'UTILISATEUR (pour la démo)
             alert(`📨 Code de validation (${selectedChoice === 'sms' ? 'SMS' : 'Email'}) :\n\n${validationCode}\n\n(Simulation - Le code est aussi dans la console)`);
 
             document.getElementById('codeMethodLabel').textContent = selectedChoice === 'sms' ? 'SMS' : 'Email';
@@ -1452,6 +1517,17 @@
                 document.getElementById('profileUsername').textContent = user.username || '-';
                 document.getElementById('profileEmail').textContent = user.email || '-';
                 document.getElementById('profilePhone').textContent = user.phone || '-';
+                
+                // 🌍 AFFICHER LE PAYS DANS LE PROFIL
+                const countryDisplay = countryNames[user.country] || user.country || 'Non défini';
+                document.getElementById('profileCountry').textContent = countryDisplay;
+                
+                // Mettre à jour le sélecteur de pays avec le pays de l'utilisateur
+                if (user.country) {
+                    document.getElementById('countrySelect').value = user.country;
+                    updateMealPlan();
+                }
+                
                 currentUser = user;
             }
 
@@ -1472,8 +1548,9 @@
             updateMealPlan();
             loadProfile();
 
-            console.log('✅ RégionFit v3.2 chargé avec succès !');
+            console.log('✅ RégionFit v3.3 chargé avec succès !');
             console.log('👤 Utilisateur:', currentUser?.username || 'Invité');
+            console.log('🌍 Pays:', currentUser?.country || 'Non défini');
             console.log('© 2026 Constantin Armstrong Sogagoum');
         }
 
