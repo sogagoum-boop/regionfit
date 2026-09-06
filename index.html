@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RégionFit - Authentification</title>
+    <title>RégionFit - Nutrition IA</title>
     
     <!-- PWA -->
     <link rel="manifest" href="/regionfit/manifest.json">
@@ -14,6 +13,9 @@
     <meta name="theme-color" content="#38a169">
     
     <style>
+        /* ============================================================
+           STYLES COMPLETS (version simplifiée pour lisibilité)
+           ============================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -47,26 +49,13 @@
             margin-top: 4px;
         }
 
-        /* ============================================================
-           AUTHENTIFICATION
-           ============================================================ */
-        #authContainer {
-            display: block;
-        }
-        #authContainer.hidden {
-            display: none;
-        }
+        /* AUTH */
+        #authContainer { display: block; }
+        #authContainer.hidden { display: none; }
+        .auth-step { display: none; }
+        .auth-step.active { display: block; }
 
-        .auth-step {
-            display: none;
-        }
-        .auth-step.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
+        .form-group { margin-bottom: 16px; }
         .form-group label {
             display: block;
             font-size: 13px;
@@ -74,7 +63,7 @@
             color: #2d3748;
             margin-bottom: 4px;
         }
-        .form-group input, .form-group select {
+        .form-group input {
             width: 100%;
             padding: 12px;
             border: 2px solid #e2e8f0;
@@ -83,13 +72,10 @@
             background: #fff;
             transition: 0.2s;
         }
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus {
             border-color: #38a169;
             outline: none;
             box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
-        }
-        .form-group input.error {
-            border-color: #e53e3e;
         }
         .form-group .error-msg {
             color: #e53e3e;
@@ -112,10 +98,6 @@
             transition: 0.2s;
         }
         .btn-primary:active { transform: scale(0.97); }
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
         .btn-secondary {
             width: 100%;
             padding: 12px;
@@ -128,7 +110,6 @@
             cursor: pointer;
             margin-top: 8px;
         }
-        .btn-secondary:active { transform: scale(0.97); }
 
         .choice-group {
             display: flex;
@@ -152,7 +133,6 @@
             background: #f0fff4;
             color: #38a169;
         }
-        .choice-group button:active { transform: scale(0.97); }
 
         .code-input-group {
             display: flex;
@@ -179,10 +159,20 @@
             border-color: #38a169;
             background: #f0fff4;
         }
-        .code-input-group input.error {
-            border-color: #e53e3e;
-            background: #fff5f5;
+
+        .auth-status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+            font-weight: 600;
         }
+        .auth-status.show { display: block; }
+        .auth-status.success { background: #f0fff4; color: #276749; border: 1px solid #38a169; }
+        .auth-status.error { background: #fff5f5; color: #9b2c2c; border: 1px solid #fc8181; }
+        .auth-status.info { background: #ebf8ff; color: #2b6cb0; border: 1px solid #63b3ed; }
 
         .resend-timer {
             text-align: center;
@@ -201,45 +191,10 @@
             cursor: not-allowed;
         }
 
-        .auth-status {
-            text-align: center;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 16px;
-            display: none;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .auth-status.show { display: block; }
-        .auth-status.success {
-            background: #f0fff4;
-            color: #276749;
-            border: 1px solid #38a169;
-        }
-        .auth-status.error {
-            background: #fff5f5;
-            color: #9b2c2c;
-            border: 1px solid #fc8181;
-        }
-        .auth-status.info {
-            background: #ebf8ff;
-            color: #2b6cb0;
-            border: 1px solid #63b3ed;
-        }
+        /* APP CONTENT */
+        #appContent { display: none; }
+        #appContent.active { display: block; }
 
-        /* ============================================================
-           APP CONTENT (caché tant que non authentifié)
-           ============================================================ */
-        #appContent {
-            display: none;
-        }
-        #appContent.active {
-            display: block;
-        }
-
-        /* ============================================================
-           STYLES DE L'APPLICATION
-           ============================================================ */
         .header-app {
             display: flex;
             justify-content: space-between;
@@ -306,16 +261,8 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .scan-box h2 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .scan-box p {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 12px;
-        }
+        .scan-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+        .scan-box p { font-size: 14px; opacity: 0.9; margin-bottom: 12px; }
         .scan-box .btn-primary {
             background: #fff;
             color: #38a169;
@@ -326,12 +273,6 @@
             font-weight: 700;
             width: 100%;
             cursor: pointer;
-            transition: 0.2s;
-        }
-        .scan-box .btn-primary:active { transform: scale(0.97); }
-        .scan-box .btn-primary:disabled {
-            opacity: 0.5;
-            transform: none;
         }
         .scan-box .status {
             font-size: 12px;
@@ -348,12 +289,7 @@
             margin-bottom: 16px;
         }
         #cameraContainer.active { display: block; }
-        #video {
-            width: 100%;
-            display: block;
-            background: #000;
-            min-height: 300px;
-        }
+        #video { width: 100%; display: block; background: #000; min-height: 300px; }
         #canvas { display: none; }
 
         .cam-controls {
@@ -411,36 +347,11 @@
             justify-content: space-between;
             align-items: center;
         }
-        #result .calories {
-            font-size: 28px;
-            font-weight: 800;
-            color: #276749;
-        }
-        #result .macros {
-            text-align: right;
-            font-size: 13px;
-            color: #276749;
-            line-height: 1.6;
-        }
-        #result .photo-preview {
-            width: 100%;
-            border-radius: 12px;
-            margin-top: 10px;
-            max-height: 250px;
-            object-fit: cover;
-        }
-        #result .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 10px;
-        }
-        #result .tags span {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+        #result .calories { font-size: 28px; font-weight: 800; color: #276749; }
+        #result .macros { text-align: right; font-size: 13px; color: #276749; line-height: 1.6; }
+        #result .photo-preview { width: 100%; border-radius: 12px; margin-top: 10px; max-height: 250px; object-fit: cover; }
+        #result .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        #result .tags span { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         #result .tags .warning { background: #fefcbf; color: #975a16; }
         #result .tags .success { background: #c6f6d5; color: #276749; }
         #result .tags .info { background: #ebf8ff; color: #2b6cb0; }
@@ -456,35 +367,12 @@
             color: #2d3748;
         }
 
-        .card {
-            background: #f7fafc;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .card h3 {
-            font-size: 14px;
-            color: #718096;
-            margin-bottom: 6px;
-        }
-        .card .value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2d3748;
-        }
-        .progress-bar {
-            background: #e2e8f0;
-            border-radius: 8px;
-            height: 8px;
-            margin: 6px 0;
-            overflow: hidden;
-        }
-        .progress-bar .fill {
-            background: linear-gradient(90deg, #38a169, #2f855a);
-            height: 100%;
-            border-radius: 8px;
-            width: 65%;
-        }
+        .card { background: #f7fafc; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .card h3 { font-size: 14px; color: #718096; margin-bottom: 6px; }
+        .card .value { font-size: 18px; font-weight: 700; color: #2d3748; }
+
+        .progress-bar { background: #e2e8f0; border-radius: 8px; height: 8px; margin: 6px 0; overflow: hidden; }
+        .progress-bar .fill { background: linear-gradient(90deg, #38a169, #2f855a); height: 100%; border-radius: 8px; width: 65%; }
 
         .key-status {
             display: inline-block;
@@ -533,10 +421,7 @@
             background: #fff;
             min-width: 120px;
         }
-        .country-selector select:focus {
-            border-color: #38a169;
-            outline: none;
-        }
+        .country-selector select:focus { border-color: #38a169; outline: none; }
 
         .meal-day {
             background: #fff;
@@ -553,26 +438,11 @@
             margin-bottom: 4px;
         }
         .meal-day .day-cal { color: #38a169; }
-        .meal-day .meal-item {
-            font-size: 13px;
-            color: #4a5568;
-            padding: 2px 0;
-        }
+        .meal-day .meal-item { font-size: 13px; color: #4a5568; padding: 2px 0; }
 
-        .shopping-list {
-            columns: 2;
-            column-gap: 16px;
-        }
-        .shopping-list li {
-            list-style: none;
-            padding: 4px 0;
-            font-size: 13px;
-            color: #4a5568;
-            break-inside: avoid;
-        }
-        .shopping-list li::before {
-            content: "🛒 ";
-        }
+        .shopping-list { columns: 2; column-gap: 16px; }
+        .shopping-list li { list-style: none; padding: 4px 0; font-size: 13px; color: #4a5568; break-inside: avoid; }
+        .shopping-list li::before { content: "🛒 "; }
 
         .user-info {
             display: flex;
@@ -675,11 +545,11 @@
                 <div class="choice-group">
                     <button class="active" id="choiceSms" onclick="selectChoice('sms')">
                         📱 SMS
-                        <div style="font-size:11px;font-weight:400;color:#718096;margin-top:2px;">+33 6*****78</div>
+                        <div style="font-size:11px;font-weight:400;color:#718096;margin-top:2px;" id="phoneDisplay">+33 6*****78</div>
                     </button>
                     <button id="choiceEmail" onclick="selectChoice('email')">
                         📧 Email
-                        <div style="font-size:11px;font-weight:400;color:#718096;margin-top:2px;">v***@email.com</div>
+                        <div style="font-size:11px;font-weight:400;color:#718096;margin-top:2px;" id="emailDisplay">v***@email.com</div>
                     </button>
                 </div>
 
@@ -718,7 +588,7 @@
         </div>
 
         <!-- ============================================================
-             CONTENU DE L'APPLICATION (après authentification)
+             CONTENU DE L'APPLICATION
              ============================================================ -->
         <div id="appContent">
             <div class="header-app">
@@ -737,6 +607,7 @@
                 <button data-tab="profile">👤 Profil</button>
             </div>
 
+            <!-- TAB SCAN -->
             <div class="tab-content active" id="tab-scan">
                 <div class="scan-box">
                     <h2>📸 Scannez votre repas</h2>
@@ -781,6 +652,7 @@
                 </div>
             </div>
 
+            <!-- TAB PLANNING -->
             <div class="tab-content" id="tab-plan">
                 <div class="country-selector">
                     <select id="countrySelect" onchange="updateMealPlan()">
@@ -801,6 +673,7 @@
                 </div>
             </div>
 
+            <!-- TAB COURSES -->
             <div class="tab-content" id="tab-shop">
                 <h3 style="font-size:16px;color:#2d3748;margin-bottom:12px;">🛒 Liste de courses</h3>
                 <div id="shoppingListContainer">
@@ -809,6 +682,7 @@
                 <button onclick="generateShoppingList()" style="width:100%;padding:12px;background:#38a169;color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;">📋 Générer la liste</button>
             </div>
 
+            <!-- TAB PROFIL -->
             <div class="tab-content" id="tab-profile">
                 <h3 style="font-size:16px;color:#2d3748;margin-bottom:12px;">👤 Mon profil</h3>
                 
@@ -887,7 +761,6 @@
         // GESTION DE L'AUTHENTIFICATION
         // ============================================================
         
-        // État de l'utilisateur
         let currentUser = null;
         let selectedChoice = 'sms';
         let validationCode = '';
@@ -904,5 +777,25 @@
 
         function switchToLogin() {
             showStep('step-login');
-            clearStatus('loginStatus
-                        3.2
+            clearStatus('loginStatus');
+        }
+
+        function switchToRegister() {
+            showStep('step-register');
+            clearStatus('registerStatus');
+        }
+
+        function goBackToRegister() {
+            showStep('step-register');
+            clearStatus('registerStatus');
+        }
+
+        function goBackToChoice() {
+            showStep('step-choice');
+            clearStatus('codeStatus');
+        }
+
+        function selectChoice(choice) {
+            selectedChoice = choice;
+            document.querySelectorAll('.choice-group button').forEach(b => b.classList.remove('active'));
+            if (choice === '
