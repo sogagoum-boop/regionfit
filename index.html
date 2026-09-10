@@ -30,7 +30,6 @@
         .app {
             background: var(--bg-app); border-radius: 24px; padding: 24px;
             box-shadow: var(--shadow); width: 100%;
-            transition: background var(--transition);
         }
         .header { text-align: center; margin-bottom: 24px; }
         .header h1 { font-size: 28px; color: var(--text); }
@@ -108,7 +107,6 @@
         .auth-status {
             text-align: center; padding: 12px; border-radius: 10px;
             margin-bottom: 16px; display: none; font-size: 14px; font-weight: 600;
-            animation: fadeIn 0.3s ease;
         }
         .auth-status.show { display: block; }
         .auth-status.success { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
@@ -163,10 +161,6 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
 
         .scan-box {
             background: linear-gradient(135deg, var(--green), var(--green-dark));
@@ -181,6 +175,69 @@
             font-size: 16px; font-weight: 700; width: 100%; cursor: pointer;
         }
         .scan-box .status { font-size: 12px; opacity: 0.8; margin-top: 8px; display: block; }
+
+        /* ============================================================
+           MODAL CLÉ API
+           ============================================================ */
+        .api-modal {
+            display: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .api-modal.active { display: flex; }
+        .api-modal-content {
+            background: var(--bg-app);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .api-modal-content h2 {
+            font-size: 20px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .api-modal-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .api-modal-content input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .api-modal-content input:focus {
+            border-color: var(--green);
+            outline: none;
+        }
+        .api-modal-content .btn-primary {
+            margin-bottom: 8px;
+        }
+        .api-modal-content .btn-secondary {
+            background: var(--card);
+            color: var(--text);
+        }
+        .api-modal-content .help-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--blue);
+            text-decoration: none;
+        }
 
         #cameraContainer {
             display: none; background: #000; border-radius: 16px;
@@ -234,7 +291,6 @@
         .card {
             background: var(--card); border-radius: 12px;
             padding: 16px; margin-bottom: 12px;
-            transition: background 0.3s;
         }
         .card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
         .card .value { font-size: 18px; font-weight: 700; color: var(--text); }
@@ -261,7 +317,7 @@
 
         .key-btn {
             background: rgba(255,255,255,0.2); border: none; color: #fff;
-            padding: 2px 10px; border-radius: 12px; font-size: 10px;
+            padding: 4px 12px; border-radius: 12px; font-size: 11px;
             cursor: pointer; margin-left: 6px;
         }
 
@@ -350,7 +406,7 @@
         }
         .chat-message {
             max-width: 80%; padding: 12px 16px; border-radius: 16px;
-            font-size: 14px; line-height: 1.5; animation: slideIn 0.3s ease;
+            font-size: 14px; line-height: 1.5;
         }
         .chat-message.user {
             align-self: flex-end; background: var(--green); color: #fff;
@@ -428,6 +484,18 @@
 <body>
     <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
 
+    <!-- MODAL CLÉ API -->
+    <div class="api-modal" id="apiModal">
+        <div class="api-modal-content">
+            <h2>🔑 Clé API Gemini</h2>
+            <p>Pour utiliser l'IA, vous avez besoin d'une clé API Google Gemini gratuite.</p>
+            <input type="text" id="apiKeyInput" placeholder="Collez votre clé ici (AIza...)" autocomplete="off">
+            <button class="btn-primary" onclick="saveApiKeyFromModal()">💾 Enregistrer</button>
+            <button class="btn-secondary" onclick="closeApiModal()">Annuler</button>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="help-link">🔗 Obtenir une clé API Gemini gratuite</a>
+        </div>
+    </div>
+
     <div class="app" id="appWrapper">
         <!-- AUTHENTIFICATION -->
         <div id="authContainer">
@@ -489,7 +557,7 @@
                 </div>
                 <button class="btn-primary" onclick="registerUser()">📝 S'inscrire</button>
                 <p style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:12px;">
-                    Déjà inscrit ? <a href="#" onclick="switchToLogin()" style="color:var(--green);font-weight:600;">Se connecter</a>
+                    Déjà inscrit ? <a href="#" onclick="switchToLogin();return false;" style="color:var(--green);font-weight:600;">Se connecter</a>
                 </p>
             </div>
 
@@ -506,7 +574,7 @@
                 </div>
                 <button class="btn-primary" onclick="loginUser()">🔓 Se connecter</button>
                 <p style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:12px;">
-                    Pas encore inscrit ? <a href="#" onclick="switchToRegister()" style="color:var(--green);font-weight:600;">Créer un compte</a>
+                    Pas encore inscrit ? <a href="#" onclick="switchToRegister();return false;" style="color:var(--green);font-weight:600;">Créer un compte</a>
                 </p>
             </div>
 
@@ -549,7 +617,7 @@
                 <div class="resend-timer">
                     <span id="resendTimer">60</span> secondes avant de renvoyer
                     <br>
-                    <a href="#" id="resendLink" class="disabled" onclick="resendCode()">🔄 Renvoyer le code</a>
+                    <a href="#" id="resendLink" class="disabled" onclick="resendCode();return false;">🔄 Renvoyer le code</a>
                 </div>
                 <button class="btn-secondary" onclick="goBackToChoice()">⬅️ Changer de moyen</button>
             </div>
@@ -586,8 +654,8 @@
                     <button class="btn-primary" id="openCameraBtn">📷 Ouvrir la caméra</button>
                     <span class="status" id="cameraStatus">Cliquez pour activer la caméra</span>
                     <div style="margin-top:8px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap;">
-                        <span id="keyStatus" class="key-status set">🔑 Clé présente</span>
-                        <button onclick="resetApiKey()" class="key-btn">🔄 Changer</button>
+                        <span id="keyStatus" class="key-status missing">🔑 Clé manquante</span>
+                        <button onclick="openApiModal()" class="key-btn" style="background:rgba(255,255,255,0.3);">🔑 Configurer</button>
                     </div>
                 </div>
                 <div id="cameraContainer">
@@ -625,22 +693,22 @@
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">📊 Tableau de bord</h3>
                 <div class="dashboard-grid">
                     <div class="dashboard-item">
-                        <div class="value" id="dashCalories">1,245</div>
+                        <div class="value">1,245</div>
                         <div class="label">Calories</div>
                         <div class="sub">/ 1,800 kcal</div>
                     </div>
                     <div class="dashboard-item">
-                        <div class="value" id="dashProtein">85g</div>
+                        <div class="value">85g</div>
                         <div class="label">Protéines</div>
                         <div class="sub">/ 120g</div>
                     </div>
                     <div class="dashboard-item">
-                        <div class="value" id="dashCarbs">145g</div>
+                        <div class="value">145g</div>
                         <div class="label">Glucides</div>
                         <div class="sub">/ 200g</div>
                     </div>
                     <div class="dashboard-item">
-                        <div class="value" id="dashFats">45g</div>
+                        <div class="value">45g</div>
                         <div class="label">Lipides</div>
                         <div class="sub">/ 60g</div>
                     </div>
@@ -662,7 +730,7 @@
                         <div class="bar-container"><div class="bar" style="height:40px;"></div><div class="bar-value">70.5</div><div class="bar-label">S3</div></div>
                         <div class="bar-container"><div class="bar" style="height:35px;"></div><div class="bar-value">70</div><div class="bar-label">S4</div></div>
                         <div class="bar-container"><div class="bar" style="height:25px;"></div><div class="bar-value">69</div><div class="bar-label">S5</div></div>
-                        <div class="bar-container"><div class="bar" style="height:20px;background:var(--green-dark);"></div><div class="bar-value">68.5</div><div class="bar-label">S6</div></div>
+                        <div class="bar-container"><div class="bar" style="height:20px;"></div><div class="bar-value">68.5</div><div class="bar-label">S6</div></div>
                     </div>
                 </div>
             </div>
@@ -678,7 +746,7 @@
                     </div>
                     <div class="chat-input">
                         <input type="text" id="chatInput" placeholder="Posez votre question...">
-                        <button onclick="sendChatMessage()" id="chatSendBtn">➤</button>
+                        <button onclick="sendChatMessage()">➤</button>
                     </div>
                 </div>
             </div>
@@ -722,9 +790,7 @@
                     </select>
                     <button onclick="updateMealPlan()" style="padding:10px 16px; background:var(--green); color:#fff; border:none; border-radius:10px; font-weight:600; cursor:pointer;">🔄</button>
                 </div>
-                <div id="mealPlanContainer">
-                    <p style="text-align:center;color:var(--text-secondary);padding:20px;">Chargement...</p>
-                </div>
+                <div id="mealPlanContainer"></div>
             </div>
 
             <!-- COURSES -->
@@ -771,25 +837,18 @@
                 </div>
                 <div class="card">
                     <h3>📊 Statistiques</h3>
-                    <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Poids</span><span class="value" id="currentWeight">72 kg</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Poids</span><span class="value">72 kg</span></div>
                     <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Objectif</span><span class="value" id="goalWeight">65 kg</span></div>
                     <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Scans</span><span class="value" id="scanCount">0</span></div>
                 </div>
-                <div class="card" style="border: 2px solid var(--green);">
-                    <h3>🤖 Objectif IA</h3>
-                    <p style="font-size:14px;color:var(--text);">IMC : <strong id="bmiDisplay">22.5</strong></p>
-                    <p style="font-size:14px;color:var(--text);">Objectif : <strong id="iaGoalDisplay">65 kg</strong></p>
-                    <button onclick="calculateIAGoal()" style="margin-top:8px;padding:8px 16px;background:var(--green);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">📊 Calculer</button>
-                </div>
                 <div class="card">
-                    <h3>🎯 Objectif</h3>
-                    <input type="number" id="goalInput" value="65" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:10px;font-size:16px;margin-top:4px;background:var(--input-bg);color:var(--text);">
-                    <input type="number" id="caloriesInput" value="1800" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:10px;font-size:16px;margin-top:8px;background:var(--input-bg);color:var(--text);">
-                    <button onclick="saveProfile()" style="width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;margin-top:12px;">💾 Sauvegarder</button>
+                    <h3>🔑 Clé API</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">Statut : <strong id="apiKeyStatus">Non configurée</strong></p>
+                    <button onclick="openApiModal()" style="padding:8px 16px;background:var(--green);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">🔑 Configurer la clé API</button>
                 </div>
                 <div class="card">
                     <h3>🏆 Badges</h3>
-                    <div class="badge-collection" id="badgeCollection">
+                    <div class="badge-collection">
                         <div class="badge-item"><span class="icon">⭐</span><span class="name">Débutant</span></div>
                         <div class="badge-item locked"><span class="icon">🌟</span><span class="name">7 jours</span></div>
                         <div class="badge-item locked"><span class="icon">🔥</span><span class="name">10 scans</span></div>
@@ -821,17 +880,63 @@
                         <div class="progress">❌ Non</div>
                     </div>
                 </div>
-                <button onclick="completeChallenge()" style="width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;margin-top:12px;">✅ Marquer terminé</button>
             </div>
 
             <div class="footer">
                 <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-                <p>RégionFit v5.1 · Corrigé</p>
+                <p>RégionFit v5.2 · Modal Clé API</p>
             </div>
         </div>
     </div>
 
     <script>
+        // ============================================================
+        // MODAL CLÉ API - NOUVEAU SYSTÈME
+        // ============================================================
+        function openApiModal() {
+            document.getElementById('apiModal').classList.add('active');
+            const currentKey = localStorage.getItem('regionfit_api_key');
+            if (currentKey) {
+                document.getElementById('apiKeyInput').value = currentKey;
+            }
+        }
+
+        function closeApiModal() {
+            document.getElementById('apiModal').classList.remove('active');
+        }
+
+        function saveApiKeyFromModal() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (!key) {
+                alert('❌ Veuillez entrer une clé API.');
+                return;
+            }
+            if (!key.startsWith('AIza')) {
+                if (!confirm('⚠️ Une clé Gemini commence normalement par "AIza". Continuer quand même ?')) {
+                    return;
+                }
+            }
+            localStorage.setItem('regionfit_api_key', key);
+            checkApiKey();
+            updateApiKeyStatus();
+            closeApiModal();
+            alert('✅ Clé API enregistrée avec succès !');
+        }
+
+        function updateApiKeyStatus() {
+            const key = localStorage.getItem('regionfit_api_key');
+            const statusEl = document.getElementById('apiKeyStatus');
+            if (statusEl) {
+                if (key) {
+                    statusEl.textContent = '✅ Configurée (' + key.substring(0, 10) + '...)';
+                    statusEl.style.color = 'var(--green)';
+                } else {
+                    statusEl.textContent = '❌ Non configurée';
+                    statusEl.style.color = 'var(--red)';
+                }
+            }
+        }
+
         // ============================================================
         // MAP PAYS
         // ============================================================
@@ -897,9 +1002,6 @@
             if (el) { el.textContent = message; el.className = 'auth-status show ' + type; }
         }
 
-        // ============================================================
-        // INSCRIPTION - CORRIGÉ
-        // ============================================================
         function registerUser() {
             const email = document.getElementById('registerEmail').value.trim();
             const phone = document.getElementById('registerPhone').value.trim();
@@ -916,7 +1018,6 @@
             else document.getElementById('usernameError').classList.remove('show');
             if (!password || password.length < 6) { document.getElementById('passwordError').classList.add('show'); isValid = false; }
             else document.getElementById('passwordError').classList.remove('show');
-
             if (!isValid) return;
 
             const users = JSON.parse(localStorage.getItem('regionfit_users') || '[]');
@@ -937,9 +1038,6 @@
             setTimeout(() => showStep('step-choice'), 1500);
         }
 
-        // ============================================================
-        // CONNEXION - CORRIGÉ
-        // ============================================================
         function loginUser() {
             const identifier = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -965,9 +1063,6 @@
             setTimeout(() => showStep('step-choice'), 1500);
         }
 
-        // ============================================================
-        // CODE
-        // ============================================================
         function sendValidationCode() {
             validationCode = Math.floor(100000 + Math.random() * 900000).toString();
             console.log('📨 CODE :', validationCode);
@@ -998,27 +1093,8 @@
                 }, 1500);
             } else {
                 showStatus('codeStatus', '❌ Code invalide.', 'error');
-                document.querySelectorAll('.code-input').forEach(input => input.classList.add('error'));
-                setTimeout(() => document.querySelectorAll('.code-input').forEach(input => input.classList.remove('error')), 2000);
             }
         }
-
-        // Code inputs
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.code-input').forEach((input, index) => {
-                input.addEventListener('input', function() {
-                    if (this.value.length === 1) {
-                        this.classList.add('filled');
-                        if (index < 5) document.querySelectorAll('.code-input')[index + 1].focus();
-                    }
-                });
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && !this.value && index > 0) {
-                        document.querySelectorAll('.code-input')[index - 1].focus();
-                    }
-                });
-            });
-        });
 
         function resendCode() {
             if (document.getElementById('resendLink').classList.contains('disabled')) return;
@@ -1036,14 +1112,10 @@
                 if (resendTimer <= 0) {
                     clearInterval(timerInterval);
                     document.getElementById('resendLink').classList.remove('disabled');
-                    timerEl.textContent = '0';
                 }
             }, 1000);
         }
 
-        // ============================================================
-        // DÉCONNEXION
-        // ============================================================
         function logoutUser() {
             if (confirm('Voulez-vous vous déconnecter ?')) {
                 localStorage.removeItem('regionfit_current_user');
@@ -1053,27 +1125,19 @@
             }
         }
 
-        // ============================================================
-        // API KEY
-        // ============================================================
-        function getApiKey() { return localStorage.getItem('regionfit_api_key'); }
-        function setApiKey(key) { localStorage.setItem('regionfit_api_key', key); }
         function checkApiKey() {
-            const key = getApiKey();
+            const key = localStorage.getItem('regionfit_api_key');
             const status = document.getElementById('keyStatus');
-            if (!status) return false;
-            if (key) { status.textContent = '🔑 Clé présente'; status.className = 'key-status set'; return true; }
-            else { status.textContent = '🔑 Clé manquante'; status.className = 'key-status missing'; return false; }
-        }
-        function resetApiKey() {
-            if (confirm('Changer votre clé API ?')) {
-                localStorage.removeItem('regionfit_api_key');
-                checkApiKey();
+            if (status) {
+                if (key) { status.textContent = '🔑 Clé présente'; status.className = 'key-status set'; }
+                else { status.textContent = '🔑 Clé manquante'; status.className = 'key-status missing'; }
             }
+            updateApiKeyStatus();
+            return !!key;
         }
 
         // ============================================================
-        // PLANS
+        // PLANS DE REPAS
         // ============================================================
         const mealPlans = {
             FR: { days: [
@@ -1191,7 +1255,7 @@
         }
 
         // ============================================================
-        // ANALYSE
+        // ANALYSE - SANS PROMPT
         // ============================================================
         function analyzeImage(imageData) {
             const loader = document.getElementById('loader');
@@ -1199,13 +1263,12 @@
             loader.classList.add('active');
             resultDiv.style.display = 'none';
 
-            let apiKey = getApiKey();
+            let apiKey = localStorage.getItem('regionfit_api_key');
             if (!apiKey) {
                 loader.classList.remove('active');
-                apiKey = prompt("🔑 Entrez votre clé API Gemini :\n\n1. Allez sur https://makersuite.google.com/\n2. Créez une clé\n3. Collez-la ici");
-                if (!apiKey) { alert('❌ Clé nécessaire.'); return; }
-                setApiKey(apiKey);
-                checkApiKey();
+                openApiModal();
+                alert('🔑 Veuillez d\'abord configurer votre clé API Gemini.');
+                return;
             }
 
             const base64Image = imageData.split(',')[1];
@@ -1326,7 +1389,7 @@
             messagesContainer.appendChild(loadingMsg);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            const apiKey = getApiKey();
+            const apiKey = localStorage.getItem('regionfit_api_key');
             if (!apiKey) {
                 loadingMsg.textContent = '❌ Configurez d\'abord votre clé API dans l\'onglet Scan.';
                 return;
@@ -1408,33 +1471,6 @@
         // ============================================================
         // PROFIL
         // ============================================================
-        function saveProfile() {
-            const goal = document.getElementById('goalInput').value;
-            const calories = document.getElementById('caloriesInput').value;
-            localStorage.setItem('regionfit_goal', goal);
-            localStorage.setItem('regionfit_calories', calories);
-            document.getElementById('goalWeight').textContent = goal + ' kg';
-            alert('✅ Profil sauvegardé !');
-        }
-
-        function loadProfile() {
-            const goal = localStorage.getItem('regionfit_goal');
-            if (goal) document.getElementById('goalWeight').textContent = goal + ' kg';
-            const sc = document.getElementById('scanCount');
-            if (sc) sc.textContent = scanCount;
-        }
-
-        function calculateIAGoal() {
-            const bmi = 72 / ((175/100) * (175/100));
-            let status = 'Normal', goal = 65;
-            if (bmi < 18.5) { status = 'Insuffisance'; goal = 68; }
-            else if (bmi < 25) { status = 'Normal'; goal = 65; }
-            else if (bmi < 30) { status = 'Surpoids'; goal = 60; }
-            else { status = 'Obésité'; goal = 55; }
-            document.getElementById('bmiDisplay').textContent = bmi.toFixed(1) + ' (' + status + ')';
-            document.getElementById('iaGoalDisplay').textContent = goal + ' kg';
-        }
-
         function updateBadges() {
             const badges = document.querySelectorAll('.badge-item');
             if (badges[0]) badges[0].classList.remove('locked');
@@ -1446,12 +1482,8 @@
             if (el) el.textContent = Math.min(scanCount, 3) + '/3';
         }
 
-        function completeChallenge() {
-            alert('🏆 Défi marqué comme terminé !\n\nContinuez comme ça ! 💪');
-        }
-
         // ============================================================
-        // INIT - CORRIGÉ
+        // INIT
         // ============================================================
         let appInitialized = false;
 
@@ -1466,13 +1498,10 @@
                 document.getElementById('profilePhone').textContent = user.phone || '-';
                 document.getElementById('profileCountry').textContent = countryNames[user.country] || user.country || '-';
                 document.getElementById('userAvatar').textContent = (user.username || 'U').charAt(0).toUpperCase();
-                if (user.country) {
-                    document.getElementById('countrySelect').value = user.country;
-                }
+                if (user.country) document.getElementById('countrySelect').value = user.country;
                 currentUser = user;
             }
 
-            // Tabs
             document.querySelectorAll('.tabs button').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
@@ -1483,30 +1512,23 @@
                 });
             });
 
-            // Boutons caméra
             document.getElementById('openCameraBtn').addEventListener('click', openCamera);
             document.getElementById('closeCameraBtn').addEventListener('click', closeCamera);
             document.getElementById('captureBtn').addEventListener('click', capturePhoto);
 
-            // Chat
             document.getElementById('chatInput').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') sendChatMessage();
             });
 
             checkApiKey();
             updateMealPlan();
-            loadProfile();
             updateBadges();
-            calculateIAGoal();
             updateWaterDisplay();
             updateChallengeScan();
 
-            console.log('✅ RégionFit v5.1 chargé !');
+            console.log('✅ RégionFit v5.2 chargé !');
         }
 
-        // ============================================================
-        // CHARGEMENT INITIAL
-        // ============================================================
         window.addEventListener('DOMContentLoaded', function() {
             const user = JSON.parse(localStorage.getItem('regionfit_current_user') || 'null');
             if (user) {
@@ -1519,6 +1541,5 @@
             }
         });
     </script>
-    Version 5.1 - Bugs corrigés
 </body>
-</html>
+</html>Version 5.2 - Modal clé API
