@@ -176,9 +176,6 @@
         }
         .scan-box .status { font-size: 12px; opacity: 0.8; margin-top: 8px; display: block; }
 
-        /* ============================================================
-           MODAL CLÉ API
-           ============================================================ */
         .api-modal {
             display: none;
             position: fixed; top: 0; left: 0;
@@ -484,7 +481,6 @@
 <body>
     <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
 
-    <!-- MODAL CLÉ API -->
     <div class="api-modal" id="apiModal">
         <div class="api-modal-content">
             <h2>🔑 Clé API Gemini</h2>
@@ -497,14 +493,12 @@
     </div>
 
     <div class="app" id="appWrapper">
-        <!-- AUTHENTIFICATION -->
         <div id="authContainer">
             <div class="header">
                 <h1>🥗 Région<span>Fit</span></h1>
                 <p>Connectez-vous pour accéder à votre application</p>
             </div>
 
-            <!-- INSCRIPTION -->
             <div class="auth-step active" id="step-register">
                 <div class="auth-status" id="registerStatus"></div>
                 <div class="form-group">
@@ -561,7 +555,6 @@
                 </p>
             </div>
 
-            <!-- CONNEXION -->
             <div class="auth-step" id="step-login">
                 <div class="auth-status" id="loginStatus"></div>
                 <div class="form-group">
@@ -578,7 +571,6 @@
                 </p>
             </div>
 
-            <!-- CHOIX -->
             <div class="auth-step" id="step-choice">
                 <div class="header" style="margin-bottom:16px;">
                     <h2 style="font-size:20px;">📱 Choisissez votre moyen</h2>
@@ -598,7 +590,6 @@
                 <button class="btn-secondary" onclick="goBackToRegister()">⬅️ Retour</button>
             </div>
 
-            <!-- CODE -->
             <div class="auth-step" id="step-code">
                 <div class="header" style="margin-bottom:16px;">
                     <h2 style="font-size:20px;">🔐 Code de validation</h2>
@@ -623,7 +614,6 @@
             </div>
         </div>
 
-        <!-- APPLICATION -->
         <div id="appContent">
             <div class="header-app">
                 <h1>🥗 Région<span>Fit</span></h1>
@@ -646,7 +636,6 @@
                 <button data-tab="challenges">🏆 Défis</button>
             </div>
 
-            <!-- SCAN -->
             <div class="tab-content active" id="tab-scan">
                 <div class="scan-box">
                     <h2>📸 Scannez votre repas</h2>
@@ -688,7 +677,6 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD -->
             <div class="tab-content" id="tab-dashboard">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">📊 Tableau de bord</h3>
                 <div class="dashboard-grid">
@@ -735,7 +723,6 @@
                 </div>
             </div>
 
-            <!-- CHAT -->
             <div class="tab-content" id="tab-chat">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🤖 Coach IA</h3>
                 <div class="chat-container">
@@ -751,7 +738,6 @@
                 </div>
             </div>
 
-            <!-- RECETTES -->
             <div class="tab-content" id="tab-recipes">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🍳 Recettes</h3>
                 <div class="recipe-card">
@@ -774,7 +760,6 @@
                 </div>
             </div>
 
-            <!-- PLANNING -->
             <div class="tab-content" id="tab-plan">
                 <div class="country-selector">
                     <select id="countrySelect" onchange="updateMealPlan()">
@@ -793,7 +778,6 @@
                 <div id="mealPlanContainer"></div>
             </div>
 
-            <!-- COURSES -->
             <div class="tab-content" id="tab-shop">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🛒 Liste de courses</h3>
                 <div id="shoppingListContainer">
@@ -802,7 +786,6 @@
                 <button onclick="generateShoppingList()" style="width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;">📋 Générer</button>
             </div>
 
-            <!-- MARCHÉS -->
             <div class="tab-content" id="tab-markets">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🗺️ Marchés</h3>
                 <div class="card">
@@ -825,7 +808,6 @@
                 </div>
             </div>
 
-            <!-- PROFIL -->
             <div class="tab-content" id="tab-profile">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">👤 Mon profil</h3>
                 <div class="card">
@@ -859,7 +841,6 @@
                 <button class="logout-btn" onclick="logoutUser()">🚪 Se déconnecter</button>
             </div>
 
-            <!-- DÉFIS -->
             <div class="tab-content" id="tab-challenges">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🏆 Défis</h3>
                 <div class="card">
@@ -884,14 +865,14 @@
 
             <div class="footer">
                 <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-                <p>RégionFit v5.2 · Modal Clé API</p>
+                <p>RégionFit v5.3 · Gemini 2.5 Flash</p>
             </div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // MODAL CLÉ API - NOUVEAU SYSTÈME
+        // MODAL CLÉ API
         // ============================================================
         function openApiModal() {
             document.getElementById('apiModal').classList.add('active');
@@ -1255,7 +1236,7 @@
         }
 
         // ============================================================
-        // ANALYSE - SANS PROMPT
+        // ANALYSE - MODÈLE CORRIGÉ : gemini-2.5-flash
         // ============================================================
         function analyzeImage(imageData) {
             const loader = document.getElementById('loader');
@@ -1276,6 +1257,7 @@
             {"food_name":"nom","calories":estimation,"protein":protéines,"carbs":glucides,"fats":lipides,"warnings":["avertissement"],"improvements":["amélioration"]}
             Répondez UNIQUEMENT en JSON.`;
 
+            // MODÈLE CORRIGÉ : gemini-2.5-flash au lieu de gemini-2.0-flash
             fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1369,7 +1351,7 @@
         function closeResult() { document.getElementById('result').style.display = 'none'; }
 
         // ============================================================
-        // CHAT
+        // CHAT - MODÈLE CORRIGÉ : gemini-2.5-flash
         // ============================================================
         function sendChatMessage() {
             const input = document.getElementById('chatInput');
@@ -1397,7 +1379,8 @@
 
             const prompt = `Tu es un coach nutritionnel pour l'application RégionFit. Réponds de manière concise et amicale. Question : ${message}`;
 
-            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            // MODÈLE CORRIGÉ : gemini-2.5-flash au lieu de gemini-2.0-flash
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
@@ -1526,7 +1509,7 @@
             updateWaterDisplay();
             updateChallengeScan();
 
-            console.log('✅ RégionFit v5.2 chargé !');
+            console.log('✅ RégionFit v5.3 chargé avec Gemini 2.5 Flash !');
         }
 
         window.addEventListener('DOMContentLoaded', function() {
@@ -1542,4 +1525,5 @@
         });
     </script>
 </body>
-</html>Version 5.2 - Modal clé API
+    6.0
+</html>
