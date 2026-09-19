@@ -865,7 +865,7 @@
 
             <div class="footer">
                 <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-                <p>RégionFit v5.3 · Gemini 2.5 Flash</p>
+                <p>RégionFit v5.4 · Gemini 3.8 Flash</p>
             </div>
         </div>
     </div>
@@ -1236,7 +1236,7 @@
         }
 
         // ============================================================
-        // ANALYSE - MODÈLE CORRIGÉ : gemini-2.5-flash
+        // ANALYSE - MODÈLE CORRIGÉ : gemini-3.8-flash
         // ============================================================
         function analyzeImage(imageData) {
             const loader = document.getElementById('loader');
@@ -1257,8 +1257,8 @@
             {"food_name":"nom","calories":estimation,"protein":protéines,"carbs":glucides,"fats":lipides,"warnings":["avertissement"],"improvements":["amélioration"]}
             Répondez UNIQUEMENT en JSON.`;
 
-            // MODÈLE CORRIGÉ : gemini-2.5-flash au lieu de gemini-2.0-flash
-            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            // MODÈLE CORRIGÉ : gemini-3.8-flash
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: 'image/jpeg', data: base64Image } }] }] })
@@ -1351,7 +1351,7 @@
         function closeResult() { document.getElementById('result').style.display = 'none'; }
 
         // ============================================================
-        // CHAT - MODÈLE CORRIGÉ : gemini-2.5-flash
+        // CHAT - MODÈLE CORRIGÉ : gemini-3.8-flash
         // ============================================================
         function sendChatMessage() {
             const input = document.getElementById('chatInput');
@@ -1379,8 +1379,8 @@
 
             const prompt = `Tu es un coach nutritionnel pour l'application RégionFit. Réponds de manière concise et amicale. Question : ${message}`;
 
-            // MODÈLE CORRIGÉ : gemini-2.5-flash au lieu de gemini-2.0-flash
-            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            // MODÈLE CORRIGÉ : gemini-3.8-flash
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
@@ -1509,7 +1509,7 @@
             updateWaterDisplay();
             updateChallengeScan();
 
-            console.log('✅ RégionFit v5.3 chargé avec Gemini 2.5 Flash !');
+            console.log('✅ RégionFit v5.4 chargé avec Gemini 3.8 Flash !');
         }
 
         window.addEventListener('DOMContentLoaded', function() {
@@ -1524,6 +1524,6 @@
             }
         });
     </script>
-    6.2
+    6.3
 </body>
 </html>
