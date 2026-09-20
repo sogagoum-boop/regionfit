@@ -35,7 +35,6 @@
         .header h1 { font-size: 28px; color: var(--text); }
         .header h1 span { color: var(--green); }
         .header p { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
-
         .theme-toggle {
             position: fixed; bottom: 20px; right: 20px; z-index: 999;
             background: var(--green); color: #fff; border: none;
@@ -43,16 +42,11 @@
             font-size: 22px; cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
         #authContainer { display: block; }
         .auth-step { display: none; animation: fadeIn 0.4s ease; }
         .auth-step.active { display: block; }
-
         .form-group { margin-bottom: 16px; }
-        .form-group label {
-            display: block; font-size: 13px; font-weight: 600;
-            color: var(--text); margin-bottom: 4px;
-        }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
         .form-group input, .form-group select {
             width: 100%; padding: 12px; border: 2px solid var(--input-border);
             border-radius: 10px; font-size: 16px; background: var(--input-bg);
@@ -62,11 +56,8 @@
             border-color: var(--green); outline: none;
             box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
         }
-        .form-group .error-msg {
-            color: var(--red); font-size: 12px; margin-top: 4px; display: none;
-        }
+        .form-group .error-msg { color: var(--red); font-size: 12px; margin-top: 4px; display: none; }
         .form-group .error-msg.show { display: block; }
-
         .btn-primary {
             width: 100%; padding: 14px; background: var(--green);
             color: #fff; border: none; border-radius: 12px;
@@ -79,7 +70,6 @@
             color: var(--text); border: none; border-radius: 12px;
             font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px;
         }
-
         .choice-group { display: flex; gap: 12px; margin: 16px 0; }
         .choice-group button {
             flex: 1; padding: 14px; border: 2px solid var(--border);
@@ -90,7 +80,6 @@
         .choice-group button.active {
             border-color: var(--green); background: var(--green-light); color: var(--green);
         }
-
         .code-input-group { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
         .code-input-group input {
             width: 50px; height: 56px; text-align: center;
@@ -103,7 +92,6 @@
             box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
         }
         .code-input-group input.filled { border-color: var(--green); background: var(--green-light); }
-
         .auth-status {
             text-align: center; padding: 12px; border-radius: 10px;
             margin-bottom: 16px; display: none; font-size: 14px; font-weight: 600;
@@ -112,17 +100,11 @@
         .auth-status.success { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
         .auth-status.error { background: #fff5f5; color: var(--red); border: 1px solid var(--red); }
         .auth-status.info { background: #ebf8ff; color: var(--blue); border: 1px solid #63b3ed; }
-
-        .resend-timer {
-            text-align: center; font-size: 13px;
-            color: var(--text-secondary); margin-top: 12px;
-        }
+        .resend-timer { text-align: center; font-size: 13px; color: var(--text-secondary); margin-top: 12px; }
         .resend-timer a { color: var(--green); font-weight: 600; cursor: pointer; text-decoration: none; }
         .resend-timer a.disabled { color: var(--text-secondary); cursor: not-allowed; }
-
         #appContent { display: none; }
         #appContent.active { display: block; }
-
         .header-app {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 20px; flex-wrap: wrap; gap: 8px;
@@ -137,7 +119,6 @@
             background: var(--green); color: #fff;
             padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
         }
-
         .tabs {
             display: flex; gap: 4px; margin-bottom: 20px;
             background: var(--card); border-radius: 12px; padding: 4px;
@@ -156,12 +137,10 @@
         }
         .tab-content { display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         .scan-box {
             background: linear-gradient(135deg, var(--green), var(--green-dark));
             border-radius: 16px; padding: 24px; color: #fff;
@@ -175,86 +154,39 @@
             font-size: 16px; font-weight: 700; width: 100%; cursor: pointer;
         }
         .scan-box .status { font-size: 12px; opacity: 0.8; margin-top: 8px; display: block; }
-
         .api-modal {
-            display: none;
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            z-index: 9999; justify-content: center; align-items: center; padding: 20px;
         }
         .api-modal.active { display: flex; }
         .api-modal-content {
-            background: var(--bg-app);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
+            background: var(--bg-app); border-radius: 20px;
+            padding: 24px; max-width: 400px; width: 100%; text-align: center;
         }
-        .api-modal-content h2 {
-            font-size: 20px;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-        .api-modal-content p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            line-height: 1.5;
-        }
+        .api-modal-content h2 { font-size: 20px; color: var(--text); margin-bottom: 8px; }
+        .api-modal-content p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
         .api-modal-content input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid var(--input-border);
-            border-radius: 12px;
-            font-size: 14px;
-            background: var(--input-bg);
-            color: var(--text);
-            margin-bottom: 12px;
-            text-align: center;
+            width: 100%; padding: 14px; border: 2px solid var(--input-border);
+            border-radius: 12px; font-size: 14px; background: var(--input-bg);
+            color: var(--text); margin-bottom: 12px; text-align: center;
         }
-        .api-modal-content input:focus {
-            border-color: var(--green);
-            outline: none;
-        }
-        .api-modal-content .btn-primary {
-            margin-bottom: 8px;
-        }
-        .api-modal-content .btn-secondary {
-            background: var(--card);
-            color: var(--text);
-        }
+        .api-modal-content input:focus { border-color: var(--green); outline: none; }
         .api-modal-content .help-link {
-            display: inline-block;
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--blue);
-            text-decoration: none;
+            display: inline-block; margin-top: 12px; font-size: 12px;
+            color: var(--blue); text-decoration: none;
         }
-
-        #cameraContainer {
-            display: none; background: #000; border-radius: 16px;
-            overflow: hidden; margin-bottom: 16px;
-        }
+        #cameraContainer { display: none; background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
         #cameraContainer.active { display: block; }
         #video { width: 100%; display: block; background: #000; min-height: 300px; }
         #canvas { display: none; }
-
-        .cam-controls {
-            display: flex; gap: 10px; padding: 12px;
-            background: rgba(0,0,0,0.85); justify-content: center;
-        }
+        .cam-controls { display: flex; gap: 10px; padding: 12px; background: rgba(0,0,0,0.85); justify-content: center; }
         .cam-controls button {
             border: none; padding: 12px 24px; border-radius: 10px;
             font-weight: 700; font-size: 15px; cursor: pointer; flex: 1;
         }
         .cam-controls .btn-capture { background: var(--green); color: #fff; }
         .cam-controls .btn-close { background: var(--red); color: #fff; }
-
         .loader { display: none; text-align: center; padding: 30px 20px; }
         .loader.active { display: block; }
         .loader .spinner {
@@ -264,7 +196,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loader p { color: var(--text-secondary); font-size: 14px; }
-
         #result {
             display: none; background: var(--green-light);
             border: 2px solid var(--green); border-radius: 16px;
@@ -284,86 +215,44 @@
             border-radius: 10px; font-weight: 600; width: 100%;
             margin-top: 12px; cursor: pointer; color: var(--text);
         }
-
-        .card {
-            background: var(--card); border-radius: 12px;
-            padding: 16px; margin-bottom: 12px;
-        }
+        .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
         .card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
         .card .value { font-size: 18px; font-weight: 700; color: var(--text); }
-
-        .progress-bar {
-            background: var(--border); border-radius: 8px; height: 8px;
-            margin: 6px 0; overflow: hidden;
-        }
+        .progress-bar { background: var(--border); border-radius: 8px; height: 8px; margin: 6px 0; overflow: hidden; }
         .progress-bar .fill {
             background: linear-gradient(90deg, var(--green), var(--green-dark));
-            height: 100%; border-radius: 8px; width: 60%;
-            transition: width 0.5s ease;
+            height: 100%; border-radius: 8px; width: 60%; transition: width 0.5s ease;
         }
-
         .key-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .key-status.set { background: #c6f6d5; color: var(--green); }
         .key-status.missing { background: #fed7d7; color: var(--red); }
-
-        .footer {
-            text-align: center; font-size: 11px; color: var(--text-secondary);
-            padding-top: 16px; border-top: 1px solid var(--border); margin-top: 16px;
-        }
+        .footer { text-align: center; font-size: 11px; color: var(--text-secondary); padding-top: 16px; border-top: 1px solid var(--border); margin-top: 16px; }
         .footer p { margin: 2px 0; }
-
-        .key-btn {
-            background: rgba(255,255,255,0.2); border: none; color: #fff;
-            padding: 4px 12px; border-radius: 12px; font-size: 11px;
-            cursor: pointer; margin-left: 6px;
-        }
-
+        .key-btn { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; margin-left: 6px; }
         .country-selector { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
         .country-selector select {
             flex: 1; padding: 10px; border: 2px solid var(--border);
             border-radius: 10px; font-size: 14px; background: var(--input-bg);
             color: var(--text); min-width: 120px;
         }
-
-        .meal-day {
-            background: var(--bg-app); border: 1px solid var(--border);
-            border-radius: 12px; padding: 12px; margin-bottom: 8px;
-        }
-        .meal-day .day-header {
-            display: flex; justify-content: space-between;
-            font-weight: 700; color: var(--text); margin-bottom: 4px;
-        }
+        .meal-day { background: var(--bg-app); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+        .meal-day .day-header { display: flex; justify-content: space-between; font-weight: 700; color: var(--text); margin-bottom: 4px; }
         .meal-day .day-cal { color: var(--green); }
         .meal-day .meal-item { font-size: 13px; color: var(--text-secondary); padding: 2px 0; }
-
         .shopping-list { columns: 2; column-gap: 16px; }
-        .shopping-list li {
-            list-style: none; padding: 4px 0; font-size: 13px;
-            color: var(--text-secondary); break-inside: avoid;
-        }
+        .shopping-list li { list-style: none; padding: 4px 0; font-size: 13px; color: var(--text-secondary); break-inside: avoid; }
         .shopping-list li::before { content: "🛒 "; }
-
-        .user-info {
-            display: flex; justify-content: space-between; padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-        }
+        .user-info { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
         .user-info:last-child { border-bottom: none; }
         .user-info .label { color: var(--text-secondary); font-size: 13px; }
         .user-info .value { font-weight: 600; color: var(--text); font-size: 14px; }
-
-        .logout-btn {
-            width: 100%; padding: 12px; background: var(--red); color: #fff;
-            border: none; border-radius: 12px; font-weight: 700;
-            font-size: 16px; cursor: pointer; margin-top: 12px;
-        }
-
+        .logout-btn { width: 100%; padding: 12px; background: var(--red); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 12px; }
         .avatar {
             width: 48px; height: 48px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 20px; font-weight: 700; color: #fff;
             background: var(--green); cursor: pointer;
         }
-
         .badge-collection { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
         .badge-item {
             display: flex; flex-direction: column; align-items: center;
@@ -373,99 +262,41 @@
         .badge-item .icon { font-size: 28px; }
         .badge-item .name { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
         .badge-item.locked { opacity: 0.4; filter: grayscale(1); }
-
-        .challenge-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid var(--border);
-        }
+        .challenge-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
         .challenge-item:last-child { border-bottom: none; }
         .challenge-item .info { flex: 1; }
         .challenge-item .info .name { font-weight: 600; font-size: 14px; }
         .challenge-item .info .desc { font-size: 12px; color: var(--text-secondary); }
         .challenge-item .progress { font-size: 12px; color: var(--green); font-weight: 600; }
-
         .chart { display: flex; justify-content: space-between; align-items: flex-end; height: 120px; padding: 8px 0; gap: 6px; }
         .chart .bar-container { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .chart .bar {
-            width: 100%; max-width: 30px; background: var(--green);
-            border-radius: 4px 4px 0 0; min-height: 4px;
-        }
+        .chart .bar { width: 100%; max-width: 30px; background: var(--green); border-radius: 4px 4px 0 0; min-height: 4px; }
         .chart .bar-label { font-size: 9px; color: var(--text-secondary); margin-top: 4px; }
         .chart .bar-value { font-size: 9px; color: var(--text-secondary); font-weight: 600; }
-
-        .chat-container {
-            display: flex; flex-direction: column; height: 400px;
-            background: var(--card); border-radius: 16px; overflow: hidden;
-        }
-        .chat-messages {
-            flex: 1; overflow-y: auto; padding: 16px;
-            display: flex; flex-direction: column; gap: 12px;
-        }
-        .chat-message {
-            max-width: 80%; padding: 12px 16px; border-radius: 16px;
-            font-size: 14px; line-height: 1.5;
-        }
-        .chat-message.user {
-            align-self: flex-end; background: var(--green); color: #fff;
-            border-bottom-right-radius: 4px;
-        }
-        .chat-message.ia {
-            align-self: flex-start; background: var(--bg-app); color: var(--text);
-            border-bottom-left-radius: 4px; border: 1px solid var(--border);
-        }
-        .chat-input {
-            display: flex; gap: 8px; padding: 12px;
-            border-top: 1px solid var(--border); background: var(--bg-app);
-        }
-        .chat-input input {
-            flex: 1; padding: 12px; border: 2px solid var(--border);
-            border-radius: 24px; font-size: 14px;
-            background: var(--input-bg); color: var(--text);
-        }
+        .chat-container { display: flex; flex-direction: column; height: 400px; background: var(--card); border-radius: 16px; overflow: hidden; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .chat-message { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+        .chat-message.user { align-self: flex-end; background: var(--green); color: #fff; border-bottom-right-radius: 4px; }
+        .chat-message.ia { align-self: flex-start; background: var(--bg-app); color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+        .chat-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); background: var(--bg-app); }
+        .chat-input input { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 24px; font-size: 14px; background: var(--input-bg); color: var(--text); }
         .chat-input input:focus { border-color: var(--green); outline: none; }
-        .chat-input button {
-            background: var(--green); color: #fff; border: none;
-            padding: 12px 20px; border-radius: 24px; font-weight: 700;
-            cursor: pointer; font-size: 16px;
-        }
-
-        .dashboard-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-            margin-bottom: 16px;
-        }
-        .dashboard-item {
-            background: var(--card); border-radius: 12px; padding: 14px;
-            text-align: center;
-        }
+        .chat-input button { background: var(--green); color: #fff; border: none; padding: 12px 20px; border-radius: 24px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .dashboard-item { background: var(--card); border-radius: 12px; padding: 14px; text-align: center; }
         .dashboard-item .value { font-size: 22px; font-weight: 800; color: var(--green); }
         .dashboard-item .label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
         .dashboard-item .sub { font-size: 10px; color: var(--text-secondary); }
-
-        .recipe-card {
-            background: var(--card); border-radius: 12px;
-            padding: 16px; margin-bottom: 12px;
-            border-left: 4px solid var(--green);
-        }
+        .recipe-card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--green); }
         .recipe-card .recipe-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-        .recipe-card .recipe-meta {
-            display: flex; gap: 12px; font-size: 12px;
-            color: var(--text-secondary); margin-bottom: 8px;
-        }
+        .recipe-card .recipe-meta { display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
         .recipe-card .recipe-ingredients { font-size: 13px; color: var(--text-secondary); }
-        .recipe-card .recipe-steps {
-            font-size: 13px; color: var(--text-secondary);
-            margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);
-        }
-
-        .market-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid var(--border);
-        }
+        .recipe-card .recipe-steps { font-size: 13px; color: var(--text-secondary); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .market-item:last-child { border-bottom: none; }
         .market-item .info .name { font-weight: 600; font-size: 14px; }
         .market-item .info .desc { font-size: 12px; color: var(--text-secondary); }
         .market-item .distance { font-size: 12px; color: var(--green); font-weight: 600; }
-
         @media (max-width: 480px) {
             body { padding: 10px; }
             .app { padding: 16px; }
@@ -558,8 +389,8 @@
             <div class="auth-step" id="step-login">
                 <div class="auth-status" id="loginStatus"></div>
                 <div class="form-group">
-                    <label>📧 Email ou nom d'utilisateur</label>
-                    <input type="text" id="loginEmail" placeholder="votre@email.com ou pseudo">
+                    <label>📧 Email</label>
+                    <input type="email" id="loginEmail" placeholder="votre@email.com">
                 </div>
                 <div class="form-group">
                     <label>🔑 Mot de passe</label>
@@ -680,26 +511,10 @@
             <div class="tab-content" id="tab-dashboard">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">📊 Tableau de bord</h3>
                 <div class="dashboard-grid">
-                    <div class="dashboard-item">
-                        <div class="value">1,245</div>
-                        <div class="label">Calories</div>
-                        <div class="sub">/ 1,800 kcal</div>
-                    </div>
-                    <div class="dashboard-item">
-                        <div class="value">85g</div>
-                        <div class="label">Protéines</div>
-                        <div class="sub">/ 120g</div>
-                    </div>
-                    <div class="dashboard-item">
-                        <div class="value">145g</div>
-                        <div class="label">Glucides</div>
-                        <div class="sub">/ 200g</div>
-                    </div>
-                    <div class="dashboard-item">
-                        <div class="value">45g</div>
-                        <div class="label">Lipides</div>
-                        <div class="sub">/ 60g</div>
-                    </div>
+                    <div class="dashboard-item"><div class="value">1,245</div><div class="label">Calories</div><div class="sub">/ 1,800 kcal</div></div>
+                    <div class="dashboard-item"><div class="value">85g</div><div class="label">Protéines</div><div class="sub">/ 120g</div></div>
+                    <div class="dashboard-item"><div class="value">145g</div><div class="label">Glucides</div><div class="sub">/ 200g</div></div>
+                    <div class="dashboard-item"><div class="value">45g</div><div class="label">Lipides</div><div class="sub">/ 60g</div></div>
                 </div>
                 <div class="card">
                     <h3>💧 Hydratation</h3>
@@ -727,9 +542,7 @@
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🤖 Coach IA</h3>
                 <div class="chat-container">
                     <div class="chat-messages" id="chatMessages">
-                        <div class="chat-message ia">
-                            Bonjour ! Je suis votre coach nutritionnel. Comment puis-je vous aider aujourd'hui ?
-                        </div>
+                        <div class="chat-message ia">Bonjour ! Je suis votre coach nutritionnel. Comment puis-je vous aider aujourd'hui ?</div>
                     </div>
                     <div class="chat-input">
                         <input type="text" id="chatInput" placeholder="Posez votre question...">
@@ -780,31 +593,17 @@
 
             <div class="tab-content" id="tab-shop">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🛒 Liste de courses</h3>
-                <div id="shoppingListContainer">
-                    <p style="text-align:center;color:var(--text-secondary);padding:20px;">Générez votre planning.</p>
-                </div>
+                <div id="shoppingListContainer"><p style="text-align:center;color:var(--text-secondary);padding:20px;">Générez votre planning.</p></div>
                 <button onclick="generateShoppingList()" style="width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;">📋 Générer</button>
             </div>
 
             <div class="tab-content" id="tab-markets">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🗺️ Marchés</h3>
                 <div class="card">
-                    <div class="market-item">
-                        <div class="info"><div class="name">🥬 Marché de Gros</div><div class="desc">Produits frais</div></div>
-                        <div class="distance">1.2 km</div>
-                    </div>
-                    <div class="market-item">
-                        <div class="info"><div class="name">🏪 Épicerie Bio</div><div class="desc">Produits bio</div></div>
-                        <div class="distance">0.8 km</div>
-                    </div>
-                    <div class="market-item">
-                        <div class="info"><div class="name">🥖 Boulangerie</div><div class="desc">Pain complet</div></div>
-                        <div class="distance">0.5 km</div>
-                    </div>
-                    <div class="market-item">
-                        <div class="info"><div class="name">🐟 Poissonnerie</div><div class="desc">Poissons frais</div></div>
-                        <div class="distance">2.1 km</div>
-                    </div>
+                    <div class="market-item"><div class="info"><div class="name">🥬 Marché de Gros</div><div class="desc">Produits frais</div></div><div class="distance">1.2 km</div></div>
+                    <div class="market-item"><div class="info"><div class="name">🏪 Épicerie Bio</div><div class="desc">Produits bio</div></div><div class="distance">0.8 km</div></div>
+                    <div class="market-item"><div class="info"><div class="name">🥖 Boulangerie</div><div class="desc">Pain complet</div></div><div class="distance">0.5 km</div></div>
+                    <div class="market-item"><div class="info"><div class="name">🐟 Poissonnerie</div><div class="desc">Poissons frais</div></div><div class="distance">2.1 km</div></div>
                 </div>
             </div>
 
@@ -844,146 +643,90 @@
             <div class="tab-content" id="tab-challenges">
                 <h3 style="font-size:16px;color:var(--text);margin-bottom:12px;">🏆 Défis</h3>
                 <div class="card">
-                    <div class="challenge-item">
-                        <div class="info"><div class="name">📸 Scanner 3 repas</div><div class="desc">3 photos aujourd'hui</div></div>
-                        <div class="progress" id="challengeScan">0/3</div>
-                    </div>
-                    <div class="challenge-item">
-                        <div class="info"><div class="name">🚶 5000 pas</div><div class="desc">Atteignez 5000 pas</div></div>
-                        <div class="progress">0/5000</div>
-                    </div>
-                    <div class="challenge-item">
-                        <div class="info"><div class="name">💧 2L d'eau</div><div class="desc">Buvez 2 litres</div></div>
-                        <div class="progress">0/2L</div>
-                    </div>
-                    <div class="challenge-item">
-                        <div class="info"><div class="name">🥗 Repas équilibré</div><div class="desc">Protéines + légumes</div></div>
-                        <div class="progress">❌ Non</div>
-                    </div>
+                    <div class="challenge-item"><div class="info"><div class="name">📸 Scanner 3 repas</div><div class="desc">3 photos aujourd'hui</div></div><div class="progress" id="challengeScan">0/3</div></div>
+                    <div class="challenge-item"><div class="info"><div class="name">🚶 5000 pas</div><div class="desc">Atteignez 5000 pas</div></div><div class="progress">0/5000</div></div>
+                    <div class="challenge-item"><div class="info"><div class="name">💧 2L d'eau</div><div class="desc">Buvez 2 litres</div></div><div class="progress">0/2L</div></div>
+                    <div class="challenge-item"><div class="info"><div class="name">🥗 Repas équilibré</div><div class="desc">Protéines + légumes</div></div><div class="progress">❌ Non</div></div>
                 </div>
             </div>
 
             <div class="footer">
                 <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-                <p>RégionFit v5.4 · Gemini 3.8 Flash</p>
+                <p>RégionFit v5.5 · Firebase Sync</p>
             </div>
         </div>
     </div>
 
-    <script>
+    <script type="module">
         // ============================================================
-        // MODAL CLÉ API
+        // 1. CONFIGURATION FIREBASE (REMPLACEZ CES VALEURS)
         // ============================================================
-        function openApiModal() {
-            document.getElementById('apiModal').classList.add('active');
-            const currentKey = localStorage.getItem('regionfit_api_key');
-            if (currentKey) {
-                document.getElementById('apiKeyInput').value = currentKey;
-            }
-        }
-
-        function closeApiModal() {
-            document.getElementById('apiModal').classList.remove('active');
-        }
-
-        function saveApiKeyFromModal() {
-            const key = document.getElementById('apiKeyInput').value.trim();
-            if (!key) {
-                alert('❌ Veuillez entrer une clé API.');
-                return;
-            }
-            if (!key.startsWith('AIza')) {
-                if (!confirm('⚠️ Une clé Gemini commence normalement par "AIza". Continuer quand même ?')) {
-                    return;
-                }
-            }
-            localStorage.setItem('regionfit_api_key', key);
-            checkApiKey();
-            updateApiKeyStatus();
-            closeApiModal();
-            alert('✅ Clé API enregistrée avec succès !');
-        }
-
-        function updateApiKeyStatus() {
-            const key = localStorage.getItem('regionfit_api_key');
-            const statusEl = document.getElementById('apiKeyStatus');
-            if (statusEl) {
-                if (key) {
-                    statusEl.textContent = '✅ Configurée (' + key.substring(0, 10) + '...)';
-                    statusEl.style.color = 'var(--green)';
-                } else {
-                    statusEl.textContent = '❌ Non configurée';
-                    statusEl.style.color = 'var(--red)';
-                }
-            }
-        }
-
-        // ============================================================
-        // MAP PAYS
-        // ============================================================
-        const countryNames = {
-            'FR': '🇫🇷 France', 'CM': '🇨🇲 Cameroun', 'CF': '🇨🇫 Centrafrique',
-            'CD': '🇨🇩 RDC', 'SN': '🇸🇳 Sénégal', 'CI': '🇨🇮 Côte d\'Ivoire',
-            'ML': '🇲🇱 Mali', 'NG': '🇳🇬 Nigéria', 'GH': '🇬🇭 Ghana',
-            'BJ': '🇧🇯 Bénin', 'BF': '🇧🇫 Burkina Faso', 'GM': '🇬🇲 Gambie',
-            'GN': '🇬🇳 Guinée', 'NE': '🇳🇪 Niger', 'ZA': '🇿🇦 Afrique du Sud',
-            'KE': '🇰🇪 Kenya', 'TZ': '🇹🇿 Tanzanie', 'UG': '🇺🇬 Ouganda',
-            'RW': '🇷🇼 Rwanda', 'MA': '🇲🇦 Maroc', 'TN': '🇹🇳 Tunisie',
-            'EG': '🇪🇬 Égypte', 'DZ': '🇩🇿 Algérie'
+        const firebaseConfig = {
+            apiKey: "VOTRE_API_KEY",
+            authDomain: "VOTRE_PROJECT_ID.firebaseapp.com",
+            projectId: "VOTRE_PROJECT_ID",
+            storageBucket: "VOTRE_PROJECT_ID.appspot.com",
+            messagingSenderId: "VOTRE_SENDER_ID",
+            appId: "VOTRE_APP_ID"
         };
 
-        // ============================================================
-        // THEME
-        // ============================================================
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            const newTheme = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('regionfit_theme', newTheme);
-            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
-        }
-        (function() {
-            const theme = localStorage.getItem('regionfit_theme') || 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-        })();
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
         // ============================================================
-        // AUTHENTIFICATION
+        // 2. VARIABLES GLOBALES
         // ============================================================
         let currentUser = null;
         let selectedChoice = 'sms';
         let validationCode = '';
         let resendTimer = 60;
         let timerInterval = null;
+        let stream = null;
+        let isCameraOpen = false;
+        let scanCount = 0;
+        let waterIntake = 1.2;
 
-        function showStep(stepId) {
-            document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
-            const el = document.getElementById(stepId);
-            if (el) el.classList.add('active');
-        }
-        function switchToLogin() { showStep('step-login'); clearStatus('loginStatus'); }
-        function switchToRegister() { showStep('step-register'); clearStatus('registerStatus'); }
-        function goBackToRegister() { showStep('step-register'); clearStatus('registerStatus'); }
-        function goBackToChoice() { showStep('step-choice'); clearStatus('codeStatus'); }
+        // Rendre les fonctions accessibles globalement (car type="module")
+        window.toggleTheme = function() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('regionfit_theme', newTheme);
+            document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        };
 
-        function selectChoice(choice) {
+        window.openApiModal = function() {
+            document.getElementById('apiModal').classList.add('active');
+            const currentKey = localStorage.getItem('regionfit_api_key');
+            if (currentKey) document.getElementById('apiKeyInput').value = currentKey;
+        };
+        window.closeApiModal = function() { document.getElementById('apiModal').classList.remove('active'); };
+        window.saveApiKeyFromModal = function() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (!key) { alert('❌ Veuillez entrer une clé API.'); return; }
+            localStorage.setItem('regionfit_api_key', key);
+            checkApiKey();
+            updateApiKeyStatus();
+            closeApiModal();
+            alert('✅ Clé API enregistrée !');
+        };
+        window.switchToLogin = function() { showStep('step-login'); clearStatus('loginStatus'); };
+        window.switchToRegister = function() { showStep('step-register'); clearStatus('registerStatus'); };
+        window.goBackToRegister = function() { showStep('step-register'); clearStatus('registerStatus'); };
+        window.goBackToChoice = function() { showStep('step-choice'); clearStatus('codeStatus'); };
+        window.selectChoice = function(choice) {
             selectedChoice = choice;
             document.querySelectorAll('.choice-group button').forEach(b => b.classList.remove('active'));
             if (choice === 'sms') document.getElementById('choiceSms').classList.add('active');
             else document.getElementById('choiceEmail').classList.add('active');
-        }
-        function clearStatus(elementId) {
-            const el = document.getElementById(elementId);
-            if (el) { el.className = 'auth-status'; el.textContent = ''; }
-        }
-        function showStatus(elementId, message, type) {
-            const el = document.getElementById(elementId);
-            if (el) { el.textContent = message; el.className = 'auth-status show ' + type; }
-        }
-
-        function registerUser() {
+        };
+        window.registerUser = async function() {
             const email = document.getElementById('registerEmail').value.trim();
             const phone = document.getElementById('registerPhone').value.trim();
             const username = document.getElementById('registerUsername').value.trim();
@@ -1001,50 +744,45 @@
             else document.getElementById('passwordError').classList.remove('show');
             if (!isValid) return;
 
-            const users = JSON.parse(localStorage.getItem('regionfit_users') || '[]');
-            if (users.find(u => u.email === email || u.username === username)) {
-                showStatus('registerStatus', '❌ Cet email ou nom existe déjà.', 'error');
-                return;
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await setDoc(doc(db, "users", user.uid), {
+                    username: username, phone: phone, country: country, email: email, createdAt: new Date()
+                });
+                document.getElementById('phoneDisplay').textContent = phone.replace(/(.{3})(.*)(.{2})/, '$1*****$3');
+                document.getElementById('emailDisplay').textContent = email.replace(/(.{1})(.*)(@.*)/, '$1***$3');
+                showStatus('registerStatus', '✅ Inscription réussie !', 'success');
+                setTimeout(() => showStep('step-choice'), 1500);
+            } catch (error) {
+                console.error('Erreur inscription:', error);
+                let msg = '❌ Erreur d\'inscription.';
+                if (error.code === 'auth/email-already-in-use') msg = '❌ Cet email est déjà utilisé.';
+                if (error.code === 'auth/weak-password') msg = '❌ Mot de passe trop faible.';
+                showStatus('registerStatus', msg, 'error');
             }
-
-            const newUser = { email, phone, username, password, country, registeredAt: new Date().toISOString() };
-            users.push(newUser);
-            localStorage.setItem('regionfit_users', JSON.stringify(users));
-            localStorage.setItem('regionfit_current_user', JSON.stringify(newUser));
-
-            document.getElementById('phoneDisplay').textContent = phone.replace(/(.{3})(.*)(.{2})/, '$1*****$3');
-            document.getElementById('emailDisplay').textContent = email.replace(/(.{1})(.*)(@.*)/, '$1***$3');
-
-            showStatus('registerStatus', '✅ Inscription réussie !', 'success');
-            setTimeout(() => showStep('step-choice'), 1500);
-        }
-
-        function loginUser() {
-            const identifier = document.getElementById('loginEmail').value.trim();
+        };
+        window.loginUser = async function() {
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-
-            if (!identifier || !password) {
-                showStatus('loginStatus', '❌ Veuillez remplir tous les champs.', 'error');
-                return;
+            if (!email || !password) { showStatus('loginStatus', '❌ Veuillez remplir tous les champs.', 'error'); return; }
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                showStatus('loginStatus', '✅ Connexion réussie !', 'success');
+                setTimeout(() => showStep('step-choice'), 1500);
+            } catch (error) {
+                showStatus('loginStatus', '❌ Email ou mot de passe incorrect.', 'error');
             }
-
-            const users = JSON.parse(localStorage.getItem('regionfit_users') || '[]');
-            const user = users.find(u => (u.email === identifier || u.username === identifier) && u.password === password);
-
-            if (!user) {
-                showStatus('loginStatus', '❌ Identifiants incorrects.', 'error');
-                return;
+        };
+        window.logoutUser = async function() {
+            if (confirm('Voulez-vous vous déconnecter ?')) {
+                await signOut(auth);
+                document.getElementById('appContent').classList.remove('active');
+                document.getElementById('authContainer').style.display = 'block';
+                showStep('step-login');
             }
-
-            localStorage.setItem('regionfit_current_user', JSON.stringify(user));
-            document.getElementById('phoneDisplay').textContent = user.phone.replace(/(.{3})(.*)(.{2})/, '$1*****$3');
-            document.getElementById('emailDisplay').textContent = user.email.replace(/(.{1})(.*)(@.*)/, '$1***$3');
-
-            showStatus('loginStatus', '✅ Connexion réussie !', 'success');
-            setTimeout(() => showStep('step-choice'), 1500);
-        }
-
-        function sendValidationCode() {
+        };
+        window.sendValidationCode = function() {
             validationCode = Math.floor(100000 + Math.random() * 900000).toString();
             console.log('📨 CODE :', validationCode);
             alert(`📨 Code de validation (${selectedChoice === 'sms' ? 'SMS' : 'Email'}) :\n\n${validationCode}`);
@@ -1053,18 +791,12 @@
             setTimeout(() => showStatus('codeStatus', '📨 Code envoyé !', 'success'), 2000);
             showStep('step-code');
             startResendTimer();
-        }
-
-        function validateCode() {
+        };
+        window.validateCode = function() {
             const inputs = document.querySelectorAll('.code-input');
             let enteredCode = '';
             inputs.forEach(input => { enteredCode += input.value; });
-
-            if (enteredCode.length < 6) {
-                showStatus('codeStatus', '❌ Code incomplet.', 'error');
-                return;
-            }
-
+            if (enteredCode.length < 6) { showStatus('codeStatus', '❌ Code incomplet.', 'error'); return; }
             if (enteredCode === validationCode) {
                 showStatus('codeStatus', '✅ Code validé !', 'success');
                 setTimeout(() => {
@@ -1072,16 +804,131 @@
                     document.getElementById('appContent').classList.add('active');
                     initApp();
                 }, 1500);
-            } else {
-                showStatus('codeStatus', '❌ Code invalide.', 'error');
-            }
-        }
-
-        function resendCode() {
+            } else { showStatus('codeStatus', '❌ Code invalide.', 'error'); }
+        };
+        window.resendCode = function() {
             if (document.getElementById('resendLink').classList.contains('disabled')) return;
             sendValidationCode();
-        }
+        };
+        window.addWater = function() {
+            waterIntake += 0.25;
+            localStorage.setItem('regionfit_water', waterIntake.toString());
+            updateWaterDisplay();
+        };
+        window.sendChatMessage = function() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+            const messagesContainer = document.getElementById('chatMessages');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message user';
+            userMsg.textContent = message;
+            messagesContainer.appendChild(userMsg);
+            input.value = '';
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'chat-message ia';
+            loadingMsg.textContent = '⏳ Le coach réfléchit...';
+            messagesContainer.appendChild(loadingMsg);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            const apiKey = localStorage.getItem('regionfit_api_key');
+            if (!apiKey) { loadingMsg.textContent = '❌ Configurez d\'abord votre clé API dans l\'onglet Scan.'; return; }
+            const prompt = `Tu es un coach nutritionnel pour l'application RégionFit. Réponds de manière concise et amicale. Question : ${message}`;
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            }).then(r => r.json()).then(data => {
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Désolé, je n\'ai pas compris.';
+                loadingMsg.textContent = text;
+            }).catch(() => { loadingMsg.textContent = '❌ Erreur de connexion.'; });
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+        window.openCamera = function() {
+            const video = document.getElementById('video');
+            const cameraContainer = document.getElementById('cameraContainer');
+            const openBtn = document.getElementById('openCameraBtn');
+            const statusText = document.getElementById('cameraStatus');
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { alert('❌ Caméra non supportée.'); return; }
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+                .then(s => { stream = s; video.srcObject = stream; video.play(); cameraContainer.classList.add('active'); isCameraOpen = true; openBtn.textContent = '📷 Caméra active'; statusText.textContent = '✅ Prête'; })
+                .catch(err => { alert('❌ Impossible d\'accéder à la caméra.'); statusText.textContent = '❌ Erreur'; });
+        };
+        window.capturePhoto = function() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            if (!isCameraOpen || !video.srcObject) { alert('❌ Caméra inactive.'); return; }
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth || 1280;
+            canvas.height = video.videoHeight || 720;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            closeCamera();
+            analyzeImage(imageData);
+        };
+        window.closeCamera = function() {
+            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+            const video = document.getElementById('video');
+            if (video) video.srcObject = null;
+            document.getElementById('cameraContainer').classList.remove('active');
+            isCameraOpen = false;
+            document.getElementById('openCameraBtn').textContent = '📷 Ouvrir la caméra';
+            document.getElementById('cameraStatus').textContent = 'Cliquez pour activer';
+        };
+        window.closeResult = function() { document.getElementById('result').style.display = 'none'; };
+        window.updateMealPlan = function() {
+            const country = document.getElementById('countrySelect').value;
+            const data = mealPlans[country] || mealPlans.FR;
+            let html = '';
+            data.days.forEach(d => {
+                const color = d.calories >= 1800 ? 'var(--green)' : d.calories >= 1200 ? '#d69e2e' : d.calories >= 800 ? '#dd6b20' : 'var(--red)';
+                html += `<div class="meal-day"><div class="day-header"><span>${d.day}</span><span class="day-cal" style="color:${color};">${d.calories} kcal</span></div>${d.meals.map(m => `<div class="meal-item">• ${m}</div>`).join('')}</div>`;
+            });
+            document.getElementById('mealPlanContainer').innerHTML = html;
+            const badge = document.getElementById('locationBadge');
+            if (badge) badge.textContent = `📍 ${document.getElementById('countrySelect').selectedOptions[0].text}`;
+        };
+        window.generateShoppingList = function() {
+            const country = document.getElementById('countrySelect').value;
+            const data = mealPlans[country] || mealPlans.FR;
+            const container = document.getElementById('shoppingListContainer');
+            if (data.shopping && data.shopping.length > 0) {
+                let html = '<ul class="shopping-list">';
+                data.shopping.forEach(item => { html += `<li>${item}</li>`; });
+                html += '</ul>';
+                container.innerHTML = html;
+            }
+        };
 
+        function showStep(stepId) {
+            document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
+            const el = document.getElementById(stepId);
+            if (el) el.classList.add('active');
+        }
+        function clearStatus(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) { el.className = 'auth-status'; el.textContent = ''; }
+        }
+        function showStatus(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            if (el) { el.textContent = message; el.className = 'auth-status show ' + type; }
+        }
+        function updateApiKeyStatus() {
+            const key = localStorage.getItem('regionfit_api_key');
+            const statusEl = document.getElementById('apiKeyStatus');
+            if (statusEl) {
+                statusEl.textContent = key ? '✅ Configurée' : '❌ Non configurée';
+                statusEl.style.color = key ? 'var(--green)' : 'var(--red)';
+            }
+        }
+        function checkApiKey() {
+            const key = localStorage.getItem('regionfit_api_key');
+            const status = document.getElementById('keyStatus');
+            if (status) {
+                status.textContent = key ? '🔑 Clé présente' : '🔑 Clé manquante';
+                status.className = key ? 'key-status set' : 'key-status missing';
+            }
+            updateApiKeyStatus();
+            return !!key;
+        }
         function startResendTimer() {
             resendTimer = 60;
             document.getElementById('resendLink').classList.add('disabled');
@@ -1090,36 +937,28 @@
             timerInterval = setInterval(() => {
                 resendTimer--;
                 timerEl.textContent = resendTimer;
-                if (resendTimer <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('resendLink').classList.remove('disabled');
-                }
+                if (resendTimer <= 0) { clearInterval(timerInterval); document.getElementById('resendLink').classList.remove('disabled'); }
             }, 1000);
         }
-
-        function logoutUser() {
-            if (confirm('Voulez-vous vous déconnecter ?')) {
-                localStorage.removeItem('regionfit_current_user');
-                document.getElementById('appContent').classList.remove('active');
-                document.getElementById('authContainer').style.display = 'block';
-                showStep('step-login');
-            }
+        function updateWaterDisplay() {
+            const percent = Math.min((waterIntake / 2) * 100, 100);
+            const fill = document.getElementById('waterFill');
+            if (fill) fill.style.width = percent + '%';
+            const label = document.getElementById('waterLabel');
+            if (label) label.textContent = waterIntake.toFixed(1) + 'L / 2L';
+            const pct = document.getElementById('waterPercent');
+            if (pct) pct.textContent = Math.round(percent) + '%';
+        }
+        function updateBadges() {
+            const badges = document.querySelectorAll('.badge-item');
+            if (badges[0]) badges[0].classList.remove('locked');
+            if (scanCount >= 10 && badges[2]) badges[2].classList.remove('locked');
+        }
+        function updateChallengeScan() {
+            const el = document.getElementById('challengeScan');
+            if (el) el.textContent = Math.min(scanCount, 3) + '/3';
         }
 
-        function checkApiKey() {
-            const key = localStorage.getItem('regionfit_api_key');
-            const status = document.getElementById('keyStatus');
-            if (status) {
-                if (key) { status.textContent = '🔑 Clé présente'; status.className = 'key-status set'; }
-                else { status.textContent = '🔑 Clé manquante'; status.className = 'key-status missing'; }
-            }
-            updateApiKeyStatus();
-            return !!key;
-        }
-
-        // ============================================================
-        // PLANS DE REPAS
-        // ============================================================
         const mealPlans = {
             FR: { days: [
                 { day: 'Lundi', calories: 2000, meals: ['Petit-déj: Pain complet', 'Déjeuner: Poulet + légumes', 'Dîner: Poisson + quinoa'] },
@@ -1177,104 +1016,27 @@
             ], shopping: ['Maïs', 'Manioc', 'Plantain', 'Poisson', 'Huile de palme', 'Légumes'] }
         };
 
-        // ============================================================
-        // CAMÉRA
-        // ============================================================
-        let stream = null;
-        let isCameraOpen = false;
-        let scanCount = parseInt(localStorage.getItem('regionfit_scan_count') || '0');
-        let waterIntake = parseFloat(localStorage.getItem('regionfit_water') || '1.2');
-
-        function openCamera() {
-            const video = document.getElementById('video');
-            const cameraContainer = document.getElementById('cameraContainer');
-            const openBtn = document.getElementById('openCameraBtn');
-            const statusText = document.getElementById('cameraStatus');
-
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert('❌ Caméra non supportée.');
-                return;
-            }
-
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
-                .then(s => {
-                    stream = s;
-                    video.srcObject = stream;
-                    video.play();
-                    cameraContainer.classList.add('active');
-                    isCameraOpen = true;
-                    openBtn.textContent = '📷 Caméra active';
-                    statusText.textContent = '✅ Prête';
-                })
-                .catch(err => {
-                    alert('❌ Impossible d\'accéder à la caméra. Autorisez l\'accès.');
-                    statusText.textContent = '❌ Erreur';
-                });
-        }
-
-        function capturePhoto() {
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            if (!isCameraOpen || !video.srcObject) { alert('❌ Caméra inactive.'); return; }
-            const ctx = canvas.getContext('2d');
-            canvas.width = video.videoWidth || 1280;
-            canvas.height = video.videoHeight || 720;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL('image/jpeg');
-            closeCamera();
-            analyzeImage(imageData);
-        }
-
-        function closeCamera() {
-            if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-            const video = document.getElementById('video');
-            if (video) video.srcObject = null;
-            document.getElementById('cameraContainer').classList.remove('active');
-            isCameraOpen = false;
-            document.getElementById('openCameraBtn').textContent = '📷 Ouvrir la caméra';
-            document.getElementById('cameraStatus').textContent = 'Cliquez pour activer';
-        }
-
-        // ============================================================
-        // ANALYSE - MODÈLE CORRIGÉ : gemini-3.8-flash
-        // ============================================================
         function analyzeImage(imageData) {
             const loader = document.getElementById('loader');
             const resultDiv = document.getElementById('result');
             loader.classList.add('active');
             resultDiv.style.display = 'none';
-
             let apiKey = localStorage.getItem('regionfit_api_key');
-            if (!apiKey) {
-                loader.classList.remove('active');
-                openApiModal();
-                alert('🔑 Veuillez d\'abord configurer votre clé API Gemini.');
-                return;
-            }
-
+            if (!apiKey) { loader.classList.remove('active'); openApiModal(); alert('🔑 Veuillez d\'abord configurer votre clé API Gemini.'); return; }
             const base64Image = imageData.split(',')[1];
             const prompt = `Analysez cette photo d'aliment. Retournez UNIQUEMENT un JSON valide :
             {"food_name":"nom","calories":estimation,"protein":protéines,"carbs":glucides,"fats":lipides,"warnings":["avertissement"],"improvements":["amélioration"]}
             Répondez UNIQUEMENT en JSON.`;
-
-            // MODÈLE CORRIGÉ : gemini-3.8-flash
             fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: 'image/jpeg', data: base64Image } }] }] })
-            })
-            .then(response => {
+            }).then(response => {
                 if (!response.ok) {
-                    if (response.status === 403 || response.status === 401) {
-                        localStorage.removeItem('regionfit_api_key');
-                        checkApiKey();
-                        throw new Error('Clé API invalide');
-                    }
+                    if (response.status === 403 || response.status === 401) { localStorage.removeItem('regionfit_api_key'); checkApiKey(); throw new Error('Clé API invalide'); }
                     throw new Error('Erreur API');
                 }
                 return response.json();
-            })
-            .then(data => {
+            }).then(data => {
                 const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
                 const jsonMatch = text.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
@@ -1284,26 +1046,15 @@
                     localStorage.setItem('regionfit_scan_count', scanCount.toString());
                     const sc = document.getElementById('scanCount');
                     if (sc) sc.textContent = scanCount;
-                    updateBadges();
-                    updateChallengeScan();
-                    displayResult({
-                        calories: result.calories || 200,
-                        protein: result.protein || 10,
-                        carbs: result.carbs || 20,
-                        fats: result.fats || 8,
-                        food_name: result.food_name || 'Aliment',
-                        warnings: result.warnings || ['Aucun'],
-                        improvements: result.improvements || ['Aucune']
-                    }, imageData);
+                    updateBadges(); updateChallengeScan();
+                    displayResult({ calories: result.calories || 200, protein: result.protein || 10, carbs: result.carbs || 20, fats: result.fats || 8, food_name: result.food_name || 'Aliment', warnings: result.warnings || ['Aucun'], improvements: result.improvements || ['Aucune'] }, imageData);
                 } else throw new Error('JSON invalide');
-            })
-            .catch(error => {
+            }).catch(error => {
                 console.error('Erreur:', error);
                 loader.classList.remove('active');
                 analyzeDemo(imageData);
             });
         }
-
         function analyzeDemo(imageData) {
             const loader = document.getElementById('loader');
             loader.classList.add('active');
@@ -1317,174 +1068,44 @@
                 localStorage.setItem('regionfit_scan_count', scanCount.toString());
                 const sc = document.getElementById('scanCount');
                 if (sc) sc.textContent = scanCount;
-                updateBadges();
-                updateChallengeScan();
-                displayResult({
-                    calories: randomCal,
-                    protein: Math.floor(Math.random() * 30) + 5,
-                    carbs: Math.floor(Math.random() * 50) + 10,
-                    fats: Math.floor(Math.random() * 25) + 2,
-                    food_name: randomFood,
-                    warnings: [warnings[Math.floor(Math.random() * warnings.length)]],
-                    improvements: ['Ajoutez des légumes', 'Réduisez les matières grasses']
-                }, imageData);
+                updateBadges(); updateChallengeScan();
+                displayResult({ calories: randomCal, protein: Math.floor(Math.random() * 30) + 5, carbs: Math.floor(Math.random() * 50) + 10, fats: Math.floor(Math.random() * 25) + 2, food_name: randomFood, warnings: [warnings[Math.floor(Math.random() * warnings.length)]], improvements: ['Ajoutez des légumes', 'Réduisez les matières grasses'] }, imageData);
             }, 1500);
         }
-
         function displayResult(result, imageData) {
             document.getElementById('caloriesDisplay').textContent = result.calories + ' kcal';
-            document.getElementById('macrosDisplay').innerHTML = `
-                <div>Protéines: ${result.protein}g</div>
-                <div>Glucides: ${result.carbs}g</div>
-                <div>Lipides: ${result.fats}g</div>
-            `;
+            document.getElementById('macrosDisplay').innerHTML = `<div>Protéines: ${result.protein}g</div><div>Glucides: ${result.carbs}g</div><div>Lipides: ${result.fats}g</div>`;
             document.getElementById('photoDisplay').innerHTML = `<img src="${imageData}" class="photo-preview" alt="Repas">`;
-            document.getElementById('tagsDisplay').innerHTML = `
-                <span class="success">✅ ${result.food_name}</span>
-                ${result.warnings.map(w => `<span class="warning">⚠️ ${w}</span>`).join('')}
-                ${result.improvements.map(i => `<span class="info">💡 ${i}</span>`).join('')}
-            `;
+            document.getElementById('tagsDisplay').innerHTML = `<span class="success">✅ ${result.food_name}</span>${result.warnings.map(w => `<span class="warning">⚠️ ${w}</span>`).join('')}${result.improvements.map(i => `<span class="info">💡 ${i}</span>`).join('')}`;
             document.getElementById('result').style.display = 'block';
             document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function closeResult() { document.getElementById('result').style.display = 'none'; }
-
         // ============================================================
-        // CHAT - MODÈLE CORRIGÉ : gemini-3.8-flash
+        // 3. ÉCOUTEUR D'ÉTAT FIREBASE
         // ============================================================
-        function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
-
-            const messagesContainer = document.getElementById('chatMessages');
-            const userMsg = document.createElement('div');
-            userMsg.className = 'chat-message user';
-            userMsg.textContent = message;
-            messagesContainer.appendChild(userMsg);
-            input.value = '';
-
-            const loadingMsg = document.createElement('div');
-            loadingMsg.className = 'chat-message ia';
-            loadingMsg.textContent = '⏳ Le coach réfléchit...';
-            messagesContainer.appendChild(loadingMsg);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            const apiKey = localStorage.getItem('regionfit_api_key');
-            if (!apiKey) {
-                loadingMsg.textContent = '❌ Configurez d\'abord votre clé API dans l\'onglet Scan.';
-                return;
-            }
-
-            const prompt = `Tu es un coach nutritionnel pour l'application RégionFit. Réponds de manière concise et amicale. Question : ${message}`;
-
-            // MODÈLE CORRIGÉ : gemini-3.8-flash
-            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            })
-            .then(r => r.json())
-            .then(data => {
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Désolé, je n\'ai pas compris.';
-                loadingMsg.textContent = text;
-            })
-            .catch(() => {
-                loadingMsg.textContent = '❌ Erreur de connexion.';
-            });
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // ============================================================
-        // WATER
-        // ============================================================
-        function addWater() {
-            waterIntake += 0.25;
-            localStorage.setItem('regionfit_water', waterIntake.toString());
-            updateWaterDisplay();
-        }
-
-        function updateWaterDisplay() {
-            const percent = Math.min((waterIntake / 2) * 100, 100);
-            const fill = document.getElementById('waterFill');
-            if (fill) fill.style.width = percent + '%';
-            const label = document.getElementById('waterLabel');
-            if (label) label.textContent = waterIntake.toFixed(1) + 'L / 2L';
-            const pct = document.getElementById('waterPercent');
-            if (pct) pct.textContent = Math.round(percent) + '%';
-        }
-
-        // ============================================================
-        // PLANNING
-        // ============================================================
-        function updateMealPlan() {
-            const country = document.getElementById('countrySelect').value;
-            const data = mealPlans[country] || mealPlans.FR;
-            let html = '';
-            data.days.forEach(d => {
-                const color = d.calories >= 1800 ? 'var(--green)' : d.calories >= 1200 ? '#d69e2e' : d.calories >= 800 ? '#dd6b20' : 'var(--red)';
-                html += `
-                    <div class="meal-day">
-                        <div class="day-header">
-                            <span>${d.day}</span>
-                            <span class="day-cal" style="color:${color};">${d.calories} kcal</span>
-                        </div>
-                        ${d.meals.map(m => `<div class="meal-item">• ${m}</div>`).join('')}
-                    </div>
-                `;
-            });
-            document.getElementById('mealPlanContainer').innerHTML = html;
-            const badge = document.getElementById('locationBadge');
-            if (badge) badge.textContent = `📍 ${document.getElementById('countrySelect').selectedOptions[0].text}`;
-        }
-
-        function generateShoppingList() {
-            const country = document.getElementById('countrySelect').value;
-            const data = mealPlans[country] || mealPlans.FR;
-            const container = document.getElementById('shoppingListContainer');
-            if (data.shopping && data.shopping.length > 0) {
-                let html = '<ul class="shopping-list">';
-                data.shopping.forEach(item => { html += `<li>${item}</li>`; });
-                html += '</ul>';
-                container.innerHTML = html;
-            }
-        }
-
-        // ============================================================
-        // PROFIL
-        // ============================================================
-        function updateBadges() {
-            const badges = document.querySelectorAll('.badge-item');
-            if (badges[0]) badges[0].classList.remove('locked');
-            if (scanCount >= 10 && badges[2]) badges[2].classList.remove('locked');
-        }
-
-        function updateChallengeScan() {
-            const el = document.getElementById('challengeScan');
-            if (el) el.textContent = Math.min(scanCount, 3) + '/3';
-        }
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        let appInitialized = false;
-
-        function initApp() {
-            if (appInitialized) return;
-            appInitialized = true;
-
-            const user = JSON.parse(localStorage.getItem('regionfit_current_user') || 'null');
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                document.getElementById('profileUsername').textContent = user.username || '-';
-                document.getElementById('profileEmail').textContent = user.email || '-';
-                document.getElementById('profilePhone').textContent = user.phone || '-';
-                document.getElementById('profileCountry').textContent = countryNames[user.country] || user.country || '-';
-                document.getElementById('userAvatar').textContent = (user.username || 'U').charAt(0).toUpperCase();
-                if (user.country) document.getElementById('countrySelect').value = user.country;
-                currentUser = user;
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    currentUser = { ...userData, uid: user.uid };
+                    const countryNames = { 'FR': '🇫🇷 France', 'CM': '🇨🇲 Cameroun', 'CF': '🇨🇫 Centrafrique', 'CD': '🇨🇩 RDC', 'SN': '🇸🇳 Sénégal', 'CI': '🇨🇮 Côte d\'Ivoire', 'ML': '🇲🇱 Mali', 'NG': '🇳🇬 Nigéria', 'GH': '🇬🇭 Ghana', 'BJ': '🇧🇯 Bénin', 'BF': '🇧🇫 Burkina Faso', 'GM': '🇬🇲 Gambie', 'GN': '🇬🇳 Guinée', 'NE': '🇳🇪 Niger', 'ZA': '🇿🇦 Afrique du Sud', 'KE': '🇰🇪 Kenya', 'TZ': '🇹🇿 Tanzanie', 'UG': '🇺🇬 Ouganda', 'RW': '🇷🇼 Rwanda', 'MA': '🇲🇦 Maroc', 'TN': '🇹🇳 Tunisie', 'EG': '🇪🇬 Égypte', 'DZ': '🇩🇿 Algérie' };
+                    document.getElementById('profileUsername').textContent = userData.username || '-';
+                    document.getElementById('profileEmail').textContent = userData.email || '-';
+                    document.getElementById('profilePhone').textContent = userData.phone || '-';
+                    document.getElementById('profileCountry').textContent = countryNames[userData.country] || userData.country || '-';
+                    document.getElementById('userAvatar').textContent = (userData.username || 'U').charAt(0).toUpperCase();
+                    if (userData.country) document.getElementById('countrySelect').value = userData.country;
+                }
             }
+        });
 
+        // ============================================================
+        // 4. INITIALISATION
+        // ============================================================
+        function initApp() {
             document.querySelectorAll('.tabs button').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
@@ -1494,36 +1115,25 @@
                     if (tab) tab.classList.add('active');
                 });
             });
-
             document.getElementById('openCameraBtn').addEventListener('click', openCamera);
             document.getElementById('closeCameraBtn').addEventListener('click', closeCamera);
             document.getElementById('captureBtn').addEventListener('click', capturePhoto);
-
-            document.getElementById('chatInput').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') sendChatMessage();
-            });
-
+            document.getElementById('chatInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMessage(); });
             checkApiKey();
             updateMealPlan();
             updateBadges();
             updateWaterDisplay();
             updateChallengeScan();
-
-            console.log('✅ RégionFit v5.4 chargé avec Gemini 3.8 Flash !');
+            console.log('✅ RégionFit v5.5 - Firebase Sync chargé !');
         }
 
         window.addEventListener('DOMContentLoaded', function() {
-            const user = JSON.parse(localStorage.getItem('regionfit_current_user') || 'null');
-            if (user) {
-                document.getElementById('authContainer').style.display = 'none';
-                document.getElementById('appContent').classList.add('active');
-                initApp();
-            } else {
-                document.getElementById('authContainer').style.display = 'block';
-                showStep('step-login');
-            }
+            const theme = localStorage.getItem('regionfit_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+            // On attend que Firebase vérifie si l'utilisateur est déjà connecté
         });
     </script>
-    6.3
+    6.4
 </body>
 </html>
