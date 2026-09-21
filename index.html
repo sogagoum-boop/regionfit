@@ -27,10 +27,7 @@
             transition: background var(--transition), color var(--transition);
             color: var(--text);
         }
-        .app {
-            background: var(--bg-app); border-radius: 24px; padding: 24px;
-            box-shadow: var(--shadow); width: 100%;
-        }
+        .app { background: var(--bg-app); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); width: 100%; }
         .header { text-align: center; margin-bottom: 24px; }
         .header h1 { font-size: 28px; color: var(--text); }
         .header h1 span { color: var(--green); }
@@ -39,8 +36,7 @@
             position: fixed; bottom: 20px; right: 20px; z-index: 999;
             background: var(--green); color: #fff; border: none;
             padding: 14px; border-radius: 50%; width: 54px; height: 54px;
-            font-size: 22px; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         #authContainer { display: block; }
         .auth-step { display: none; animation: fadeIn 0.4s ease; }
@@ -77,9 +73,7 @@
             font-size: 14px; font-weight: 600; cursor: pointer;
             color: var(--text-secondary); transition: 0.2s;
         }
-        .choice-group button.active {
-            border-color: var(--green); background: var(--green-light); color: var(--green);
-        }
+        .choice-group button.active { border-color: var(--green); background: var(--green-light); color: var(--green); }
         .code-input-group { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
         .code-input-group input {
             width: 50px; height: 56px; text-align: center;
@@ -87,10 +81,7 @@
             border: 2px solid var(--border); border-radius: 10px;
             background: var(--input-bg); color: var(--text);
         }
-        .code-input-group input:focus {
-            border-color: var(--green); outline: none;
-            box-shadow: 0 0 0 3px rgba(56,161,105,0.2);
-        }
+        .code-input-group input:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px rgba(56,161,105,0.2); }
         .code-input-group input.filled { border-color: var(--green); background: var(--green-light); }
         .auth-status {
             text-align: center; padding: 12px; border-radius: 10px;
@@ -105,102 +96,49 @@
         .resend-timer a.disabled { color: var(--text-secondary); cursor: not-allowed; }
         #appContent { display: none; }
         #appContent.active { display: block; }
-        .header-app {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; flex-wrap: wrap; gap: 8px;
-        }
+        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
         .header-app h1 { font-size: 22px; color: var(--text); }
         .header-app h1 span { color: var(--green); }
-        .header-app .badge {
-            background: #ebf8ff; color: var(--blue);
-            padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
-        }
-        .header-app .badge-ia {
-            background: var(--green); color: #fff;
-            padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
-        }
-        .tabs {
-            display: flex; gap: 4px; margin-bottom: 20px;
-            background: var(--card); border-radius: 12px; padding: 4px;
-            overflow-x: auto;
-        }
+        .header-app .badge { background: #ebf8ff; color: var(--blue); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .header-app .badge-ia { background: var(--green); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--card); border-radius: 12px; padding: 4px; overflow-x: auto; }
         .tabs button {
             flex: 1; min-width: 55px; padding: 10px 4px;
             border: none; border-radius: 10px; font-weight: 600;
             font-size: 10px; cursor: pointer; background: transparent;
-            color: var(--text-secondary); transition: 0.3s ease;
-            white-space: nowrap;
+            color: var(--text-secondary); transition: 0.3s ease; white-space: nowrap;
         }
-        .tabs button.active {
-            background: var(--bg-app); color: var(--green);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+        .tabs button.active { background: var(--bg-app); color: var(--green); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .tab-content { display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .scan-box {
-            background: linear-gradient(135deg, var(--green), var(--green-dark));
-            border-radius: 16px; padding: 24px; color: #fff;
-            text-align: center; margin-bottom: 20px;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .scan-box { background: linear-gradient(135deg, var(--green), var(--green-dark)); border-radius: 16px; padding: 24px; color: #fff; text-align: center; margin-bottom: 20px; }
         .scan-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
         .scan-box p { font-size: 14px; opacity: 0.9; margin-bottom: 12px; }
-        .scan-box .btn-primary {
-            background: #fff; color: var(--green);
-            padding: 14px; border-radius: 12px;
-            font-size: 16px; font-weight: 700; width: 100%; cursor: pointer;
-        }
+        .scan-box .btn-primary { background: #fff; color: var(--green); padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; width: 100%; cursor: pointer; }
         .scan-box .status { font-size: 12px; opacity: 0.8; margin-top: 8px; display: block; }
-        .api-modal {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
-            z-index: 9999; justify-content: center; align-items: center; padding: 20px;
-        }
+        .api-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .api-modal.active { display: flex; }
-        .api-modal-content {
-            background: var(--bg-app); border-radius: 20px;
-            padding: 24px; max-width: 400px; width: 100%; text-align: center;
-        }
+        .api-modal-content { background: var(--bg-app); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; text-align: center; }
         .api-modal-content h2 { font-size: 20px; color: var(--text); margin-bottom: 8px; }
         .api-modal-content p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
-        .api-modal-content input {
-            width: 100%; padding: 14px; border: 2px solid var(--input-border);
-            border-radius: 12px; font-size: 14px; background: var(--input-bg);
-            color: var(--text); margin-bottom: 12px; text-align: center;
-        }
+        .api-modal-content input { width: 100%; padding: 14px; border: 2px solid var(--input-border); border-radius: 12px; font-size: 14px; background: var(--input-bg); color: var(--text); margin-bottom: 12px; text-align: center; }
         .api-modal-content input:focus { border-color: var(--green); outline: none; }
-        .api-modal-content .help-link {
-            display: inline-block; margin-top: 12px; font-size: 12px;
-            color: var(--blue); text-decoration: none;
-        }
+        .api-modal-content .help-link { display: inline-block; margin-top: 12px; font-size: 12px; color: var(--blue); text-decoration: none; }
         #cameraContainer { display: none; background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
         #cameraContainer.active { display: block; }
         #video { width: 100%; display: block; background: #000; min-height: 300px; }
         #canvas { display: none; }
         .cam-controls { display: flex; gap: 10px; padding: 12px; background: rgba(0,0,0,0.85); justify-content: center; }
-        .cam-controls button {
-            border: none; padding: 12px 24px; border-radius: 10px;
-            font-weight: 700; font-size: 15px; cursor: pointer; flex: 1;
-        }
+        .cam-controls button { border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; flex: 1; }
         .cam-controls .btn-capture { background: var(--green); color: #fff; }
         .cam-controls .btn-close { background: var(--red); color: #fff; }
         .loader { display: none; text-align: center; padding: 30px 20px; }
         .loader.active { display: block; }
-        .loader .spinner {
-            width: 48px; height: 48px; border: 4px solid var(--border);
-            border-top-color: var(--green); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin: 0 auto 12px;
-        }
+        .loader .spinner { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loader p { color: var(--text-secondary); font-size: 14px; }
-        #result {
-            display: none; background: var(--green-light);
-            border: 2px solid var(--green); border-radius: 16px;
-            padding: 16px; margin-bottom: 16px;
-        }
+        #result { display: none; background: var(--green-light); border: 2px solid var(--green); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
         #result .row { display: flex; justify-content: space-between; align-items: center; }
         #result .calories { font-size: 28px; font-weight: 800; color: var(--green); }
         #result .macros { text-align: right; font-size: 13px; color: var(--green); line-height: 1.6; }
@@ -210,19 +148,12 @@
         #result .tags .warning { background: #fefcbf; color: #975a16; }
         #result .tags .success { background: #c6f6d5; color: var(--green); }
         #result .tags .info { background: #ebf8ff; color: var(--blue); }
-        #result .btn-close {
-            background: var(--card); border: none; padding: 10px;
-            border-radius: 10px; font-weight: 600; width: 100%;
-            margin-top: 12px; cursor: pointer; color: var(--text);
-        }
+        #result .btn-close { background: var(--card); border: none; padding: 10px; border-radius: 10px; font-weight: 600; width: 100%; margin-top: 12px; cursor: pointer; color: var(--text); }
         .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
         .card h3 { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
         .card .value { font-size: 18px; font-weight: 700; color: var(--text); }
         .progress-bar { background: var(--border); border-radius: 8px; height: 8px; margin: 6px 0; overflow: hidden; }
-        .progress-bar .fill {
-            background: linear-gradient(90deg, var(--green), var(--green-dark));
-            height: 100%; border-radius: 8px; width: 60%; transition: width 0.5s ease;
-        }
+        .progress-bar .fill { background: linear-gradient(90deg, var(--green), var(--green-dark)); height: 100%; border-radius: 8px; width: 60%; transition: width 0.5s ease; }
         .key-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .key-status.set { background: #c6f6d5; color: var(--green); }
         .key-status.missing { background: #fed7d7; color: var(--red); }
@@ -230,11 +161,7 @@
         .footer p { margin: 2px 0; }
         .key-btn { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 11px; cursor: pointer; margin-left: 6px; }
         .country-selector { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-        .country-selector select {
-            flex: 1; padding: 10px; border: 2px solid var(--border);
-            border-radius: 10px; font-size: 14px; background: var(--input-bg);
-            color: var(--text); min-width: 120px;
-        }
+        .country-selector select { flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: 10px; font-size: 14px; background: var(--input-bg); color: var(--text); min-width: 120px; }
         .meal-day { background: var(--bg-app); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
         .meal-day .day-header { display: flex; justify-content: space-between; font-weight: 700; color: var(--text); margin-bottom: 4px; }
         .meal-day .day-cal { color: var(--green); }
@@ -247,18 +174,9 @@
         .user-info .label { color: var(--text-secondary); font-size: 13px; }
         .user-info .value { font-weight: 600; color: var(--text); font-size: 14px; }
         .logout-btn { width: 100%; padding: 12px; background: var(--red); color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 12px; }
-        .avatar {
-            width: 48px; height: 48px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: 700; color: #fff;
-            background: var(--green); cursor: pointer;
-        }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #fff; background: var(--green); cursor: pointer; }
         .badge-collection { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-        .badge-item {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 8px 12px; background: var(--bg-app);
-            border-radius: 12px; border: 1px solid var(--border);
-        }
+        .badge-item { display: flex; flex-direction: column; align-items: center; padding: 8px 12px; background: var(--bg-app); border-radius: 12px; border: 1px solid var(--border); }
         .badge-item .icon { font-size: 28px; }
         .badge-item .name { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
         .badge-item.locked { opacity: 0.4; filter: grayscale(1); }
@@ -316,7 +234,7 @@
         <div class="api-modal-content">
             <h2>🔑 Clé API Gemini</h2>
             <p>Pour utiliser l'IA, vous avez besoin d'une clé API Google Gemini gratuite.</p>
-            <input type="text" id="apiKeyInput" placeholder="AIzaSyCwVZYxYL8YmzTR-xnoHwT3Vtfmj-B6VnE" autocomplete="on">
+            <input type="text" id="apiKeyInput" placeholder="Collez votre clé ici (AIza...)" autocomplete="off">
             <button class="btn-primary" onclick="saveApiKeyFromModal()">💾 Enregistrer</button>
             <button class="btn-secondary" onclick="closeApiModal()">Annuler</button>
             <a href="https://aistudio.google.com/app/apikey" target="_blank" class="help-link">🔗 Obtenir une clé API Gemini gratuite</a>
@@ -652,7 +570,7 @@
 
             <div class="footer">
                 <p>© 2026 Constantin Armstrong Sogagoum - Tous droits réservés</p>
-                <p>RégionFit v5.5 · Firebase Sync</p>
+                <p>RégionFit v5.6 · Firebase Sync</p>
             </div>
         </div>
     </div>
@@ -691,7 +609,9 @@
         let scanCount = 0;
         let waterIntake = 1.2;
 
-        // Rendre les fonctions accessibles globalement (car type="module")
+        // ============================================================
+        // 3. FONCTIONS GLOBALES (accessibles depuis le HTML)
+        // ============================================================
         window.toggleTheme = function() {
             const html = document.documentElement;
             const current = html.getAttribute('data-theme');
@@ -726,6 +646,10 @@
             if (choice === 'sms') document.getElementById('choiceSms').classList.add('active');
             else document.getElementById('choiceEmail').classList.add('active');
         };
+
+        // ============================================================
+        // 4. INSCRIPTION AVEC MESSAGES D'ERREUR DÉTAILLÉS
+        // ============================================================
         window.registerUser = async function() {
             const email = document.getElementById('registerEmail').value.trim();
             const phone = document.getElementById('registerPhone').value.trim();
@@ -744,36 +668,65 @@
             else document.getElementById('passwordError').classList.remove('show');
             if (!isValid) return;
 
+            showStatus('registerStatus', '⏳ Création du compte en cours...', 'info');
+
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
+                
+                showStatus('registerStatus', '⏳ Sauvegarde des données...', 'info');
+                
                 await setDoc(doc(db, "users", user.uid), {
-                    username: username, phone: phone, country: country, email: email, createdAt: new Date()
+                    username: username,
+                    phone: phone,
+                    country: country,
+                    email: email,
+                    createdAt: new Date()
                 });
+                
                 document.getElementById('phoneDisplay').textContent = phone.replace(/(.{3})(.*)(.{2})/, '$1*****$3');
                 document.getElementById('emailDisplay').textContent = email.replace(/(.{1})(.*)(@.*)/, '$1***$3');
                 showStatus('registerStatus', '✅ Inscription réussie !', 'success');
                 setTimeout(() => showStep('step-choice'), 1500);
             } catch (error) {
-                console.error('Erreur inscription:', error);
-                let msg = '❌ Erreur d\'inscription.';
+                console.error('❌ ERREUR FIREBASE DÉTAILLÉE:', error);
+                console.error('Code:', error.code);
+                console.error('Message:', error.message);
+                
+                let msg = '❌ Erreur : ' + error.message;
                 if (error.code === 'auth/email-already-in-use') msg = '❌ Cet email est déjà utilisé.';
-                if (error.code === 'auth/weak-password') msg = '❌ Mot de passe trop faible.';
+                else if (error.code === 'auth/weak-password') msg = '❌ Mot de passe trop faible (6 caractères minimum).';
+                else if (error.code === 'auth/invalid-email') msg = '❌ Email invalide.';
+                else if (error.code === 'auth/operation-not-allowed') msg = '❌ L\'authentification Email/Mot de passe n\'est pas activée dans Firebase.';
+                else if (error.code === 'auth/api-key-not-valid') msg = '❌ Clé API Firebase invalide. Vérifiez firebaseConfig.';
+                else if (error.code === 'auth/network-request-failed') msg = '❌ Problème de connexion internet.';
+                else if (error.code === 'permission-denied') msg = '❌ Règles Firestore non publiées.';
+                
                 showStatus('registerStatus', msg, 'error');
             }
         };
+
         window.loginUser = async function() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             if (!email || !password) { showStatus('loginStatus', '❌ Veuillez remplir tous les champs.', 'error'); return; }
+            
+            showStatus('loginStatus', '⏳ Connexion en cours...', 'info');
+            
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 showStatus('loginStatus', '✅ Connexion réussie !', 'success');
                 setTimeout(() => showStep('step-choice'), 1500);
             } catch (error) {
-                showStatus('loginStatus', '❌ Email ou mot de passe incorrect.', 'error');
+                console.error('❌ ERREUR CONNEXION:', error);
+                let msg = '❌ Email ou mot de passe incorrect.';
+                if (error.code === 'auth/user-not-found') msg = '❌ Aucun compte avec cet email.';
+                else if (error.code === 'auth/wrong-password') msg = '❌ Mot de passe incorrect.';
+                else if (error.code === 'auth/invalid-email') msg = '❌ Email invalide.';
+                showStatus('loginStatus', msg, 'error');
             }
         };
+
         window.logoutUser = async function() {
             if (confirm('Voulez-vous vous déconnecter ?')) {
                 await signOut(auth);
@@ -782,6 +735,7 @@
                 showStep('step-login');
             }
         };
+
         window.sendValidationCode = function() {
             validationCode = Math.floor(100000 + Math.random() * 900000).toString();
             console.log('📨 CODE :', validationCode);
@@ -792,6 +746,7 @@
             showStep('step-code');
             startResendTimer();
         };
+
         window.validateCode = function() {
             const inputs = document.querySelectorAll('.code-input');
             let enteredCode = '';
@@ -806,6 +761,7 @@
                 }, 1500);
             } else { showStatus('codeStatus', '❌ Code invalide.', 'error'); }
         };
+
         window.resendCode = function() {
             if (document.getElementById('resendLink').classList.contains('disabled')) return;
             sendValidationCode();
@@ -898,6 +854,9 @@
             }
         };
 
+        // ============================================================
+        // 5. FONCTIONS INTERNES
+        // ============================================================
         function showStep(stepId) {
             document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
             const el = document.getElementById(stepId);
@@ -1082,7 +1041,7 @@
         }
 
         // ============================================================
-        // 3. ÉCOUTEUR D'ÉTAT FIREBASE
+        // 6. ÉCOUTEUR D'ÉTAT FIREBASE
         // ============================================================
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -1103,7 +1062,7 @@
         });
 
         // ============================================================
-        // 4. INITIALISATION
+        // 7. INITIALISATION
         // ============================================================
         function initApp() {
             document.querySelectorAll('.tabs button').forEach(btn => {
@@ -1124,16 +1083,15 @@
             updateBadges();
             updateWaterDisplay();
             updateChallengeScan();
-            console.log('✅ RégionFit v5.5 - Firebase Sync chargé !');
+            console.log('✅ RégionFit v5.6 - Firebase Sync chargé !');
         }
 
         window.addEventListener('DOMContentLoaded', function() {
             const theme = localStorage.getItem('regionfit_theme') || 'light';
             document.documentElement.setAttribute('data-theme', theme);
             document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-            // On attend que Firebase vérifie si l'utilisateur est déjà connecté
         });
     </script>
-    6.5
 </body>
-</html>
+</html>6.6
+66
